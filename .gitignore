@@ -1,0 +1,11 @@
+*.out
+
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+*.o
+*.a
+
+minishell
