@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:29:37 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/04/16 23:36:24 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/04/17 01:07:25 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ int	pwd(int argc, char **argv)
 {
 	char	*bufs;
 
+	bufs = NULL;
 	if (argc > 1 && argv)
 	{
 		// TODO エラー出力
