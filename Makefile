@@ -6,8 +6,7 @@ CFLAGS = -Wall -Wextra -Werror
 RM = rm -f
 
 LIB_DIR = ./lib
-SRCS_DIR = ./srcs ./srcs/builtin
-
+SRCS_DIR = ./srcs ./srcs/builtin ./srcs/execution
 
 LIB = $(LIB_DIR)/lib.a -lreadline
 
