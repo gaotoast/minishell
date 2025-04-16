@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:29:37 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/04/17 01:07:25 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/04/17 01:44:38 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ int	pwd(int argc, char **argv)
 	if (argc > 1 && argv)
 	{
 		// TODO エラー出力
-		// bad option, or too many arguments
-		// -X (xは文字)だった場合bad option, それ以外の場合 too many arguments
+		// bad option
+		// -X (xは文字)だった場合bad option
 		// bad option の際にargvを使用するためエラー処理を実装すればこのif文の
 		// "&& argv" は消してしまってよい
 	}
