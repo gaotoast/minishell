@@ -14,18 +14,18 @@
 
 // execution
 // child.c
-void	exec_if_relative_path(char **cmds, char **envp);
-void	exec_if_absolute_path(char **cmds, char **envp);
-void	execute_in_child(char **cmds, char **envp);
+void				exec_if_relative_path(char **cmds, char **envp);
+void				exec_if_absolute_path(char **cmds, char **envp);
+void				execute_in_child(char **cmds, char **envp);
 
 // execute.c
-int		execute(char **cmds, char **envp);
+int					execute(char **cmds, char **envp);
 
 // find_path.c
-char	*search_path(char *cmd_name, char **path_list);
-char	*resolve_cmd_path(char *cmd, char *path_env);
+char				*search_path(char *cmd_name, char **path_list, char *path_tail);
+char				*resolve_cmd_path(char *cmd, char *path_env);
 
 // free.c
-void	free_2d_array(void **array);
+void				free_2d_array(void **array);
 
 #endif
