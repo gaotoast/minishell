@@ -6,12 +6,11 @@ CFLAGS = -Wall -Wextra -Werror
 RM = rm -f
 
 LIB_DIR = ./lib
-SRCS_DIR = ./srcs
-
+SRCS_DIR = ./srcs ./srcs/builtin ./srcs/execution
 
 LIB = $(LIB_DIR)/lib.a -lreadline
 
-SRCS = $(wildcard $(SRCS_DIR)/*.c)
+SRCS = $(foreach dir,$(SRCS_DIR),$(wildcard $(dir)/*.c))
 OBJS = $(SRCS:.c=.o)
 INCLUDES = -I ./includes -I ./$(LIB_DIR)/includes
 
