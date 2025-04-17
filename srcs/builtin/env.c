@@ -6,12 +6,11 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 00:47:01 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/04/18 02:17:40 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/04/18 02:24:38 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
-
 
 int	get_env_option(int argc, char **argv)
 {
