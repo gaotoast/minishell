@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:29:37 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/04/17 01:44:38 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/04/18 00:35:17 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,7 @@ char	*get_string(char *bufs)
 
 	size = 512;
 	rtn = NULL;
-	// TODO 校舎のLinux上でPATH_MAXが使えるか確認
-	// 使えたらPATH_MAXにする
-	// 使えなかったら4096(PATH_MAXとして一般的な値に決め打ち)
-	while (size <= 32)
+	while (size <= PATH_MAX)
 	{
 		bufs = malloc(size);
 		if (!bufs)
@@ -38,25 +35,36 @@ char	*get_string(char *bufs)
 	return (NULL);
 }
 
+int	is_pwd_error(int argc, char **argv)
+{
+	if (argc == 1)
+		return (0);
+	if (argv[1][0] != '-' || ft_strncmp(argv[1], "--", 3) == 0)
+		return (0);
+	if (argv[1][1] == '\0')
+		return (0);
+	return (1);
+}
+
 int	pwd(int argc, char **argv)
 {
 	char	*bufs;
 
 	bufs = NULL;
-	if (argc > 1 && argv)
+	if (is_pwd_error(argc, argv))
 	{
-		// TODO エラー出力
-		// bad option
-		// -X (xは文字)だった場合bad option
-		// bad option の際にargvを使用するためエラー処理を実装すればこのif文の
-		// "&& argv" は消してしまってよい
+		write(STDERR_FILENO, "minishell: pwd: ", 16);
+		write(STDERR_FILENO, argv[1], 2);
+		write(STDERR_FILENO, ": invalid option\n", 17);
+		return (EXIT_FAILURE);
 	}
 	bufs = get_string(bufs);
-	// TODO エラー処理
-	// malloc以外でのエラーでnullが返ってきたときどうする？
 	if (!bufs)
-		return (1);
+	{
+		perror("minishell");
+		return (EXIT_FAILURE);
+	}
 	printf("%s\n", bufs);
 	free(bufs);
-	return (0);
+	return (EXIT_SUCCESS);
 }
