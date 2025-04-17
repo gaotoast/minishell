@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 00:20:46 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/04/16 22:34:48 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/04/18 00:40:06 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ int	echo(int argc, char **argv)
 	int		i;
 
 	if (argc < 1)
-		return (0);
-	if (argc >= 2 && strcmp(argv[1], "-n") == 0)
+		return (EXIT_SUCCESS);
+	if (argc >= 2 && ft_strncmp(argv[1], "-n", 3) == 0)
 		endnew = 1;
 	else
 		endnew = 0;
@@ -33,7 +33,7 @@ int	echo(int argc, char **argv)
 	}
 	if (!endnew)
 		printf("\n");
-	return (0);
+	return (EXIT_SUCCESS);
 }
 
 // int main(int argc, char **argv)
