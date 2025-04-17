@@ -8,5 +8,8 @@
 # include <unistd.h>
 # include <errno.h>
 # include <limits.h>
+# include <linux/limits.h>
+# include <string.h>
+# include "libft.h"
 
 #endif
