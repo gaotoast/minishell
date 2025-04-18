@@ -6,31 +6,30 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:29:37 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/04/18 00:35:17 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/04/19 01:10:57 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+// #include "minishell.h"
 
-char	*get_string(char *bufs)
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <errno.h>
+# include <limits.h>
+# include <linux/limits.h>
+# include <string.h>
+
+char	*get_pwd(char **envp)
 {
-	size_t	size;
-	char	*rtn;
+	int	i;
 
-	size = 512;
-	rtn = NULL;
-	while (size <= PATH_MAX)
+	i = 0;
+	while (envp[i])
 	{
-		bufs = malloc(size);
-		if (!bufs)
-			return (NULL);
-		rtn = getcwd(bufs, size);
-		if (rtn)
-			return (rtn);
-		free(bufs);
-		if (errno != ERANGE)
-			return (NULL);
-		size *= 2;
+		if (strncmp(envp[i], "PWD=", 4) == 0)
+			return (envp[i]);
+		++i;
 	}
 	return (NULL);
 }
@@ -39,14 +38,14 @@ int	is_pwd_error(int argc, char **argv)
 {
 	if (argc == 1)
 		return (0);
-	if (argv[1][0] != '-' || ft_strncmp(argv[1], "--", 3) == 0)
+	if (argv[1][0] != '-' || strncmp(argv[1], "--", 3) == 0)
 		return (0);
 	if (argv[1][1] == '\0')
 		return (0);
 	return (1);
 }
 
-int	pwd(int argc, char **argv)
+int	pwd(int argc, char **argv, char **envp)
 {
 	char	*bufs;
 
@@ -58,13 +57,17 @@ int	pwd(int argc, char **argv)
 		write(STDERR_FILENO, ": invalid option\n", 17);
 		return (EXIT_FAILURE);
 	}
-	bufs = get_string(bufs);
+	bufs = get_pwd(envp);
 	if (!bufs)
 	{
 		perror("minishell");
 		return (EXIT_FAILURE);
 	}
-	printf("%s\n", bufs);
-	free(bufs);
+	printf("%s\n", bufs + 4);
 	return (EXIT_SUCCESS);
+}
+
+int main(int argc, char **argv, char **envp)
+{
+	pwd(argc, argv, envp);
 }
