@@ -6,19 +6,11 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:29:37 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/04/19 01:10:57 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/04/19 01:20:29 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "minishell.h"
-
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
-# include <errno.h>
-# include <limits.h>
-# include <linux/limits.h>
-# include <string.h>
+#include "minishell.h"
 
 char	*get_pwd(char **envp)
 {
@@ -65,9 +57,4 @@ int	pwd(int argc, char **argv, char **envp)
 	}
 	printf("%s\n", bufs + 4);
 	return (EXIT_SUCCESS);
-}
-
-int main(int argc, char **argv, char **envp)
-{
-	pwd(argc, argv, envp);
 }
