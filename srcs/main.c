@@ -18,7 +18,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		if (*input)
 			add_history(input);
-        tokens = torknize(input);
+        tokens = tokenize(input);
         if (!tokens)
         {
             free(input);
@@ -26,7 +26,7 @@ int	main(int argc, char **argv, char **envp)
         }
         /* TODO: 入力行を解析 */
         // TODO: debugあとで消す
-        debug_torknizer(tokens);
+        debug_tokenizer(tokens);
 		// execute(tokens, envp);
 		free(input);
 	}

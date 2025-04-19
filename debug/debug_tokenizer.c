@@ -15,7 +15,7 @@ void	print_tokens(t_token *token)
 	}
 }
 
-void	debug_torknizer(t_token *tokens)
+void	debug_tokenizer(t_token *tokens)
 {
     if (!tokens)
     {

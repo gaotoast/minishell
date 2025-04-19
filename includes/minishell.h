@@ -43,17 +43,17 @@ char				*resolve_cmd_path(char *cmd, char *path_env);
 // free.c
 void				free_2d_array(void **array);
 
-// torknization
-// torknize.c
-t_token				*torknize(char *line);
+// tokenization
+// tokenize.c
+t_token				*tokenize(char *line);
 
 // free
 // free.c
 void				free_tokens(t_token *token);
 
 // debug
-// debug_torknize.c
+// debug_tokenize.c
 void				print_tokens(t_token *token);
-void				debug_torknizer(t_token *tokens);
+void				debug_tokenizer(t_token *tokens);
 
 #endif
