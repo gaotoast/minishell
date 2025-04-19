@@ -18,7 +18,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		if (*input)
 			add_history(input);
-        tokens = torknizer(input);
+        tokens = torknize(input);
         if (!tokens)
         {
             free(input);

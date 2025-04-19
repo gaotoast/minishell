@@ -45,7 +45,7 @@ void				free_2d_array(void **array);
 
 // torknization
 // torknize.c
-t_token				*torknizer(char *line);
+t_token				*torknize(char *line);
 
 // free
 // free.c
