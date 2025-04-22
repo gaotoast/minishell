@@ -33,6 +33,10 @@ typedef struct s_shell
 	t_token			*tokens;
 }					t_shell;
 
+// init
+// init.c
+void	init(t_shell *shell);
+
 // execution
 // child.c
 void				exec_if_relative_path(char **cmds, char **envp);
@@ -53,6 +57,10 @@ void				free_2d_array(void **array);
 // tokenization
 // tokenize.c
 t_token				*tokenize(char *line);
+
+// expansion
+// expand.c
+void	expand_tokens(t_token *tokens, int *status);
 
 // free
 // free.c
