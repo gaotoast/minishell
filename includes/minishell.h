@@ -26,6 +26,13 @@ typedef struct s_token
 	struct s_token	*next;
 }					t_token;
 
+typedef struct s_shell
+{
+	int				status;
+	int				last_status;
+	t_token			*tokens;
+}					t_shell;
+
 // execution
 // child.c
 void				exec_if_relative_path(char **cmds, char **envp);
