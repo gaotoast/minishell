@@ -35,7 +35,7 @@ typedef struct s_shell
 
 // init
 // init.c
-void	init(t_shell *shell);
+void				init(t_shell *shell);
 
 // execution
 // child.c
@@ -60,7 +60,7 @@ t_token				*tokenize(char *line);
 
 // expansion
 // expand.c
-void	expand_tokens(t_token *tokens, int *status);
+void				expand_tokens(t_token *tokens, int *status);
 
 // free
 // free.c

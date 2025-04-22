@@ -8,7 +8,10 @@ char	*ft_strndup(char *str, int len)
 		return (NULL);
 	result = (char *)malloc(sizeof(char) * (len + 1));
 	if (!result)
+	{
+		perror("minishell");
 		return (NULL);
+	}
 	result[0] = '\0';
 	ft_strlcpy(result, str, len + 1);
 	return (result);
@@ -100,18 +103,19 @@ char	*expand_var(char **s)
 	name = get_var_name(*s);
 	if (!name)
 		return (ft_strdup("$"));
+	*s += ft_strlen(name);
 	if (ft_strncmp(name, "?", 2) == 0)
 		value = ft_itoa(0); // TODO: 実際のexitステータスに変更
 	else
 	{
 		env = getenv(name);
 		if (!env)
-			return (ft_strdup(""));
-		value = ft_strdup(env);
+			value = ft_strdup("");
+		else
+			value = ft_strdup(env);
 	}
 	if (!value)
 		value = ft_strdup("");
-	*s += ft_strlen(name);
 	free(name);
 	return (value);
 }
