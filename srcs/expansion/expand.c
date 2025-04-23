@@ -127,7 +127,7 @@ char	*expand_var(char **s)
 	char	*env;
 
 	(*s)++;
-	if (get_var_name(*s, &name) != 0)
+	if (get_var_name(*s, &name) < 0)
 		return (NULL);
 	// 変数名がない場合: 展開はなく$そのまま
 	if (!name)

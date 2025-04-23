@@ -56,7 +56,7 @@ void				free_2d_array(void **array);
 
 // tokenization
 // tokenize.c
-t_token				*tokenize(char *line);
+int				tokenize(char *line, t_token **tokens);
 
 // expansion
 // expand.c

@@ -18,14 +18,12 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		if (*input)
 			add_history(input);
-		// TODO: tokenize関数もステータスとトークンをセットするように。
-        shell.tokens = tokenize(input);
-        if (!shell.tokens)
-        {
-            free(input);
-            exit(EXIT_FAILURE);
-        }
+        shell.status = tokenize(input, &(shell.tokens));
+		if (shell.status < 0)
+			exit(EXIT_FAILURE);
 		shell.status = expand_tokens(shell.tokens);
+		if (shell.status < 0)
+			exit(EXIT_FAILURE);
         /* TODO: 入力行を解析 */
         // TODO: debugあとで消す
         debug_tokenizer(shell.tokens);
