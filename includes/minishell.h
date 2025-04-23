@@ -60,7 +60,7 @@ t_token				*tokenize(char *line);
 
 // expansion
 // expand.c
-void				expand_tokens(t_token *tokens, int *status);
+int				expand_tokens(t_token *tokens);
 
 // free
 // free.c

@@ -1,77 +1,89 @@
 #include "minishell.h"
 
-char	*ft_strndup(char *str, int len)
+// 文字数指定ft_strdup
+char	*ft_strndup(char *s, int len)
 {
-	char	*result;
+	char	*new;
+	int		i;
 
-	if (!str || len <= 0)
+	if (!s || len <= 0)
 		return (NULL);
-	result = (char *)malloc(sizeof(char) * (len + 1));
-	if (!result)
+	new = (char *)malloc(sizeof(char) * (len + 1));
+	if (!new)
 	{
 		perror("minishell");
 		return (NULL);
 	}
-	result[0] = '\0';
-	ft_strlcpy(result, str, len + 1);
-	return (result);
+	i = 0;
+	while (s[i] && i < len)
+	{
+		new[i] = s[i];
+		i++;
+	}
+	new[i] = '\0';
+	return (new);
 }
 
-void	append_string(char **result, char *str, int *status)
+// dstの末尾にsrcを追加した文字列を返す
+// dstとsrcはfreeする（どちらもmallocされた文字列の前提）
+char	*append_string_free(char *dst, char *src)
 {
-	size_t	result_len;
-	size_t	str_len;
-	char	*new_result;
+	size_t	new_len;
+	char	*new;
 
-	if (!result || !str)
+	if (!dst || !src)
 	{
-		(*status) = -1;
-		return ;
+		free(dst);
+		free(src);
+		return (NULL);
 	}
-	if (!(*result))
-		*result = ft_strdup(str);
-	if (!(*str))
-		return ;
-	result_len = ft_strlen(*result);
-	str_len = ft_strlen(str);
-	new_result = (char *)malloc(result_len + str_len + 1);
-	if (!new_result)
+	new_len = ft_strlen(dst) + ft_strlen(src) + 1;
+	new = (char *)malloc(new_len);
+	if (!new)
 	{
-		(*status) = -1;
-		return ;
+		perror("minishell");
+		free(dst);
+		free(src);
+		return (NULL);
 	}
-	ft_strlcpy(new_result, *result, result_len + 1);
-	ft_strlcat(new_result, str, result_len + str_len + 1);
-	free(*result);
-	*result = new_result;
+	new[0] = '\0';
+	ft_strlcpy(new, dst, new_len);
+	ft_strlcat(new, src, new_len);
+	free(dst);
+	free(src);
+	return (new);
 }
 
-void	append_char(char **result, char c, int *status)
+// dstの末尾にcを追加した文字列を返す
+// dstはfreeする（mallocされた文字列の前提）
+char	*append_char_free(char *dst, char c)
 {
 	size_t	len;
-	char	*new_result;
+	char	*new;
+	char	tmp[2];
 
-	if (!result)
+	if (!dst)
 	{
-		(*status) = -1;
-		return ;
+		tmp[0] = c;
+		tmp[1] = '\0';
+		return (ft_strdup(tmp));
 	}
-	if (!(*result))
-		*result = ft_strdup(&c);
-	len = ft_strlen(*result);
-	new_result = (char *)malloc(len + 2);
-	if (!new_result)
+	len = ft_strlen(dst);
+	new = (char *)malloc(len + 2);
+	if (!new)
 	{
-		*status = -1;
-		return ;
+		perror("minishell");
+		free(dst);
+		return (NULL);
 	}
-	ft_strlcpy(new_result, *result, len + 1);
-	new_result[len] = c;
-	new_result[len + 1] = '\0';
-	free(*result);
-	*result = new_result;
+	ft_strlcpy(new, dst, len + 1);
+	new[len] = c;
+	new[len + 1] = '\0';
+	free(dst);
+	return (new);
 }
 
+// 環境変数名に含むことができる文字かどうか判定
 int	is_var_char(char c)
 {
 	if (ft_isalnum(c) || c == '_')
@@ -79,20 +91,35 @@ int	is_var_char(char c)
 	return (0);
 }
 
-char	*get_var_name(char *str)
+// 変数名部分を抜粋して引数のnameに設定（例：$HOME@# -> HOME）
+int	get_var_name(char *str, char **name)
 {
 	int	len;
 
 	if (*str == '?')
-		return (ft_strdup("?"));
+	{
+		*name = ft_strdup("?");
+		if (!(*name))
+			return (-1);
+		return (0);
+	}
 	len = 0;
 	while (str[len] && is_var_char(str[len]))
 		len++;
 	if (len == 0)
-		return (NULL);
-	return (ft_strndup(str, len));
+	{
+		*name = NULL;
+		return (-1);
+	}
+	*name = ft_strndup(str, len);
+	if (!(*name))
+		return (-1);
+	return (0);
 }
 
+// ${変数名}を変数展開した文字列を返す
+// 例: $HOME -> /home/stakada
+// 同時に${変数名}の次の文字までポインタを進める
 char	*expand_var(char **s)
 {
 	char	*name;
@@ -100,12 +127,19 @@ char	*expand_var(char **s)
 	char	*env;
 
 	(*s)++;
-	name = get_var_name(*s);
+	if (get_var_name(*s, &name) != 0)
+		return (NULL);
+	// 変数名がない場合: 展開はなく$そのまま
 	if (!name)
 		return (ft_strdup("$"));
 	*s += ft_strlen(name);
+	// $?の場合: exitステータス
 	if (ft_strncmp(name, "?", 2) == 0)
-		value = ft_itoa(0); // TODO: 実際のexitステータスに変更
+		// TODO: 実際のexitステータスに変更
+		value = ft_itoa(0);
+	// ${変数名}の場合: getenvで環境変数を取得
+	// 環境変数に存在しなければ空の文字列
+	// TODO: envpからも取得する必要があるか調査
 	else
 	{
 		env = getenv(name);
@@ -114,18 +148,20 @@ char	*expand_var(char **s)
 		else
 			value = ft_strdup(env);
 	}
-	if (!value)
-		value = ft_strdup("");
 	free(name);
 	return (value);
 }
 
-char	*process_quotes(char *str, int *status)
+// ${変数名}と$?を展開後の文字列を置き換える
+// 同時にクォートの除去を行う
+char	*process_quotes(char *str)
 {
 	char	*result;
 	char	*ptr;
 	char	quote;
+	char	*expanded;
 
+	// 最初に空の文字列を用意
 	result = ft_strdup("");
 	ptr = str;
 	while (*ptr)
@@ -137,27 +173,52 @@ char	*process_quotes(char *str, int *status)
 			while (*ptr && *ptr != quote)
 			{
 				if (quote == '"' && *ptr == '$')
-					append_string(&result, expand_var(&ptr), status);
+				{
+					expanded = expand_var(&ptr);
+					if (!expanded)
+					{
+						free(result);
+						return (NULL);
+					}
+					result = append_string_free(result, expanded);
+					if (!result)
+						return (NULL);
+				}
 				else
 				{
-					append_char(&result, *ptr, status);
+					result = append_char_free(result, *ptr);
+					if (!result)
+						return (NULL);
 					ptr++;
 				}
 			}
 			ptr++;
 		}
 		else if (*ptr == '$')
-			append_string(&result, expand_var(&ptr), status);
+		{
+			expanded = expand_var(&ptr);
+			if (!expanded)
+			{
+				free(result);
+				return (NULL);
+			}
+			result = append_string_free(result, expanded);
+			if (!result)
+				return (NULL);
+		}
 		else
 		{
-			append_char(&result, *ptr, status);
+			result = append_char_free(result, *ptr);
+			if (!result)
+				return (NULL);
 			ptr++;
 		}
 	}
 	return (result);
 }
 
-void	expand_tokens(t_token *tokens, int *status)
+// $展開とクォート除去
+int	expand_tokens(t_token *tokens)
 {
 	t_token	*cur;
 	char	*expanded;
@@ -167,15 +228,13 @@ void	expand_tokens(t_token *tokens, int *status)
 	{
 		if (cur->type == TK_WORD)
 		{
-			expanded = process_quotes(cur->str, status);
+			expanded = process_quotes(cur->str);
 			if (!expanded)
-			{
-				(*status) = -1;
-				return ;
-			}
+				return (-1);
 			free(cur->str);
 			cur->str = expanded;
 		}
 		cur = cur->next;
 	}
+	return (0);
 }

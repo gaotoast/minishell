@@ -25,7 +25,7 @@ int	main(int argc, char **argv, char **envp)
             free(input);
             exit(EXIT_FAILURE);
         }
-		expand_tokens(shell.tokens, &shell.status);
+		shell.status = expand_tokens(shell.tokens);
         /* TODO: 入力行を解析 */
         // TODO: debugあとで消す
         debug_tokenizer(shell.tokens);
