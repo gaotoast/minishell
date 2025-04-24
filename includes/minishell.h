@@ -60,6 +60,7 @@ int					tokenize(char *line, t_token **tokens);
 // expand.c
 int					expand_tokens(t_token *tokens, char **envp);
 
+// utils
 // ft_getenv.c
 char				*ft_getenv(char *name, char **envp);
 

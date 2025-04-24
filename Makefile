@@ -7,7 +7,7 @@ RM = rm -f
 
 LIB_DIR = ./lib
 # TODO: debugあとで消す
-SRCS_DIR = ./srcs ./srcs/builtin ./srcs/execution ./srcs/tokenization ./srcs/init ./srcs/expansion ./debug
+SRCS_DIR = ./srcs ./srcs/builtin ./srcs/execution ./srcs/tokenization ./srcs/init ./srcs/expansion ./srcs/utils ./debug
 
 LIB = $(LIB_DIR)/lib.a -lreadline
 
