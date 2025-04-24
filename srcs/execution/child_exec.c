@@ -44,7 +44,7 @@ void	execute_in_child(char **cmds, char **envp)
 	char	*cmd_path;
 
 	exec_if_relative_path(cmds, envp);
-	path_env = getenv("PATH");
+	path_env = ft_getenv("PATH", envp);
 	if (!path_env || ft_strncmp(cmds[0], "/", 1) == 0)
 		exec_if_absolute_path(cmds, envp);
 	cmd_path = resolve_cmd_path(cmds[0], path_env);

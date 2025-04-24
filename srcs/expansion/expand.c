@@ -109,7 +109,7 @@ int	get_var_name(char *str, char **name)
 	if (len == 0)
 	{
 		*name = NULL;
-		return (-1);
+		return (0);
 	}
 	*name = ft_strndup(str, len);
 	if (!(*name))
@@ -120,7 +120,7 @@ int	get_var_name(char *str, char **name)
 // ${変数名}を変数展開した文字列を返す
 // 例: $HOME -> /home/stakada
 // 同時に${変数名}の次の文字までポインタを進める
-char	*expand_var(char **s)
+char	*expand_var(char **s, char **envp)
 {
 	char	*name;
 	char	*value;
@@ -129,20 +129,15 @@ char	*expand_var(char **s)
 	(*s)++;
 	if (get_var_name(*s, &name) < 0)
 		return (NULL);
-	// 変数名がない場合: 展開はなく$そのまま
 	if (!name)
 		return (ft_strdup("$"));
 	*s += ft_strlen(name);
-	// $?の場合: exitステータス
 	if (ft_strncmp(name, "?", 2) == 0)
 		// TODO: 実際のexitステータスに変更
 		value = ft_itoa(0);
-	// ${変数名}の場合: getenvで環境変数を取得
-	// 環境変数に存在しなければ空の文字列
-	// TODO: envpからも取得する必要があるか調査
 	else
 	{
-		env = getenv(name);
+		env = ft_getenv(name, envp);
 		if (!env)
 			value = ft_strdup("");
 		else
@@ -154,7 +149,7 @@ char	*expand_var(char **s)
 
 // ${変数名}と$?を展開後の文字列を置き換える
 // 同時にクォートの除去を行う
-char	*process_quotes(char *str)
+char	*process_quotes(char *str, char **envp)
 {
 	char	*result;
 	char	*ptr;
@@ -174,7 +169,7 @@ char	*process_quotes(char *str)
 			{
 				if (quote == '"' && *ptr == '$')
 				{
-					expanded = expand_var(&ptr);
+					expanded = expand_var(&ptr, envp);
 					if (!expanded)
 					{
 						free(result);
@@ -196,7 +191,7 @@ char	*process_quotes(char *str)
 		}
 		else if (*ptr == '$')
 		{
-			expanded = expand_var(&ptr);
+			expanded = expand_var(&ptr, envp);
 			if (!expanded)
 			{
 				free(result);
@@ -218,7 +213,7 @@ char	*process_quotes(char *str)
 }
 
 // $展開とクォート除去
-int	expand_tokens(t_token *tokens)
+int	expand_tokens(t_token *tokens, char **envp)
 {
 	t_token	*cur;
 	char	*expanded;
@@ -228,7 +223,7 @@ int	expand_tokens(t_token *tokens)
 	{
 		if (cur->type == TK_WORD)
 		{
-			expanded = process_quotes(cur->str);
+			expanded = process_quotes(cur->str, envp);
 			if (!expanded)
 				return (-1);
 			free(cur->str);

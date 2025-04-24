@@ -23,5 +23,4 @@ void	debug_tokenizer(t_token *tokens)
         return ;
     }
     print_tokens(tokens);
-    free_tokens(tokens);
 }

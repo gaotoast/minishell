@@ -29,16 +29,17 @@ typedef struct s_token
 typedef struct s_shell
 {
 	int				status;
-	int				last_status;
+	// int				last_status;
+	char			**envp_cp;
 	t_token			*tokens;
 }					t_shell;
 
 // init
 // init.c
-void				init(t_shell *shell);
+int					init(t_shell **shell, char **envp);
 
 // execution
-// child.c
+// child_exec.c
 void				exec_if_relative_path(char **cmds, char **envp);
 void				exec_if_absolute_path(char **cmds, char **envp);
 void				execute_in_child(char **cmds, char **envp);
@@ -51,20 +52,22 @@ char				*search_path(char *cmd_name, char **path_list,
 						char *path_tail);
 char				*resolve_cmd_path(char *cmd, char *path_env);
 
-// free.c
-void				free_2d_array(void **array);
-
 // tokenization
 // tokenize.c
 int					tokenize(char *line, t_token **tokens);
 
 // expansion
 // expand.c
-int					expand_tokens(t_token *tokens);
+int					expand_tokens(t_token *tokens, char **envp);
+
+// ft_getenv.c
+char				*ft_getenv(char *name, char **envp);
 
 // free
 // free.c
+void				free_2d_array(char **array);
 void				free_tokens(t_token *token);
+void				free_shell(t_shell *shell);
 
 // debug
 // debug_tokenize.c

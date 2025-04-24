@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	free_2d_array(void **array)
+void	free_2d_array(char **array)
 {
 	int	i;
 
@@ -15,15 +15,23 @@ void	free_2d_array(void **array)
 	free(array);
 }
 
-void free_tokens(t_token *token)
+void	free_tokens(t_token *token)
 {
-    t_token *tmp;
+	t_token	*tmp;
 
-    while (token)
-    {
-        tmp = token->next;
-        free(token->str);
-        free(token);
-        token = tmp;
-    }
+	while (token)
+	{
+		tmp = token->next;
+		free(token->str);
+		free(token);
+		token = tmp;
+	}
+	token = NULL;
+}
+
+void	free_shell(t_shell *shell)
+{
+	free_tokens(shell->tokens);
+	if (shell->envp_cp)
+		free_2d_array(shell->envp_cp);
 }

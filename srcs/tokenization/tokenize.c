@@ -60,8 +60,8 @@ t_token	*add_token(t_token *cur, t_token_type type, char *start, int len)
 // 入力をトークンに分割
 int	tokenize(char *line, t_token **tokens)
 {
-	t_token	head;
-	t_token	*cur;
+	t_token head;
+	t_token *cur;
 	char	*p;
 	char	*start;
 	char	quote;
