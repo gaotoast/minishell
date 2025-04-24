@@ -48,7 +48,7 @@ char	*resolve_cmd_path(char *cmd, char *path_env)
 	if (!filepath)
 	{
 		free(path_tail);
-		free_2d_array((void **)path_list);
+		free_2d_array(path_list);
 		return (NULL);
 	}
 	return (filepath);
