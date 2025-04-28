@@ -35,7 +35,16 @@ int	main(int argc, char **argv, char **envp)
 		}
 		// TODO: debugあとで消す
 		debug_tokenizer(shell->tokens);
-		/* TODO: 入力行を解析 */
+        shell->status = parse(shell->tokens, &shell->ast);
+        if (shell->status < 0)
+        {
+            free(input);
+            free_shell(shell);
+            exit(EXIT_FAILURE);
+        }
+        free_tokens(shell->tokens);
+        // TODO: debugあとで消す
+        debug_parser(shell->ast);
 		// execute(tokens, envp);
 		free(input);
 	}

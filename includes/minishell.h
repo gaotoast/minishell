@@ -12,6 +12,7 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
+// 字句解析
 typedef enum e_token_type
 {
 	TK_RESERVED,
@@ -26,12 +27,47 @@ typedef struct s_token
 	struct s_token	*next;
 }					t_token;
 
+// 構文解析
+typedef enum e_node_kind
+{
+	ND_PIPE,
+	ND_CMD,
+}					t_node_kind;
+
+typedef enum s_redir_kind
+{
+	REDIR_IN,
+	REDIR_OUT,
+	REDIR_APPEND,
+	REDIR_HEREDOC
+}					t_redir_kind;
+
+typedef struct s_redir
+{
+	t_redir_kind	kind;
+	char			*filename;
+}					t_redir;
+
+typedef struct s_node
+{
+	t_node_kind		kind;
+	char			*value;
+	struct s_node	*left;
+	struct s_node	*right;
+	char			**argv;
+	int				argc;
+	t_redir			**redirs;
+	int				redir_count;
+}					t_node;
+
+// minishell全体
 typedef struct s_shell
 {
 	int				status;
 	// int				last_status;
 	char			**envp_cp;
 	t_token			*tokens;
+	t_node			*ast;
 }					t_shell;
 
 // init
@@ -55,10 +91,17 @@ char				*resolve_cmd_path(char *cmd, char *path_env);
 // tokenization
 // tokenize.c
 int					tokenize(char *line, t_token **tokens);
+int					is_single_metachar(char *p);
+int					is_two_metachar(char *p);
+
+// parsing
+// parse.c
+int					parse(t_token *tokens, t_node **ast);
 
 // expansion
 // expand.c
 int					expand_tokens(t_token *tokens, char **envp);
+char				*append_string_free(char *dst, char *src);
 
 // utils
 // ft_getenv.c
@@ -74,5 +117,6 @@ void				free_shell(t_shell *shell);
 // debug_tokenize.c
 void				print_tokens(t_token *token);
 void				debug_tokenizer(t_token *tokens);
+void				debug_parser(t_node *ast);
 
 #endif
