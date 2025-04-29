@@ -6,11 +6,30 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:29:37 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/04/19 01:20:29 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/04/29 17:18:21 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	*get_cwd(void)
+{
+	char	*rtn;
+
+	rtn = (char *)malloc(sizeof(char) * PATH_MAX);
+	if (!rtn)
+	{
+		perror("minishell");
+		return (NULL);
+	}
+	if (!getcwd(rtn, PATH_MAX))
+	{
+		perror("minishell");
+		free(rtn);
+		return (NULL);
+	}
+	return (rtn);
+}
 
 char	*get_pwd(char **envp)
 {
@@ -23,7 +42,7 @@ char	*get_pwd(char **envp)
 			return (envp[i]);
 		++i;
 	}
-	return (NULL);
+	return (get_cwd());
 }
 
 int	is_pwd_error(int argc, char **argv)
@@ -58,3 +77,8 @@ int	pwd(int argc, char **argv, char **envp)
 	printf("%s\n", bufs + 4);
 	return (EXIT_SUCCESS);
 }
+
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	pwd(argc, argv, envp);
+// }
