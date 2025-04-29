@@ -19,9 +19,8 @@ void	debug_tokenizer(t_token *tokens)
 {
     if (!tokens)
     {
-        ft_dprintf(STDERR_FILENO, "minishell: no tokens\n");
+        ft_dprintf(STDERR_FILENO, "debug_tokenizer: no tokens\n");
         return ;
     }
     print_tokens(tokens);
-    free_tokens(tokens);
 }

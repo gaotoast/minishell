@@ -3,14 +3,14 @@
 int	main(int argc, char **argv, char **envp)
 {
 	char	*input;
-    t_token    *tokens;
+	t_shell	*shell;
 
 	// TODO: (void)あとで消す(かも)
 	(void)argc;
 	(void)argv;
-    (void)envp;
 	input = NULL;
-	tokens = NULL;
+	if (init(&shell, envp) < 0)
+		exit(EXIT_FAILURE);
 	while (1)
 	{
 		input = readline("minishell$ ");
@@ -18,17 +18,27 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		if (*input)
 			add_history(input);
-        tokens = tokenize(input);
-        if (!tokens)
-        {
-            free(input);
-            exit(EXIT_FAILURE);
-        }
-        /* TODO: 入力行を解析 */
-        // TODO: debugあとで消す
-        debug_tokenizer(tokens);
+		// TODO: exitするかどうか & ステータスの管理
+		shell->status = tokenize(input, &shell->tokens);
+		if (shell->status < 0)
+		{
+			free(input);
+			free_shell(shell);
+			exit(EXIT_FAILURE);
+		}
+		shell->status = expand_tokens(shell->tokens, shell->envp_cp);
+		if (shell->status < 0)
+		{
+			free(input);
+			free_shell(shell);
+			exit(EXIT_FAILURE);
+		}
+		// TODO: debugあとで消す
+		debug_tokenizer(shell->tokens);
+		/* TODO: 入力行を解析 */
 		// execute(tokens, envp);
 		free(input);
 	}
+	free_shell(shell);
 	exit(EXIT_SUCCESS);
 }

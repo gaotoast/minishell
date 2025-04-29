@@ -9,7 +9,7 @@ int	execute(char **cmds, char **envp)
 	if (pid < 0)
 	{
 		perror("minishell");
-		free_2d_array((void **)cmds);
+		free_2d_array(cmds);
 		exit(EXIT_FAILURE);
 	}
 	if (pid == 0)

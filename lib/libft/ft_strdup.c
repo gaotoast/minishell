@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 20:18:14 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/10 00:22:58 by stakada          ###   ########.fr       */
+/*   Updated: 2025/04/23 11:56:50 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@ char	*ft_strdup(const char *s)
 
 	new = (char *)malloc(sizeof(char) * (ft_strlen(s) + 1));
 	if (!new)
+	{
+		perror("minishell");
 		return (NULL);
+	}
 	i = 0;
 	while (s[i])
 	{
