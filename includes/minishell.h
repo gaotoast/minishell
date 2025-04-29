@@ -30,8 +30,8 @@ typedef struct s_token
 // 構文解析
 typedef enum e_node_kind
 {
-	ND_PIPE,
-	ND_CMD,
+	ND_PIPE, // "|"単体
+	ND_CMD,  // その他のコマンドとリダイレクト記号のまとまり
 }					t_node_kind;
 
 typedef enum s_redir_kind
@@ -45,17 +45,19 @@ typedef enum s_redir_kind
 typedef struct s_redir
 {
 	t_redir_kind	kind;
-	char			*filename;
+	char			*str;
 }					t_redir;
 
 typedef struct s_node
 {
 	t_node_kind		kind;
 	char			*value;
-	struct s_node	*left;
-	struct s_node	*right;
+	struct s_node	*lhs;
+	struct s_node	*rhs;
+	// コマンドとオプション、引数
 	char			**argv;
 	int				argc;
+	// リダイレクト
 	t_redir			**redirs;
 	int				redir_count;
 }					t_node;
@@ -106,11 +108,15 @@ char				*append_string_free(char *dst, char *src);
 // utils
 // ft_getenv.c
 char				*ft_getenv(char *name, char **envp);
+// xrealloc.c
+// void				*xrealloc(void *ptr, size_t old_size, size_t new_size);
 
 // free
 // free.c
 void				free_2d_array(char **array);
 void				free_tokens(t_token *token);
+void				free_redirs(t_redir **redirs);
+void				free_ast(t_node *ast);
 void				free_shell(t_shell *shell);
 
 // debug

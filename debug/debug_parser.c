@@ -1,60 +1,58 @@
 #include "minishell.h"
 #include <stdbool.h>
 
-void print_indent(int depth, bool is_last) {
-	for (int i = 0; i < depth - 1; i++) {
+void	print_indent(int depth, bool is_last)
+{
+	for (int i = 0; i < depth - 1; i++)
 		printf("│   ");
-	}
-	if (depth > 0) {
+	if (depth > 0)
 		printf(is_last ? "└── " : "├── ");
-	}
 }
 
-void print_redir(t_redir *redir, int depth) {
+void	print_redir(t_redir *redir, int depth)
+{
 	print_indent(depth, true);
 	printf("redir: ");
-	switch (redir->kind) {
-		case REDIR_IN:
-			printf("< ");
-			break;
-		case REDIR_OUT:
-			printf("> ");
-			break;
-		case REDIR_APPEND:
-			printf(">> ");
-			break;
-		case REDIR_HEREDOC:
-			printf("<< ");
-			break;
+	switch (redir->kind)
+	{
+	case REDIR_IN:
+		printf("< ");
+		break ;
+	case REDIR_OUT:
+		printf("> ");
+		break ;
+	case REDIR_APPEND:
+		printf(">> ");
+		break ;
+	case REDIR_HEREDOC:
+		printf("<< ");
+		break ;
 	}
-	printf("%s\n", redir->filename);
+	printf("%s\n", redir->str);
 }
 
-void print_ast(t_node *node, int depth) {
+void	print_ast(t_node *node, int depth)
+{
 	if (!node)
-		return;
-
-	if (node->kind == ND_PIPE) {
+		return ;
+	if (node->kind == ND_PIPE)
+	{
 		print_indent(depth, false);
 		printf("PIPE\n");
-
-		print_ast(node->left, depth + 1);
-		print_ast(node->right, depth + 1);
+		print_ast(node->lhs, depth + 1);
+		print_ast(node->rhs, depth + 1);
 	}
-	else if (node->kind == ND_CMD) {
+	else if (node->kind == ND_CMD)
+	{
 		print_indent(depth, false);
 		printf("CMD: ");
-		for (int i = 0; i < node->argc; i++) {
+		for (int i = 0; i < node->argc; i++)
 			printf("%s ", node->argv[i]);
-		}
 		printf("\n");
-
-		for (int i = 0; i < node->redir_count; i++) {
+		for (int i = 0; i < node->redir_count; i++)
 			print_redir(node->redirs[i], depth + 1);
-		}
 	}
 }
-
 
 void	debug_parser(t_node *ast)
 {
@@ -63,6 +61,6 @@ void	debug_parser(t_node *ast)
 		printf("AST is NULL\n");
 		return ;
 	}
-
+	printf("===AST===\n");
 	print_ast(ast, 0);
 }

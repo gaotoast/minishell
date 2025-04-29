@@ -42,7 +42,6 @@ int	main(int argc, char **argv, char **envp)
             free_shell(shell);
             exit(EXIT_FAILURE);
         }
-        free_tokens(shell->tokens);
         // TODO: debugあとで消す
         debug_parser(shell->ast);
 		// execute(tokens, envp);

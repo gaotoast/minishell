@@ -19,8 +19,9 @@ void	debug_tokenizer(t_token *tokens)
 {
     if (!tokens)
     {
-        ft_dprintf(STDERR_FILENO, "debug_tokenizer: no tokens\n");
+        printf("No tokens.\n");
         return ;
     }
+    printf("===TOKENS===\n");
     print_tokens(tokens);
 }
