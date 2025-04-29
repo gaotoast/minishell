@@ -6,11 +6,11 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 02:47:53 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/04/29 03:22:02 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/04/29 23:14:59 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+// #include "minishell.h"
 
 /**
  * １つの環境変数を
@@ -43,10 +43,10 @@ int	print_envs(char **envp, int len)
 
 	i = 0;
 	// ascii順にソート
-	while (i < len)
+	while (i < len - 1)
 	{
 		j = i + 1;
-		while (j < len - 1)
+		while (j < len)
 		{
 			if (ft_strncmp(envp[i], envp[j], ft_strlen(envp[i])) > 0)
 			{
@@ -64,19 +64,19 @@ int	print_envs(char **envp, int len)
 	return (0);
 }
 
-int	add_bottom_env(char *str, char ***envp, int len)
+int	add_bottom_env(char *str, char ***envp, int *len)
 {
 	char	**rtn;
 	int		i;
 
-	rtn = (char **)malloc(sizeof(char *) * (len + 2));
+	rtn = (char **)malloc(sizeof(char *) * (*len + 2));
 	if (!rtn)
 	{
 		perror("minishell");
 		return (2);
 	}
 	i = 0;
-	while (i < len)
+	while (i < *len)
 	{
 		rtn[i] = (*envp)[i];
 		++i;
@@ -85,6 +85,7 @@ int	add_bottom_env(char *str, char ***envp, int len)
 	rtn[i + 1] = NULL;
 	free(*envp);
 	*envp = rtn;
+	++len;
 	return (0);
 }
 
@@ -108,7 +109,7 @@ int	get_eq_idx(char *str)
 	int	i;
 
 	i = 0;
-	if (!isalpha(str[0]) || str[0] != '_')
+	if (!ft_isalpha(str[0]) && str[0] != '_')
 		return (-1);
 	while (str[i] != '=')
 	{
@@ -120,7 +121,7 @@ int	get_eq_idx(char *str)
 	return (i);
 }
 
-int	set_input(char *str, char ***envp, int len)
+int	set_input(char *str, char ***envp, int &len)
 {
 	int	i;
 	int	j;
@@ -130,15 +131,14 @@ int	set_input(char *str, char ***envp, int len)
 	j = 0;
 	if (i == -1)
 		return (1);
-	write(1, str, i + 1);
-	while (j < len)
+	while (j < *len)
 	{
 		if (ft_strncmp((*envp)[j], str, i + 1))
 			++j;
 		else
 			break ;
 	}
-	if (j != len)
+	if (j != *len)
 		return (overwrite_env(str, envp, j));
 	else
 		return (add_bottom_env(str, envp, len));
@@ -146,22 +146,22 @@ int	set_input(char *str, char ***envp, int len)
 
 int	export(int argc, char **argv, char ***envp)
 {
-	int	len;
+	int	env_len;
 	int	i;
 	int	rtn;
 	int	error;
 
-	len = 0;
-	while ((*envp)[len])
-		++len;
+	env_len = 0;
+	while ((*envp)[env_len])
+		++env_len;
 	if (argc == 1)
-		return (print_envs(*envp, len));
+		return (print_envs(*envp, env_len));
 	i = 1;
 	rtn = 0;
 	error = 0;
 	while (i < argc && argv[i])
 	{
-		rtn = set_input(argv[i], envp, len);
+		rtn = set_input(argv[i], envp, &env_len);
 		if (rtn == 2)
 			return (EXIT_FAILURE);
 		else if (rtn == 1)
@@ -200,9 +200,12 @@ int	export(int argc, char **argv, char ***envp)
 
 // int main(int argc, char **argv, char **envp)
 // {
-// 	char	**cenv = copy_env(envp);
+// 	int i = 0;
+// 	while (argc && argv && envp[i])
+// 		printf("%s\n", envp[i++]);
+// 	//char	**cenv = copy_env(envp);
 // 	// while (*cenv)
 // 	// 	printf("%s\n", *cenv++);
-// 	export(argc, argv, &cenv);
-// 	export(1, argv, &cenv);
+// 	//export(argc, argv, &cenv);
+// 	// export(1, argv, &cenv);
 // }
