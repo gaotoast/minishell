@@ -45,7 +45,12 @@ int	main(int argc, char **argv, char **envp)
         // TODO: debugあとで消す
         debug_parser(shell->ast);
 		// execute(tokens, envp);
+		// 毎ループ更新されるためfree
 		free(input);
+		free_tokens(shell->tokens);
+		shell->tokens = NULL;
+		free_ast(shell->ast);
+		shell->ast = NULL;
 	}
 	free_shell(shell);
 	exit(EXIT_SUCCESS);

@@ -99,7 +99,15 @@ int					is_two_metachar(char *p);
 // parsing
 // parse.c
 int					parse(t_token *tokens, t_node **ast);
-
+// new_node.c
+t_node				*new_pipe_node(t_node *lhs, t_node *rhs);
+t_node				*new_command_node(void);
+// peek.c
+int					peek_word(t_token *token);
+int					peek_redir_op(t_token *token);
+// consume.c
+int					consume_word(t_token **rest, char **redir_str);
+int					consume_reserved(t_token **rest, char *op);
 // expansion
 // expand.c
 int					expand_tokens(t_token *tokens, char **envp);

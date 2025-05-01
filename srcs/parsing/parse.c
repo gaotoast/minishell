@@ -1,99 +1,7 @@
 #include "minishell.h"
 
-// トークンがTK_RESERVEDかつ指定された記号に一致するか確認して次のトークンに進める
-int	consume(t_token **rest, t_token *token, char *op)
-{
-	// TK_RESERVEDではない、または、opと異なっていればエラー
-	if (token->type != TK_RESERVED || ft_strncmp(token->str, op, ft_strlen(op)
-			+ 1) != 0)
-		return (0);
-	// トークンの残りを一つ消費
-	*rest = token->next;
-	return (1);
-}
-
-// トークンがTK_WORDかどうか確認
-int	peek_word(t_token *token)
-{
-	if (token->type == TK_WORD)
-		return (1);
-	return (0);
-}
-
-// トークンがリダイレクト演算子かどうか確認
-int	peek_redir_op(t_token *token)
-{
-	// トークンが予約語でなければエラー
-	if (token->type != TK_RESERVED)
-		return (0);
-	// トークンがリダイレクト記号かどうか
-	if (ft_strncmp(token->str, ">>", 3) == 0 || ft_strncmp(token->str, ">",
-			2) == 0 || ft_strncmp(token->str, "<<", 3) == 0
-		|| ft_strncmp(token->str, "<", 2) == 0)
-		return (1);
-	return (0);
-}
-
-// トークンがTK_WORDかどうか確認して文字列を返し次のトークンに進める
-int	expect_word(t_token **rest, t_token *cur, char **str)
-{
-	// トークンがTK_WORDでなければエラー
-	if (!peek_word(cur))
-	{
-		if (cur->type == TK_EOF)
-			ft_dprintf(STDERR_FILENO,
-				"minishell: syntax error near unexpected token `newline'\n");
-		else
-			ft_dprintf(STDERR_FILENO,
-				"minishell: syntax error near unexpected token `%s'\n",
-				cur->str);
-		(*str) = NULL;
-		return (0);
-	}
-	// トークンの残りを一つ消費
-	*rest = cur->next;
-	// トークンの文字列をコピー
-	(*str) = ft_strdup(cur->str);
-	if (!(*str))
-	{
-		(*str) = NULL;
-		return (0);
-	}
-	return (1);
-}
-
-// 新しいパイプノードを作成して左右のノードを接続
-t_node	*new_pipe_node(t_node *lhs, t_node *rhs)
-{
-	t_node	*node;
-
-	node = ft_calloc(1, sizeof(t_node));
-	if (!node)
-		return (NULL);
-	node->kind = ND_PIPE;
-	node->lhs = lhs;
-	node->rhs = rhs;
-	return (node);
-}
-
-// 新しいコマンドノードを作成
-t_node	*new_command_node(void)
-{
-	t_node	*node;
-
-	node = ft_calloc(1, sizeof(t_node));
-	if (!node)
-		return (NULL);
-	node->kind = ND_CMD;
-	node->argv = NULL;
-	node->argc = 0;
-	node->redirs = NULL;
-	node->redir_count = 0;
-	return (node);
-}
-
 // トークンを解析してリダイレクトノードを生成
-t_redir	*parse_redir(t_token **rest, t_token *cur, int *stat)
+t_redir	*parse_redir(t_token **rest, int *stat)
 {
 	t_redir	*redir;
 
@@ -103,29 +11,26 @@ t_redir	*parse_redir(t_token **rest, t_token *cur, int *stat)
 		(*stat) = -1;
 		return (NULL);
 	}
-	if (consume(rest, cur, ">>"))
+	if (consume_reserved(rest, ">>"))
 		redir->kind = REDIR_APPEND;
-	else if (consume(rest, cur, ">"))
+	else if (consume_reserved(rest, ">"))
 		redir->kind = REDIR_OUT;
-	else if (consume(rest, cur, "<<"))
+	else if (consume_reserved(rest, "<<"))
 		redir->kind = REDIR_HEREDOC;
-	else if (consume(rest, cur, "<"))
+	else if (consume_reserved(rest, "<"))
 		redir->kind = REDIR_IN;
-	// リダイレクト記号以外ならエラー
 	else
 	{
 		ft_dprintf(STDERR_FILENO,
 					"minishell: syntax error near unexpected token \
 			`%s\n'",
-					cur->str);
+					(*rest)->str);
 		free(redir);
 		(*stat) = 1;
 		return (NULL);
 	}
-	// 判定するトークンをリダイレクト記号の次のトークンに進める
-	cur = *rest;
-	// リダイレクト記号の次がTK_WORD以外ならエラー
-	if (!expect_word(rest, cur, &redir->str))
+	(*stat) = consume_word(rest, &redir->str);
+	if (*stat != 0)
 	{
 		free(redir);
 		return (NULL);
@@ -134,13 +39,15 @@ t_redir	*parse_redir(t_token **rest, t_token *cur, int *stat)
 }
 
 // トークンを解析してコマンドノード（パイプ以外の部分をまとめたノード）を生成
-t_node	*parse_command(t_token **rest, t_token *cur, int *stat)
+t_node	*parse_command(t_token **rest, int *stat)
 {
+	t_token	*cur;
 	t_node	*node;
 	char	**argv_tmp;
 	t_redir	**redirs_tmp;
 	int		i;
 
+	cur = *rest;
 	node = new_command_node();
 	if (!node)
 	{
@@ -155,7 +62,7 @@ t_node	*parse_command(t_token **rest, t_token *cur, int *stat)
 		if (!argv_tmp)
 		{
 			perror("minishell");
-			free(node);
+			free_ast(node);
 			(*stat) = -1;
 			return (NULL);
 		}
@@ -187,7 +94,7 @@ t_node	*parse_command(t_token **rest, t_token *cur, int *stat)
 		if (!redirs_tmp)
 		{
 			perror("minishell");
-			free(node);
+			free_ast(node);
 			(*stat) = -1;
 			return (NULL);
 		}
@@ -197,11 +104,11 @@ t_node	*parse_command(t_token **rest, t_token *cur, int *stat)
 			redirs_tmp[i] = node->redirs[i];
 			i++;
 		}
-		redirs_tmp[node->redir_count - 1] = parse_redir(&cur, cur, stat);
+		redirs_tmp[node->redir_count - 1] = parse_redir(&cur, stat);
 		if (!redirs_tmp[node->redir_count - 1])
 		{
 			free_ast(node);
-			free(redirs_tmp);
+			free_redirs(redirs_tmp);
 			return (NULL);
 		}
 		redirs_tmp[node->redir_count] = NULL;
@@ -213,7 +120,7 @@ t_node	*parse_command(t_token **rest, t_token *cur, int *stat)
 	{
 		ft_dprintf(STDERR_FILENO,
 			"minishell: syntax error near unexpected token `|'\n");
-		free(node);
+		free_ast(node);
 		(*stat) = 1;
 		return (NULL);
 	}
@@ -222,21 +129,24 @@ t_node	*parse_command(t_token **rest, t_token *cur, int *stat)
 }
 
 // / トークンを解析してASTを生成
-t_node	*parse_line(t_token **rest, t_token *cur, int *stat)
+t_node	*parse_line(t_token **rest, int *stat)
 {
 	t_node	*node;
 	t_node	*rhs;
 
 	// 最初のパイプまでを解析
-	node = parse_command(&cur, cur, stat);
+	node = parse_command(rest, stat);
 	if (!node)
 		return (NULL);
-	while (consume(&cur, cur, "|"))
+	while (consume_reserved(rest, "|"))
 	{
-		// 右側のコマンドを解析
-		rhs = parse_command(&cur, cur, stat);
+		// 右側のコマンドを（次のパイプまで）解析
+		rhs = parse_command(rest, stat);
 		if (!rhs)
+		{
+			free_ast(node);
 			return (NULL);
+		}
 		// パイプノードを作成し、それを根として左右のノードを接続
 		node = new_pipe_node(node, rhs);
 		if (!node)
@@ -245,7 +155,6 @@ t_node	*parse_line(t_token **rest, t_token *cur, int *stat)
 			return (NULL);
 		}
 	}
-	*rest = cur;
 	return (node);
 }
 
@@ -255,19 +164,10 @@ int	parse(t_token *tokens, t_node **ast)
 	t_token	*rest;
 	int		stat;
 
-	// トークンの残り（引数のtokensをfreeできるように別変数で管理）
-	stat = 0;
-	// トークンがTK_EOFなら何もしない
 	if (tokens->type == TK_EOF)
 		return (0);
-	// トークンの先頭をrestに設定
+	stat = 0;
 	rest = tokens;
-	// トークンを解析してASTを生成
-	(*ast) = parse_line(&rest, rest, &stat);
-	if (stat < 0)
-		return (stat);
-	// 残りのトークンがEOFでない場合はエラー
-	if (rest->type != TK_EOF)
-		stat = 1;
+	(*ast) = parse_line(&rest, &stat);
 	return (stat);
 }

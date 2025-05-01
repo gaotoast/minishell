@@ -28,7 +28,6 @@ void	free_tokens(t_token *token)
 		free(token);
 		token = tmp;
 	}
-	token = NULL;
 }
 
 void	free_redirs(t_redir **redirs)
