@@ -56,11 +56,12 @@ void	print_ast(t_node *node, int depth)
 
 void	debug_parser(t_node *ast)
 {
+    printf("===AST===\n");
 	if (!ast)
 	{
 		printf("AST is NULL\n");
 		return ;
 	}
-	printf("===AST===\n");
 	print_ast(ast, 0);
+    printf("===AST END===\n");
 }
