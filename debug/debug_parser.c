@@ -1,5 +1,4 @@
 #include "minishell.h"
-#include <stdbool.h>
 
 void	print_indent(int depth, bool is_last)
 {
