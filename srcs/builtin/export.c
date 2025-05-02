@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 02:47:53 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/02 21:29:46 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/02 21:49:03 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ int	export(int argc, char **argv, char ***envp)
 			return (EXIT_FAILURE);
 		else if (rtn == 1)
 		{
-			write(STDERR_FILENO, "bash: export: `", 15);
+			write(STDERR_FILENO, "minishell: export: `", 15);
 			write(STDERR_FILENO, argv[i], strlen(argv[i]));
 			write(STDERR_FILENO, "' :not a valid identifier\n", 26);
 			error = 1;
