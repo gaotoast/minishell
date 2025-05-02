@@ -6,11 +6,11 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 02:47:53 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/04/29 23:14:59 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/02 21:29:46 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "minishell.h"
+#include "minishell.h"
 
 /**
  * １つの環境変数を
@@ -21,6 +21,8 @@ void	print_env(char *env)
 {
 	int	i;
 
+	if (ft_strncmp(env, "_=", 2) == 0)
+		return ;
 	write(STDOUT_FILENO, "declare -x ", 11);
 	i = 0;
 	while (env[i] && env[i] != '=')
@@ -85,7 +87,7 @@ int	add_bottom_env(char *str, char ***envp, int *len)
 	rtn[i + 1] = NULL;
 	free(*envp);
 	*envp = rtn;
-	++len;
+	++(*len);
 	return (0);
 }
 
@@ -113,7 +115,7 @@ int	get_eq_idx(char *str)
 		return (-1);
 	while (str[i] != '=')
 	{
-		if (isalnum(str[i]) || str[i] == '_')
+		if (ft_isalnum(str[i]) || str[i] == '_')
 			++i;
 		else
 			return (-1);
@@ -121,7 +123,7 @@ int	get_eq_idx(char *str)
 	return (i);
 }
 
-int	set_input(char *str, char ***envp, int &len)
+int	set_input(char *str, char ***envp, int *len)
 {
 	int	i;
 	int	j;
@@ -200,12 +202,12 @@ int	export(int argc, char **argv, char ***envp)
 
 // int main(int argc, char **argv, char **envp)
 // {
-// 	int i = 0;
-// 	while (argc && argv && envp[i])
-// 		printf("%s\n", envp[i++]);
-// 	//char	**cenv = copy_env(envp);
+// 	// int i = 0;
+// 	// while (argc && argv && envp[i])
+// 	// 	printf("%s\n", envp[i++]);
+// 	char	**cenv = copy_env(envp);
 // 	// while (*cenv)
 // 	// 	printf("%s\n", *cenv++);
-// 	//export(argc, argv, &cenv);
+// 	export(argc, argv, &cenv);
 // 	// export(1, argv, &cenv);
 // }
