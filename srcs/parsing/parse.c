@@ -154,6 +154,8 @@ t_node	*parse_line(t_token **rest, int *stat)
 			(*stat) = -1;
 			return (NULL);
 		}
+		// if (node->lhs)
+		// 	node->lhs->next_cmd = node->rhs;
 	}
 	return (node);
 }

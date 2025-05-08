@@ -53,6 +53,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		// TODO: debugあとで消す
 		debug_expand(shell->ast);
+		debug_cmd_ptr(shell->ast);
 		// execute(tokens, envp);
 		// 毎ループ更新されるためfree
 		free(input);

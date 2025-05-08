@@ -56,6 +56,7 @@ typedef struct s_node
 	char			*value;
 	struct s_node	*lhs;
 	struct s_node	*rhs;
+	struct s_node	*next_cmd;
 	// コマンドとオプション、引数
 	char			**argv;
 	int				argc;
@@ -82,7 +83,7 @@ int					init(t_shell **shell, char **envp);
 // child_exec.c
 void				exec_if_relative_path(char **cmds, char **envp);
 void				exec_if_absolute_path(char **cmds, char **envp);
-void				execute_in_child(char **cmds, char **envp);
+void				exec_cmd(char **cmds, char **envp);
 
 // execute.c
 int					execute(char **cmds, char **envp);
@@ -138,5 +139,6 @@ void				print_redir(t_redir *redir, int depth);
 void				print_ast(t_node *node, int depth);
 void				debug_parser(t_node *ast);
 void				debug_expand(t_node *ast);
+void				debug_cmd_ptr(t_node *root);
 
 #endif

@@ -38,7 +38,7 @@ void	exec_if_absolute_path(char **cmds, char **envp)
 }
 
 // 子プロセス内でのコマンド実行
-void	execute_in_child(char **cmds, char **envp)
+void	exec_cmd(char **cmds, char **envp)
 {
 	char	*path_env;
 	char	*cmd_path;
