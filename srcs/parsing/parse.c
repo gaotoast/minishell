@@ -76,7 +76,7 @@ t_node	*parse_command(t_token **rest, int *stat)
 		if (!argv_tmp[node->argc - 1])
 		{
 			free_ast(node);
-			free_2d_array(argv_tmp);
+			free(argv_tmp);
 			(*stat) = -1;
 			return (NULL);
 		}
@@ -108,7 +108,7 @@ t_node	*parse_command(t_token **rest, int *stat)
 		if (!redirs_tmp[node->redir_count - 1])
 		{
 			free_ast(node);
-			free_redirs(redirs_tmp);
+			free(redirs_tmp);
 			return (NULL);
 		}
 		redirs_tmp[node->redir_count] = NULL;
