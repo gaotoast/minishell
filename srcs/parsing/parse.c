@@ -55,65 +55,70 @@ t_node	*parse_command(t_token **rest, int *stat)
 		return (NULL);
 	}
 	// TK_WORDがある間、argvに追加
-	while (peek_word(cur))
+	while (cur)
 	{
-		node->argc++;
-		argv_tmp = (char **)malloc(sizeof(char *) * (node->argc + 1));
-		if (!argv_tmp)
+		if (peek_word(cur))
 		{
-			perror("minishell");
-			free_ast(node);
-			(*stat) = -1;
-			return (NULL);
+			node->argc++;
+			argv_tmp = (char **)malloc(sizeof(char *) * (node->argc + 1));
+			if (!argv_tmp)
+			{
+				perror("minishell");
+				free_ast(node);
+				(*stat) = -1;
+				return (NULL);
+			}
+			i = 0;
+			while (i < node->argc - 1)
+			{
+				argv_tmp[i] = node->argv[i];
+				i++;
+			}
+			argv_tmp[node->argc - 1] = ft_strdup(cur->str);
+			if (!argv_tmp[node->argc - 1])
+			{
+				free_ast(node);
+				free(argv_tmp);
+				(*stat) = -1;
+				return (NULL);
+			}
+			argv_tmp[node->argc] = NULL;
+			free(node->argv);
+			node->argv = argv_tmp;
+			cur = cur->next;
 		}
-		i = 0;
-		while (i < node->argc - 1)
+		// リダイレクト演算子がある間、リダイレクト記号と次のTK_WORD（ファイル名かheredocのデリミタ）をredirsに追加
+		else if (peek_redir_op(cur))
 		{
-			argv_tmp[i] = node->argv[i];
-			i++;
+			node->redir_count++;
+			redirs_tmp = (t_redir **)malloc(sizeof(t_redir *)
+					* (node->redir_count + 1));
+			if (!redirs_tmp)
+			{
+				perror("minishell");
+				free_ast(node);
+				(*stat) = -1;
+				return (NULL);
+			}
+			i = 0;
+			while (i < node->redir_count - 1)
+			{
+				redirs_tmp[i] = node->redirs[i];
+				i++;
+			}
+			redirs_tmp[node->redir_count - 1] = parse_redir(&cur, stat);
+			if (!redirs_tmp[node->redir_count - 1])
+			{
+				free_ast(node);
+				free(redirs_tmp);
+				return (NULL);
+			}
+			redirs_tmp[node->redir_count] = NULL;
+			free(node->redirs);
+			node->redirs = redirs_tmp;
 		}
-		argv_tmp[node->argc - 1] = ft_strdup(cur->str);
-		if (!argv_tmp[node->argc - 1])
-		{
-			free_ast(node);
-			free(argv_tmp);
-			(*stat) = -1;
-			return (NULL);
-		}
-		argv_tmp[node->argc] = NULL;
-		free(node->argv);
-		node->argv = argv_tmp;
-		cur = cur->next;
-	}
-	// リダイレクト演算子がある間、リダイレクト記号と次のTK_WORD（ファイル名かheredocのデリミタ）をredirsに追加
-	while (peek_redir_op(cur))
-	{
-		node->redir_count++;
-		redirs_tmp = (t_redir **)malloc(sizeof(t_redir *) * (node->redir_count
-					+ 1));
-		if (!redirs_tmp)
-		{
-			perror("minishell");
-			free_ast(node);
-			(*stat) = -1;
-			return (NULL);
-		}
-		i = 0;
-		while (i < node->redir_count - 1)
-		{
-			redirs_tmp[i] = node->redirs[i];
-			i++;
-		}
-		redirs_tmp[node->redir_count - 1] = parse_redir(&cur, stat);
-		if (!redirs_tmp[node->redir_count - 1])
-		{
-			free_ast(node);
-			free(redirs_tmp);
-			return (NULL);
-		}
-		redirs_tmp[node->redir_count] = NULL;
-		free(node->redirs);
-		node->redirs = redirs_tmp;
+		else
+			break ;
 	}
 	// コマンドが空でリダイレクトもない場合はエラー
 	if (node->argc == 0 && node->redir_count == 0)
