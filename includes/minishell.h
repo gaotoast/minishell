@@ -17,6 +17,8 @@
 // debug用
 # include <stdbool.h>
 
+# define TMP "heredoc_tmp_"
+
 // 字句解析
 typedef enum e_token_type
 {
@@ -59,7 +61,6 @@ typedef struct s_node
 	char			*value;
 	struct s_node	*lhs;
 	struct s_node	*rhs;
-	// struct s_node	*next_cmd;
 	// コマンドとオプション、引数
 	char			**argv;
 	int				argc;
@@ -67,6 +68,14 @@ typedef struct s_node
 	t_redir			**redirs;
 	int				redir_count;
 }					t_node;
+
+// 実行部分
+typedef struct s_exec
+{
+	int				child_count;
+	int				child_pids[128];
+	int				builtin_status;
+}					t_exec;
 
 // minishell全体
 typedef struct s_shell
@@ -79,54 +88,41 @@ typedef struct s_shell
 }					t_shell;
 
 // init
-// init.c
 int					init(t_shell **shell, char **envp);
 
 // execution
-// child_exec.c
 void				exec_if_relative_path(char **cmds, char **envp);
 void				exec_if_absolute_path(char **cmds, char **envp);
 void				exec_cmd(char **cmds, char **envp);
-
-// execute.c
-int					execute(char **cmds, char **envp);
-
-// find_path.c
+int					exec_builtin(t_node *node, char **envp);
+int					execute(t_node *root, char **envp);
 char				*search_path(char *cmd_name, char **path_list,
 						char *path_tail);
 char				*resolve_cmd_path(char *cmd, char *path_env);
+int					apply_redirs(t_node *node);
+int					handle_heredoc(t_redir *redir, int index);
 
 // tokenization
-// tokenize.c
 int					tokenize(char *line, t_token **tokens);
 int					is_single_metachar(char *p);
 int					is_two_metachar(char *p);
 
 // parsing
-// parse.c
 int					parse(t_token *tokens, t_node **ast);
-// new_node.c
 t_node				*new_pipe_node(t_node *lhs, t_node *rhs);
 t_node				*new_command_node(void);
-// peek.c
 int					peek_word(t_token *token);
 int					peek_redir_op(t_token *token);
-// consume.c
 int					consume_word(t_token **rest, char **redir_str);
 int					consume_reserved(t_token **rest, char *op);
+
 // expansion
-// expand.c
 int					expand(t_node *node, char **envp);
 char				*append_string_free(char *dst, char *src);
 
 // utils
-// ft_getenv.c
 char				*ft_getenv(char *name, char **envp);
-// xrealloc.c
-// void				*xrealloc(void *ptr, size_t old_size, size_t new_size);
-
 // free
-// free.c
 void				free_2d_array(char **array);
 void				free_tokens(t_token *token);
 void				free_redirs(t_redir **redirs);
@@ -134,7 +130,6 @@ void				free_ast(t_node *ast);
 void				free_shell(t_shell *shell);
 
 // debug
-// debug_tokenize.c
 void				print_tokens(t_token *token);
 void				debug_tokenizer(t_token *tokens);
 void				print_indent(int depth, bool is_last);
@@ -142,6 +137,5 @@ void				print_redir(t_redir *redir, int depth);
 void				print_ast(t_node *node, int depth);
 void				debug_parser(t_node *ast);
 void				debug_expand(t_node *ast);
-void				debug_cmd_ptr(t_node *root);
 
 #endif
