@@ -4,10 +4,13 @@
 # include "ft_printf.h"
 # include "get_next_line.h"
 # include "libft.h"
+# include <fcntl.h>
+# include <linux/limits.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
@@ -56,7 +59,7 @@ typedef struct s_node
 	char			*value;
 	struct s_node	*lhs;
 	struct s_node	*rhs;
-	struct s_node	*next_cmd;
+	// struct s_node	*next_cmd;
 	// コマンドとオプション、引数
 	char			**argv;
 	int				argc;

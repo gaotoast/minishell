@@ -15,7 +15,7 @@ t_node	*new_pipe_node(t_node *lhs, t_node *rhs)
 	node->kind = ND_PIPE;
 	node->lhs = lhs;
 	node->rhs = rhs;
-	node->next_cmd = NULL;
+	// node->next_cmd = NULL;
 	node->argv = NULL;
 	node->argc = 0;
 	node->redirs = NULL;
@@ -34,7 +34,7 @@ t_node	*new_command_node(void)
 	node->kind = ND_CMD;
 	node->lhs = NULL;
 	node->rhs = NULL;
-	node->next_cmd = NULL;
+	// node->next_cmd = NULL;
 	node->argv = NULL;
 	node->argc = 0;
 	node->redirs = NULL;
