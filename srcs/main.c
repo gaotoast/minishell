@@ -26,8 +26,6 @@ int	main(int argc, char **argv, char **envp)
 			free_shell(shell);
 			exit(EXIT_FAILURE);
 		}
-		// TODO: debugあとで消す
-		debug_tokenizer(shell->tokens);
         shell->status = parse(shell->tokens, &shell->ast);
         if (shell->status < 0)
         {
@@ -42,8 +40,6 @@ int	main(int argc, char **argv, char **envp)
 			free_shell(shell);
 			exit(EXIT_FAILURE);
 		}
-		// TODO: debugあとで消す
-		debug_expand(shell->ast);
 		execute(shell->ast, envp);
 		// 毎ループ更新されるためfree
 		free(input);

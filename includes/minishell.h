@@ -4,6 +4,7 @@
 # include "ft_printf.h"
 # include "get_next_line.h"
 # include "libft.h"
+# include <errno.h>
 # include <fcntl.h>
 # include <linux/limits.h>
 # include <readline/history.h>
@@ -17,7 +18,8 @@
 // debug用
 # include <stdbool.h>
 
-# define TMP "heredoc_tmp_"
+// TODO: 頭に"./tmp"をつける
+# define HEREDOC_TMP "heredoc_tmp_"
 
 // 字句解析
 typedef enum e_token_type
@@ -94,13 +96,21 @@ int					init(t_shell **shell, char **envp);
 void				exec_if_relative_path(char **cmds, char **envp);
 void				exec_if_absolute_path(char **cmds, char **envp);
 void				exec_cmd(char **cmds, char **envp);
-int					exec_builtin(t_node *node, char **envp);
+int					exec_builtin_cmd(t_node *node, char **envp);
+int					pipe_exec_builtin(t_node *node, t_exec *ctx, char **envp,
+						int *status);
+void				pipe_exec_cmd(t_node *node, char **envp, int in_fd,
+						int out_fd);
 int					execute(t_node *root, char **envp);
+void				execute_segment(t_node *node, t_exec *ctx, char **envp,
+						int in_fd, int out_fd);
 char				*search_path(char *cmd_name, char **path_list,
-						char *path_tail);
-char				*resolve_cmd_path(char *cmd, char *path_env);
+						char *path_tail, int *status);
+char				*resolve_cmd_path(char *cmd, char *path_env, int *status);
 int					apply_redirs(t_node *node);
 int					handle_heredoc(t_redir *redir, int index);
+int					is_builtin(char *cmd);
+void				close_fds(int in_fd, int out_fd);
 
 // tokenization
 int					tokenize(char *line, t_token **tokens);
