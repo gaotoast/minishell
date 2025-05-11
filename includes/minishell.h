@@ -21,7 +21,7 @@
 // TODO: 頭に"./tmp"をつける
 # define HEREDOC_TMP "heredoc_tmp_"
 
-// exitステータス管理用
+// exitステータス操作
 typedef enum e_st_op
 {
 	ST_GET,
@@ -78,12 +78,11 @@ typedef struct s_node
 	int				redir_count;
 }					t_node;
 
-// 実行部分
+// 実行部分の子プロセス管理
 typedef struct s_exec
 {
 	int				child_count;
 	int				child_pids[128];
-	int				builtin_status;
 }					t_exec;
 
 // minishell全体
@@ -102,8 +101,8 @@ void				exec_if_relative_path(char **cmds, char **envp);
 void				exec_if_absolute_path(char **cmds, char **envp);
 void				exec_cmd(char **cmds, char **envp);
 int					exec_builtin_cmd(t_node *node, char **envp);
-int					pipe_exec_builtin(t_node *node, t_exec *ctx, char **envp);
-void				pipe_exec_cmd(t_node *node, char **envp, int in_fd,
+void				process_builtin_direct(t_node *node, char **envp);
+void				process_exec_cmd(t_node *node, char **envp, int in_fd,
 						int out_fd);
 void				execute(t_node *root, char **envp);
 void				execute_segment(t_node *node, t_exec *ctx, char **envp,
@@ -112,14 +111,19 @@ char				*search_path(char *cmd_name, char **path_list,
 						char *path_tail, int *status);
 char				*resolve_cmd_path(char *cmd, char *path_env, int *status);
 int					apply_redirs(t_node *node);
-int					handle_heredoc(t_redir *redir, int index);
+int					get_heredoc_fd(t_redir *redir, int index);
 int					is_builtin(char *cmd);
 void				close_fds(int in_fd, int out_fd);
+void				wait_children(t_exec ctx);
 
 // tokenization
 void				tokenize(char *line, t_token **tokens);
 int					is_single_metachar(char *p);
 int					is_two_metachar(char *p);
+int					is_single_metachar(char *p);
+int					is_two_metachar(char *p);
+int					is_quote(char *p);
+int					is_space(char c);
 
 // parsing
 void				parse(t_token *tokens, t_node **ast);
@@ -137,7 +141,7 @@ char				*append_char_free(char *dst, char c);
 
 // utils
 char				*ft_getenv(char *name, char **envp);
-int					sh_stat(int val, t_st_op op);
+int					sh_stat(t_st_op op, int val);
 char				*ft_strndup(char *s, int len);
 // free
 void				free_2d_array(char **array);

@@ -23,9 +23,11 @@ t_redir	*parse_redir(t_token **rest)
 			`%s\n'",
 					(*rest)->str);
 		free(redir);
+        sh_stat(ST_SET, 2);
 		return (NULL);
 	}
-	if (consume_word(rest, &redir->str) != 0)
+	sh_stat(ST_SET, consume_word(rest, &redir->str));
+    if (sh_stat(ST_GET, 0) == 1)
 	{
 		free(redir);
 		return (NULL);
@@ -46,6 +48,7 @@ t_node	*parse_command(t_token **rest)
 	node = new_command_node();
 	if (!node)
 	{
+		sh_stat(ST_SET, 1);
 		return (NULL);
 	}
 	// TK_WORDがある間、argvに追加
@@ -59,6 +62,7 @@ t_node	*parse_command(t_token **rest)
 			{
 				perror("minishell");
 				free_ast(node);
+				sh_stat(ST_SET, 1);
 				return (NULL);
 			}
 			i = 0;
@@ -72,7 +76,7 @@ t_node	*parse_command(t_token **rest)
 			{
 				free_ast(node);
 				free(argv_tmp);
-				sh_stat(1, ST_SET);
+				sh_stat(ST_SET, 1);
 				return (NULL);
 			}
 			argv_tmp[node->argc] = NULL;
@@ -90,7 +94,7 @@ t_node	*parse_command(t_token **rest)
 			{
 				perror("minishell");
 				free_ast(node);
-				sh_stat(1, ST_SET);
+				sh_stat(ST_SET, 1);
 				return (NULL);
 			}
 			i = 0;
@@ -104,7 +108,6 @@ t_node	*parse_command(t_token **rest)
 			{
 				free_ast(node);
 				free(redirs_tmp);
-				sh_stat(1, ST_SET);
 				return (NULL);
 			}
 			redirs_tmp[node->redir_count] = NULL;
@@ -120,7 +123,7 @@ t_node	*parse_command(t_token **rest)
 		ft_dprintf(STDERR_FILENO,
 			"minishell: syntax error near unexpected token `|'\n");
 		free_ast(node);
-		sh_stat(1, ST_SET);
+		sh_stat(ST_SET, 2);
 		return (NULL);
 	}
 	*rest = cur;
@@ -150,11 +153,9 @@ t_node	*parse_line(t_token **rest)
 		node = new_pipe_node(node, rhs);
 		if (!node)
 		{
-			sh_stat(1, ST_SET);
+			sh_stat(ST_SET, 1);
 			return (NULL);
 		}
-		// if (node->lhs)
-		// 	node->lhs->next_cmd = node->rhs;
 	}
 	return (node);
 }

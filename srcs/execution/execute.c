@@ -1,5 +1,6 @@
 #include "minishell.h"
 
+// パイプラインの実行
 void	exec_pipe(t_node *node, t_exec *ctx, char **envp, int in_fd, int out_fd)
 {
 	int	pipefd[2];
@@ -16,6 +17,7 @@ void	exec_pipe(t_node *node, t_exec *ctx, char **envp, int in_fd, int out_fd)
 	close(pipefd[0]);
 }
 
+// 木構造をたどりながら実行
 void	execute_segment(t_node *node, t_exec *ctx, char **envp, int in_fd,
 		int out_fd)
 {
@@ -38,41 +40,13 @@ void	execute_segment(t_node *node, t_exec *ctx, char **envp, int in_fd,
 			return ;
 		}
 		if (pid == 0)
-			pipe_exec_cmd(node, envp, in_fd, out_fd);
+			process_exec_cmd(node, envp, in_fd, out_fd);
 		ctx->child_pids[ctx->child_count++] = pid;
 		close_fds(in_fd, out_fd);
 	}
 }
 
-void	execute_pipeline(t_node *root, t_exec *ctx, char **envp)
-{
-	if (root->kind == ND_CMD && is_builtin(root->argv[0]))
-	{
-		pipe_exec_builtin(root, ctx, envp);
-		return ;
-	}
-	execute_segment(root, ctx, envp, STDIN_FILENO, STDOUT_FILENO);
-}
-
-void	wait_children(t_exec ctx)
-{
-	int	i;
-    int w_status;
-
-	i = 0;
-	while (i < ctx.child_count)
-	{
-		waitpid(ctx.child_pids[i], &w_status, 0);
-        if (WIFEXITED(w_status))
-            sh_stat(WEXITSTATUS(w_status), ST_SET);
-        else if (WIFSIGNALED(w_status))
-            sh_stat(128 + WTERMSIG(w_status), ST_SET);
-        else
-            sh_stat(1, ST_SET);
-		i++;
-	}
-}
-
+// 実行部メイン処理
 void	execute(t_node *root, char **envp)
 {
 	t_exec	ctx;
@@ -80,6 +54,12 @@ void	execute(t_node *root, char **envp)
 	if (!root)
 		return ;
 	ctx.child_count = 0;
-	execute_pipeline(root, &ctx, envp);
+    // ビルトインコマンド単体の場合直接実行
+	if (root->kind == ND_CMD && is_builtin(root->argv[0]))
+	{
+		process_builtin_direct(root, envp);
+		return ;
+	}
+	execute_segment(root, &ctx, envp, STDIN_FILENO, STDOUT_FILENO);
 	wait_children(ctx);
 }

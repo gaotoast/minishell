@@ -40,7 +40,7 @@ int	init(t_shell **shell, char **envp)
 		perror("minishell");
 		return (-1);
 	}
-	sh_stat(0, ST_SET);
+	sh_stat(ST_SET, 0);
 	(*shell)->tokens = NULL;
 	if (!envp)
 		(*shell)->envp_cp = NULL;

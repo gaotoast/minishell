@@ -1,14 +1,14 @@
 #include "minishell.h"
 
+// ヒアドキュメントの一時ファイルを生成する
 int	create_temp_file(int index, char **temp_file)
 {
 	char	*index_str;
-	int		temp_fd;
 
 	index_str = ft_itoa(index);
 	if (!index_str)
 		return (-1);
-	(*temp_file) = ft_strjoin(HEREDOC_TMP, index_str);
+	*temp_file = ft_strjoin(HEREDOC_TMP, index_str);
 	if (!(*temp_file))
 	{
 		free(index_str);
@@ -20,19 +20,21 @@ int	create_temp_file(int index, char **temp_file)
 		free(*temp_file);
 		return (-1);
 	}
-	temp_fd = open(*temp_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (temp_fd < 0)
-	{
-		free(*temp_file);
-		return (-1);
-	}
-	return (temp_fd);
+	return (0);
 }
 
-void	write_heredoc_input(int temp_fd, t_redir *redir)
+// ヒアドキュメントの入力を一時ファイルに書き込む
+int	write_heredoc_input(char *temp_file, t_redir *redir)
 {
+	int		temp_fd;
 	char	*line;
 
+	temp_fd = open(temp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (temp_fd < 0)
+	{
+		perror("minishell");
+		return (-1);
+	}
 	while (1)
 	{
 		line = readline("> ");
@@ -47,9 +49,12 @@ void	write_heredoc_input(int temp_fd, t_redir *redir)
 		write(temp_fd, "\n", 1);
 		free(line);
 	}
+    close(temp_fd);
+	return (0);
 }
 
-int	open_and_unlink_heredoc(char *temp_file)
+// 一時ファイルを開いて、読み込みFDを返してからファイルを削除する
+int	open_and_unlink_temp(char *temp_file)
 {
 	int	read_fd;
 
@@ -63,18 +68,20 @@ int	open_and_unlink_heredoc(char *temp_file)
 	return (read_fd);
 }
 
-int	handle_heredoc(t_redir *redir, int index)
+// ヒアドキュメントのメイン処理
+int	get_heredoc_fd(t_redir *redir, int index)
 {
 	char	*temp_file;
-	int		temp_fd;
 	int		read_fd;
 
-	temp_fd = create_temp_file(index, &temp_file);
-	if (temp_fd < 0)
+	if (create_temp_file(index, &temp_file) != 0)
 		return (-1);
-	write_heredoc_input(temp_fd, redir);
-	close(temp_fd);
-	read_fd = open_and_unlink_heredoc(temp_file);
+	if (write_heredoc_input(temp_file, redir) != 0)
+    {
+        free(temp_file);
+        return (-1);
+    }
+	read_fd = open_and_unlink_temp(temp_file);
 	if (read_fd < 0)
 	{
 		free(temp_file);

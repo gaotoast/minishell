@@ -88,17 +88,15 @@ void	handle_std_redirs(int in_fd, int out_fd)
 	}
 }
 
-void	pipe_exec_cmd(t_node *node, char **envp, int in_fd, int out_fd)
+void	process_exec_cmd(t_node *node, char **envp, int in_fd, int out_fd)
 {
-	int	status;
-
 	handle_std_redirs(in_fd, out_fd);
 	if (apply_redirs(node) != 0)
 		exit(EXIT_FAILURE);
 	if (is_builtin(node->argv[0]))
 	{
-		status = exec_builtin_cmd(node, envp);
-		exit(status);
+		exec_builtin_cmd(node, envp);
+		exit(sh_stat(ST_GET, 0));
 	}
 	else
 		exec_cmd(node->argv, envp);

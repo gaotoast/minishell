@@ -50,8 +50,7 @@ char	*expand_var(char **s, char **envp)
 		return (ft_strdup("$"));
 	*s += ft_strlen(name);
 	if (ft_strncmp(name, "?", 2) == 0)
-		// TODO: 実際のexitステータスに変更
-		value = ft_itoa(0);
+		value = ft_itoa(sh_stat(ST_GET, 0));
 	else
 	{
 		env = ft_getenv(name, envp);
@@ -129,57 +128,77 @@ char	*process_quotes(char *str, char **envp)
 	return (result);
 }
 
-int expand_node_str(char **str, char **envp)
+// 文字列を展開
+int	expand_node_str(char **str, char **envp)
 {
-	char *expanded;
+	char	*expanded;
 
 	expanded = process_quotes(*str, envp);
 	if (!expanded)
-		return (-1);
+		return (1);
 	free(*str);
 	*str = expanded;
 	return (0);
 }
 
-int expand_redirs(t_redir **redirs, int redir_count, char **envp)
+// ND_CMDの展開
+void	expand_cmd_node(t_node *node, char **envp)
 {
-	int i;
+	int	i;
 
-	i = 0;
-	while (i < redir_count)
-	{
-		if (expand_node_str(&redirs[i]->str, envp) == -1)
-			return (-1);
-		i++;
-	}
-	return (0);
-}
-
-void expand(t_node *node, char **envp)
-{
-	int i;
-
-	if (!node)
-		return ;
-	expand(node->lhs, envp);
-	if (sh_stat(0, ST_GET) != 0)
-        return ;
-    expand(node->rhs, envp);
-	if (sh_stat(0, ST_GET) != 0)
-        return ;
 	i = 0;
 	while (i < node->argc)
 	{
-		if (expand_node_str(&node->argv[i], envp) == -1)
+		if (expand_node_str(&node->argv[i], envp) != 0)
 		{
-            sh_stat(1, ST_SET);
-            return ;
-        }
+			sh_stat(ST_SET, 1);
+			return ;
+		}
 		i++;
 	}
-	if (expand_redirs(node->redirs, node->redir_count, envp) == -1)
+	i = 0;
+	while (i < node->redir_count)
 	{
-        sh_stat(1, ST_SET);
-        return ;
-    }
+		if (expand_node_str(&node->redirs[i]->str, envp) != 0)
+		{
+			sh_stat(ST_SET, 1);
+			return ;
+		}
+		i++;
+	}
+}
+
+// 変数展開メイン処理
+void	expand(t_node *node, char **envp)
+{
+	if (!node)
+		return ;
+	// 再帰で一番左のノードから根に向かって展開
+	expand(node->lhs, envp);
+	if (sh_stat(ST_GET, 0) != 0)
+		return ;
+	// 自身がND_PIPEなら先に右のノードを展開
+	expand(node->rhs, envp);
+	if (sh_stat(ST_GET, 0) != 0)
+		return ;
+	// ND_CMDのみ展開を行う
+	if (node->kind != ND_CMD)
+		return ;
+	expand_cmd_node(node, envp);
+	// コマンドと引数の文字列を展開
+	// while (i < node->argc)
+	// {
+	// 	if (expand_node_str(&node->argv[i], envp) != 0)
+	// 	{
+	// 		sh_stat(ST_SET, 1);
+	// 		return ;
+	// 	}
+	// 	i++;
+	// }
+	// // リダイレクトの文字列を展開
+	// if (expand_redirs(node->redirs, node->redir_count, envp) != 0)
+	// {
+	// 	sh_stat(ST_SET, 1);
+	// 	return ;
+	// }
 }

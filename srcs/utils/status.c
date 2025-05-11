@@ -1,7 +1,7 @@
 #include "minishell.h"
 
 // exitステータス管理
-int	sh_stat(int val, t_st_op op)
+int	sh_stat(t_st_op op, int val)
 {
 	static int	status;
 

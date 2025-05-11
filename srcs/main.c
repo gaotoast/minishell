@@ -10,7 +10,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	input = NULL;
 	if (init(&shell, envp) < 0)
-		exit(EXIT_FAILURE);
+		exit(1);
     rl_clear_history();
 	while (1)
 	{
@@ -19,11 +19,10 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		if (*input)
 			add_history(input);
+        // TODO: それぞれエラー時の処理を追加
 		tokenize(input, &shell->tokens);
-        // debug_tokenizer(shell->tokens);
         parse(shell->tokens, &shell->ast);
 		expand(shell->ast, shell->envp_cp);
-        // debug_expand(shell->ast);
 		execute(shell->ast, envp);
 		// 毎ループ更新されるためfree
 		free(input);
@@ -33,5 +32,5 @@ int	main(int argc, char **argv, char **envp)
 		shell->ast = NULL;
 	}
 	free_shell(shell);
-	exit(EXIT_SUCCESS);
+	exit(0);
 }
