@@ -21,6 +21,13 @@
 // TODO: 頭に"./tmp"をつける
 # define HEREDOC_TMP "heredoc_tmp_"
 
+// exitステータス管理用
+typedef enum e_st_op
+{
+	ST_GET,
+	ST_SET,
+}					t_st_op;
+
 // 字句解析
 typedef enum e_token_type
 {
@@ -82,8 +89,6 @@ typedef struct s_exec
 // minishell全体
 typedef struct s_shell
 {
-	int				status;
-	// int				last_status;
 	char			**envp_cp;
 	t_token			*tokens;
 	t_node			*ast;
@@ -97,11 +102,10 @@ void				exec_if_relative_path(char **cmds, char **envp);
 void				exec_if_absolute_path(char **cmds, char **envp);
 void				exec_cmd(char **cmds, char **envp);
 int					exec_builtin_cmd(t_node *node, char **envp);
-int					pipe_exec_builtin(t_node *node, t_exec *ctx, char **envp,
-						int *status);
+int					pipe_exec_builtin(t_node *node, t_exec *ctx, char **envp);
 void				pipe_exec_cmd(t_node *node, char **envp, int in_fd,
 						int out_fd);
-int					execute(t_node *root, char **envp);
+void				execute(t_node *root, char **envp);
 void				execute_segment(t_node *node, t_exec *ctx, char **envp,
 						int in_fd, int out_fd);
 char				*search_path(char *cmd_name, char **path_list,
@@ -113,12 +117,12 @@ int					is_builtin(char *cmd);
 void				close_fds(int in_fd, int out_fd);
 
 // tokenization
-int					tokenize(char *line, t_token **tokens);
+void				tokenize(char *line, t_token **tokens);
 int					is_single_metachar(char *p);
 int					is_two_metachar(char *p);
 
 // parsing
-int					parse(t_token *tokens, t_node **ast);
+void				parse(t_token *tokens, t_node **ast);
 t_node				*new_pipe_node(t_node *lhs, t_node *rhs);
 t_node				*new_command_node(void);
 int					peek_word(t_token *token);
@@ -127,11 +131,14 @@ int					consume_word(t_token **rest, char **redir_str);
 int					consume_reserved(t_token **rest, char *op);
 
 // expansion
-int					expand(t_node *node, char **envp);
+void				expand(t_node *node, char **envp);
 char				*append_string_free(char *dst, char *src);
+char				*append_char_free(char *dst, char c);
 
 // utils
 char				*ft_getenv(char *name, char **envp);
+int					sh_stat(int val, t_st_op op);
+char				*ft_strndup(char *s, int len);
 // free
 void				free_2d_array(char **array);
 void				free_tokens(t_token *token);

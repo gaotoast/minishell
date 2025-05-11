@@ -1,88 +1,5 @@
 #include "minishell.h"
 
-// 文字数指定ft_strdup
-char	*ft_strndup(char *s, int len)
-{
-	char	*new;
-	int		i;
-
-	if (!s || len <= 0)
-		return (NULL);
-	new = (char *)malloc(sizeof(char) * (len + 1));
-	if (!new)
-	{
-		perror("minishell");
-		return (NULL);
-	}
-	i = 0;
-	while (s[i] && i < len)
-	{
-		new[i] = s[i];
-		i++;
-	}
-	new[i] = '\0';
-	return (new);
-}
-
-// dstの末尾にsrcを追加した文字列を返す
-// dstとsrcはfreeする（どちらもmallocされた文字列の前提）
-char	*append_string_free(char *dst, char *src)
-{
-	size_t	new_len;
-	char	*new;
-
-	if (!dst || !src)
-	{
-		free(dst);
-		free(src);
-		return (NULL);
-	}
-	new_len = ft_strlen(dst) + ft_strlen(src) + 1;
-	new = (char *)malloc(new_len);
-	if (!new)
-	{
-		perror("minishell");
-		free(dst);
-		free(src);
-		return (NULL);
-	}
-	new[0] = '\0';
-	ft_strlcpy(new, dst, new_len);
-	ft_strlcat(new, src, new_len);
-	free(dst);
-	free(src);
-	return (new);
-}
-
-// dstの末尾にcを追加した文字列を返す
-// dstはfreeする（mallocされた文字列の前提）
-char	*append_char_free(char *dst, char c)
-{
-	size_t	len;
-	char	*new;
-	char	tmp[2];
-
-	if (!dst)
-	{
-		tmp[0] = c;
-		tmp[1] = '\0';
-		return (ft_strdup(tmp));
-	}
-	len = ft_strlen(dst);
-	new = (char *)malloc(len + 2);
-	if (!new)
-	{
-		perror("minishell");
-		free(dst);
-		return (NULL);
-	}
-	ft_strlcpy(new, dst, len + 1);
-	new[len] = c;
-	new[len + 1] = '\0';
-	free(dst);
-	return (new);
-}
-
 // 環境変数名に含むことができる文字かどうか判定
 int	is_var_char(char c)
 {
@@ -238,46 +155,31 @@ int expand_redirs(t_redir **redirs, int redir_count, char **envp)
 	return (0);
 }
 
-int expand(t_node *node, char **envp)
+void expand(t_node *node, char **envp)
 {
 	int i;
 
 	if (!node)
-		return (0);
-	if (expand(node->lhs, envp) == -1)
-		return (-1);
-	if (expand(node->rhs, envp) == -1)
-		return (-1);
+		return ;
+	expand(node->lhs, envp);
+	if (sh_stat(0, ST_GET) != 0)
+        return ;
+    expand(node->rhs, envp);
+	if (sh_stat(0, ST_GET) != 0)
+        return ;
 	i = 0;
 	while (i < node->argc)
 	{
 		if (expand_node_str(&node->argv[i], envp) == -1)
-			return (-1);
+		{
+            sh_stat(1, ST_SET);
+            return ;
+        }
 		i++;
 	}
 	if (expand_redirs(node->redirs, node->redir_count, envp) == -1)
-		return (-1);
-	return (0);
+	{
+        sh_stat(1, ST_SET);
+        return ;
+    }
 }
-
-// // $展開とクォート除去
-// int	expand_tokens(t_token *tokens, char **envp)
-// {
-// 	t_token	*cur;
-// 	char	*expanded;
-
-// 	cur = tokens;
-// 	while (cur)
-// 	{
-// 		if (cur->type == TK_WORD)
-// 		{
-// 			expanded = process_quotes(cur->str, envp);
-// 			if (!expanded)
-// 				return (-1);
-// 			free(cur->str);
-// 			cur->str = expanded;
-// 		}
-// 		cur = cur->next;
-// 	}
-// 	return (0);
-// }

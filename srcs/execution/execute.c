@@ -44,38 +44,42 @@ void	execute_segment(t_node *node, t_exec *ctx, char **envp, int in_fd,
 	}
 }
 
-void	execute_pipeline(t_node *root, t_exec *ctx, char **envp, int *status)
+void	execute_pipeline(t_node *root, t_exec *ctx, char **envp)
 {
 	if (root->kind == ND_CMD && is_builtin(root->argv[0]))
 	{
-		pipe_exec_builtin(root, ctx, envp, status);
+		pipe_exec_builtin(root, ctx, envp);
 		return ;
 	}
 	execute_segment(root, ctx, envp, STDIN_FILENO, STDOUT_FILENO);
 }
 
-void	wait_children(t_exec ctx, int *status)
+void	wait_children(t_exec ctx)
 {
 	int	i;
+    int w_status;
 
 	i = 0;
 	while (i < ctx.child_count)
 	{
-		waitpid(ctx.child_pids[i], status, 0);
+		waitpid(ctx.child_pids[i], &w_status, 0);
+        if (WIFEXITED(w_status))
+            sh_stat(WEXITSTATUS(w_status), ST_SET);
+        else if (WIFSIGNALED(w_status))
+            sh_stat(128 + WTERMSIG(w_status), ST_SET);
+        else
+            sh_stat(1, ST_SET);
 		i++;
 	}
 }
 
-int	execute(t_node *root, char **envp)
+void	execute(t_node *root, char **envp)
 {
 	t_exec	ctx;
-	int		status;
 
 	if (!root)
-		return (0);
-	status = 0;
+		return ;
 	ctx.child_count = 0;
-	execute_pipeline(root, &ctx, envp, &status);
-	wait_children(ctx, &status);
-	return (status);
+	execute_pipeline(root, &ctx, envp);
+	wait_children(ctx);
 }

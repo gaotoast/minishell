@@ -2,31 +2,29 @@
 
 int	exec_builtin_cmd(t_node *node, char **envp)
 {
-	int	status;
-
 	// char	*cmd;
-	// cmd = node->argv[0];
-	status = 1;
+
 	(void)node;
 	(void)envp;
+	// cmd = node->argv[0];
 	// if (ft_strncmp(cmd, "echo", 5) == 0)
-	// 	status = echo(node->argc, node->argv);
+	// 	sh_stat(echo(node->argc, node->argv), ST_SET);
 	// else if (ft_strncmp(cmd, "cd", 3) == 0)
-	// 	status = cd(node->argc, node->argv);
+	// 	sh_stat(cd(node->argc, node->argv), ST_SET);
 	// else if (ft_strncmp(cmd, "pwd", 4) == 0)
-	// 	status = pwd(node->argc, node->argv);
+	// 	sh_stat(pwd(node->argc, node->argv));
 	// else if (ft_strncmp(cmd, "export", 7) == 0)
-	// 	status = export(node->argc, node->argv);
+	// 	sh_stat(export(node->argc, node->argv), ST_SET);
 	// else if (ft_strncmp(cmd, "unset", 6) == 0)
-	// 	status = unset(node->argc, node->argv);
+	// 	sh_stat(unset(node->argc, node->argv), ST_SET);
 	// else if (ft_strncmp(cmd, "env", 4) == 0)
-	// 	status = env(node->argc, node->argv);
+	// 	sh_stat(env(node->argc, node->argv), ST_SET);
 	// else if (ft_strncmp(cmd, "exit", 5) == 0)
-	// 	status = exit_builtin(node->argc, node->argv);
-	return (status);
+	// 	sh_stat(exit_builtin(node->argc, node->argv), ST_SET);
+	return (sh_stat(0, ST_GET));
 }
 
-int	pipe_exec_builtin(t_node *node, t_exec *ctx, char **envp, int *status)
+int	pipe_exec_builtin(t_node *node, t_exec *ctx, char **envp)
 {
 	int stashed_stdin;
 	int stashed_stdout;
@@ -40,13 +38,19 @@ int	pipe_exec_builtin(t_node *node, t_exec *ctx, char **envp, int *status)
 		ctx->builtin_status = 1;
 		return (1);
 	}
-	exec_res = apply_redirs(node); // apply_redirsはminishell.hで宣言
+	exec_res = apply_redirs(node);
 	if (exec_res == 0)
-		(*status) = exec_builtin_cmd(node, envp);
+		exec_builtin_cmd(node, envp);
 	if (dup2(stashed_stdin, STDIN_FILENO) == -1)
+    {
 		perror("minishell");
+        return (1);
+    }
 	if (dup2(stashed_stdout, STDOUT_FILENO) == -1)
+    {
 		perror("minishell");
+        return (1);
+    }
 	close(stashed_stdin);
 	close(stashed_stdout);
 	ctx->child_count = 0;
