@@ -19,7 +19,7 @@
 // debug用
 # include <stdbool.h>
 
-extern int			g_sig_received;
+extern volatile sig_atomic_t    g_sig_received;
 
 // TODO: 頭に"./tmp"をつける
 # define HEREDOC_TMP "heredoc_tmp_"
