@@ -9,6 +9,7 @@
 # include <linux/limits.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/stat.h>
@@ -17,6 +18,8 @@
 # include <unistd.h>
 // debug用
 # include <stdbool.h>
+
+extern int			g_sig_received;
 
 // TODO: 頭に"./tmp"をつける
 # define HEREDOC_TMP "heredoc_tmp_"
@@ -95,6 +98,7 @@ typedef struct s_shell
 
 // init
 int					init(t_shell **shell, char **envp);
+void				set_sigs_handler(void);
 
 // execution
 void				exec_if_relative_path(char **cmds, char **envp);
