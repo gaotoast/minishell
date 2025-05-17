@@ -34,6 +34,15 @@ int	get_var_name(char *str, char **name)
 	return (0);
 }
 
+// 最後の終了ステータスを取得
+// シグナルがあったなら128+シグナルの値
+int get_last_exit_status(void)
+{
+    if (g_sig_received)
+        return (128 + g_sig_received);
+    return (sh_stat(ST_GET, 0));
+}
+
 // ${変数名}を変数展開した文字列を返す
 // 例: $HOME -> /home/stakada
 // 同時に${変数名}の次の文字までポインタを進める
@@ -50,7 +59,7 @@ char	*expand_var(char **s, char **envp)
 		return (ft_strdup("$"));
 	*s += ft_strlen(name);
 	if (ft_strncmp(name, "?", 2) == 0)
-		value = ft_itoa(sh_stat(ST_GET, 0));
+		value = ft_itoa(get_last_exit_status());
 	else
 	{
 		env = ft_getenv(name, envp);
