@@ -11,6 +11,8 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
+// debug用
+# include <stdbool.h>
 
 // 字句解析
 typedef enum e_token_type
@@ -110,7 +112,7 @@ int					consume_word(t_token **rest, char **redir_str);
 int					consume_reserved(t_token **rest, char *op);
 // expansion
 // expand.c
-int					expand_tokens(t_token *tokens, char **envp);
+int					expand(t_node *node, char **envp);
 char				*append_string_free(char *dst, char *src);
 
 // utils
@@ -131,6 +133,10 @@ void				free_shell(t_shell *shell);
 // debug_tokenize.c
 void				print_tokens(t_token *token);
 void				debug_tokenizer(t_token *tokens);
+void				print_indent(int depth, bool is_last);
+void				print_redir(t_redir *redir, int depth);
+void				print_ast(t_node *node, int depth);
 void				debug_parser(t_node *ast);
+void				debug_expand(t_node *ast);
 
 #endif
