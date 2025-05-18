@@ -1,34 +1,49 @@
 #include "minishell.h"
 
-// SIGINTシグナルハンドラ
-// 新しい行で新しいプロンプトを表示 & グローバル変数の更新
-void	handle_sigint(int signum)
+// SIGINTのシグナルハンドラ
+void	sigint_handler(int signum)
 {
-	write(STDOUT_FILENO, "\n", 1);
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
-	g_sig_received = signum;
+    g_sig_received = signum;
+    rl_replace_line("", 0);
+    rl_done = 1;
+}
+
+void    set_heredoc_sigint(void)
+{
+    struct sigaction sa;
+
+    sa.sa_handler = SIG_DFL;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    if (sigaction(SIGINT, &sa, NULL) == -1)
+    {
+        perror("minishell");
+        exit(1);
+    }
+}
+
+void    set_sigint(void)
+{
+    struct sigaction sa;
+
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sa.sa_handler = sigint_handler;
+    if (sigaction(SIGINT, &sa, NULL) == -1)
+    {
+        perror("minishell");
+        exit(1);
+    }
 }
 
 // SIGINTとSIGQUITに対してシグナルハンドラなどの設定
-void	set_sigs_handler(void)
+void	init_signals(void)
 {
-	struct sigaction	sa_int;
-	struct sigaction	sa_quit;
+	struct sigaction	sa;
 
-	sigemptyset(&sa_int.sa_mask);
-	sa_int.sa_flags = 0;
-	sa_int.sa_handler = handle_sigint;
-	if (sigaction(SIGINT, &sa_int, NULL) == -1)
-	{
-		perror("minishell");
-		exit(1);
-	}
-	sigemptyset(&sa_quit.sa_mask);
-	sa_quit.sa_flags = 0;
-	sa_quit.sa_handler = SIG_IGN;
-	if (sigaction(SIGQUIT, &sa_quit, NULL) == -1)
+	set_sigint();
+	sa.sa_handler = SIG_IGN;
+	if (sigaction(SIGQUIT, &sa, NULL) == -1)
 	{
 		perror("minishell");
 		exit(1);

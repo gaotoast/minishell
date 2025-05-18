@@ -11,8 +11,11 @@ void	wait_children(t_exec ctx)
 		waitpid(ctx.child_pids[i], &w_status, 0);
 		if (WIFEXITED(w_status))
 			sh_stat(ST_SET, WEXITSTATUS(w_status));
-		else if (WIFSIGNALED(w_status))
+		else if (WIFSIGNALED(w_status) && WTERMSIG(w_status) == SIGINT)
+        {
 			sh_stat(ST_SET, 128 + WTERMSIG(w_status));
+            write(STDERR_FILENO, "\n", 1);
+        }
 		else
 			sh_stat(ST_SET, 1);
 		i++;

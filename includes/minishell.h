@@ -98,8 +98,7 @@ typedef struct s_shell
 
 // init
 int					init(t_shell **shell, char **envp);
-void				set_sigs_handler(void);
-
+void	            init_signals(void);
 // execution
 void				exec_if_relative_path(char **cmds, char **envp);
 void				exec_if_absolute_path(char **cmds, char **envp);
@@ -142,6 +141,10 @@ int					consume_reserved(t_token **rest, char *op);
 void				expand(t_node *node, char **envp);
 char				*append_string_free(char *dst, char *src);
 char				*append_char_free(char *dst, char c);
+
+// signal
+void                set_sigint(void);
+void                set_heredoc_sigint(void);
 
 // utils
 char				*ft_getenv(char *name, char **envp);

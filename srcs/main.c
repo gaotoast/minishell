@@ -1,6 +1,11 @@
 #include "minishell.h"
 
-volatile sig_atomic_t    g_sig_received = 0;
+volatile sig_atomic_t    g_sig_received;
+
+int event(void)
+{
+    return (0);
+}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -10,13 +15,15 @@ int	main(int argc, char **argv, char **envp)
 	// TODO: (void)あとで消す(かも)
 	(void)argc;
 	(void)argv;
+    rl_event_hook = event;
+    g_sig_received = 0;
 	input = NULL;
-    set_sigs_handler();
 	if (init(&shell, envp) < 0)
-		exit(1);
+        exit(1);
     rl_clear_history();
 	while (1)
 	{
+        init_signals();
 		input = readline("minishell$ ");
 		if (!input)
         {
@@ -29,6 +36,7 @@ int	main(int argc, char **argv, char **envp)
 		tokenize(input, &shell->tokens);
         parse(shell->tokens, &shell->ast);
 		expand(shell->ast, shell->envp_cp);
+        debug_expand(shell->ast);
 		execute(shell->ast, envp);
 		// 毎ループ更新されるためfree
 		free(input);
