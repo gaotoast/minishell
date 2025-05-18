@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 21:58:27 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/18 14:47:37 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/18 21:52:44 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int	unset(int argc, char **argv, char ***envp)
 	error = 0;
 	while (i < argc && argv[i])
 	{
-		env_idx = ft_getenv(argv[i], envp);
+		env_idx = ft_getenvidx(argv[i], envp);
 		if (env_idx < 0)
 		{
 			write(STDERR_FILENO, "minishell: unset: `", 19);
