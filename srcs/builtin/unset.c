@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 21:58:27 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/06 16:48:30 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/18 14:47:37 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,7 @@ int	is_valid_name(char *name)
 }
 
 // 指定された変数名のindexを返す
-// TODO: よそで使ってたら仕様合わせて整理した方が良いかも?
-int	ft_getenv(char *name, char ***envp)
+int	ft_getenvidx(char *name, char ***envp)
 {
 	int	i;
 	int	name_len;
@@ -80,6 +79,7 @@ int	rm_env(int rm_idx, char ***envp)
 			free((*envp)[j]);
 		++j;
 	}
+	new[i] = NULL;
 	free(*envp);
 	*envp = new;
 	return (EXIT_SUCCESS);
@@ -96,7 +96,7 @@ int	unset(int argc, char **argv, char ***envp)
 	error = 0;
 	while (i < argc && argv[i])
 	{
-		env_idx = ft_getenv(argv[1], envp);
+		env_idx = ft_getenv(argv[i], envp);
 		if (env_idx < 0)
 		{
 			write(STDERR_FILENO, "minishell: unset: `", 19);
