@@ -59,7 +59,10 @@ char	*expand_var(char **s, char **envp)
 		return (ft_strdup("$"));
 	*s += ft_strlen(name);
 	if (ft_strncmp(name, "?", 2) == 0)
+	{
 		value = ft_itoa(get_last_exit_status());
+		printf("value: %s\n", value);
+	}
 	else
 	{
 		env = ft_getenv(name, envp);

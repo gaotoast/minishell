@@ -143,8 +143,11 @@ char				*append_string_free(char *dst, char *src);
 char				*append_char_free(char *dst, char c);
 
 // signal
-void                set_sigint(void);
-void                set_heredoc_sigint(void);
+void				set_main_sigint(void);
+void				set_heredoc_sigint(void);
+void				set_exec_sigint(void);
+void				set_main_sigquit(void);
+void				set_exec_sigquit(void);
 
 // utils
 char				*ft_getenv(char *name, char **envp);

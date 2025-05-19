@@ -39,6 +39,8 @@ int	write_heredoc_input(char *temp_file, t_redir *redir)
 	{
 		write(STDOUT_FILENO, "> ", 2);
         line = get_next_line(STDIN_FILENO);
+		if (g_sig_received)
+			break;
 		if (!line)
 		{
 			ft_dprintf(STDERR_FILENO,
@@ -85,8 +87,10 @@ int	get_heredoc_fd(t_redir *redir, int index)
 	if (write_heredoc_input(temp_file, redir) != 0)
 	{
 		free(temp_file);
+		set_main_sigint();
 		return (-1);
 	}
+	set_main_sigint();
 	read_fd = open_and_unlink_temp(temp_file);
 	if (read_fd < 0)
 	{
@@ -94,6 +98,5 @@ int	get_heredoc_fd(t_redir *redir, int index)
 		return (-1);
 	}
 	free(temp_file);
-    set_sigint();
 	return (read_fd);
 }
