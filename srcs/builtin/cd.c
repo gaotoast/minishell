@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/18 21:48:11 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/21 01:29:49 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,9 +89,10 @@ char	*ft_union(char **split, char delim)
 	while (split[i])
 	{
 		tmp_len = strlen(split[i]);
-		rtn[len++] = delim;
-		ft_strlcpy(&(rtn[len]), split[i], tmp_len);
-		len += tmp_len;
+		ft_strlcpy(&(rtn[len]), split[i], tmp_len + 1);
+		if (split[i + 1])
+			rtn[len + tmp_len] = delim;
+		len += tmp_len + 1;
 		++i;
 	}
 	return (rtn);
@@ -125,6 +126,7 @@ char	*get_abs_path(char *dest, char ***envp)
 	int		inner_len;
 	int		i;
 
+	//TODO: devとmergeしたときに最初に42_INNER_PWDに値を代入する
 	inner_pwd = ft_getenv("TEST_INNER_PWD", *envp);
 	inner_split = ft_split(inner_pwd, '/');
 	dest_split = ft_split(dest, '/');
@@ -140,7 +142,7 @@ char	*get_abs_path(char *dest, char ***envp)
 			free(inner_split[inner_len]);
 			inner_split[inner_len] = NULL;
 		}
-		else if (ft_strncmp(dest_split[i], ".", 2) == 0)
+		else if (ft_strncmp(dest_split[i], ".", 2) != 0)
 		{
 			inner_split = get_longer_split(inner_split,
 					dest_split[i], inner_len);
@@ -150,21 +152,23 @@ char	*get_abs_path(char *dest, char ***envp)
 		}
 		++i;
 	}
-	for(int k = 0; dest_split[k]; ++k)
-	{
-		printf("in_sp: %s\n", dest_split[k]);
-	}
 	char *rtn = ft_union(inner_split, '/');
-	printf("rtn:%s\n", rtn);
 	return (rtn);
 }
 
 void	build_full_path(char *dest, char ***envp, int i)
 {
+	char	*abs_path;
+
 	if (ft_strncmp("./", dest, 2) == 0)
+	{
 		set_env(ft_strjoin("PWD=", get_abs_path(dest, envp)), envp, &i);
+	}
 	else
-		set_env(ft_strjoin("PWD=", get_abs_path(ft_strjoin("./", dest), envp)), envp, &i);
+	{
+		abs_path = get_abs_path(ft_strjoin("./", dest), envp);
+		set_env(ft_strjoin("PWD=", abs_path), envp, &i);
+	}
 }
 
 void	update_pwd(char *dest, char ***envp)
@@ -199,7 +203,6 @@ int	move_to_some(char *dest, char ***envp)
 	update_pwd(dest, envp);
 	return (chdir(dest));
 }
-
 
 int	cd(int argc, char **argv, char ***envp)
 {

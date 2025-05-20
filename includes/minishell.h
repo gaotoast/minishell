@@ -148,6 +148,8 @@ int					cd(int argc, char **argv, char ***envp);
 char				*ft_getenv(char *name, char **envp);
 int					sh_stat(t_st_op op, int val);
 char				*ft_strndup(char *s, int len);
+char				*ft_union(char **split, char delim);
+
 // free
 void				free_2d_array(char **array);
 void				free_tokens(t_token *token);
