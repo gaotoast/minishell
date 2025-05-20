@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/21 01:29:49 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/21 03:34:40 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,10 @@ char	*ft_union(char **split, char delim)
 
 	i = 0;
 	len = 0;
+	if (!split)
+		return (NULL);
 	while (split[i])
-	{
-		len += ft_strlen(split[i]);
-		++i;
-	}
+		len += ft_strlen(split[i++]);
 	rtn = malloc(sizeof(char) * (len + i + 1));
 	if (!rtn)
 		return (NULL);
@@ -88,12 +87,10 @@ char	*ft_union(char **split, char delim)
 	len = 0;
 	while (split[i])
 	{
+		rtn[len++] = delim;
 		tmp_len = strlen(split[i]);
-		ft_strlcpy(&(rtn[len]), split[i], tmp_len + 1);
-		if (split[i + 1])
-			rtn[len + tmp_len] = delim;
-		len += tmp_len + 1;
-		++i;
+		ft_strlcpy(&(rtn[len]), split[i++], tmp_len + 1);
+		len += tmp_len;
 	}
 	return (rtn);
 }
@@ -118,22 +115,11 @@ char	**get_longer_split(char **split, char *new, int len)
 	return (rtn);
 }
 
-char	*get_abs_path(char *dest, char ***envp)
+char	**make_abs_path(char **dest_split, char **inner_split, int inner_len)
 {
-	char	*inner_pwd;
-	char	**inner_split;
-	char	**dest_split;
-	int		inner_len;
-	int		i;
+	int	i;
 
-	//TODO: devとmergeしたときに最初に42_INNER_PWDに値を代入する
-	inner_pwd = ft_getenv("TEST_INNER_PWD", *envp);
-	inner_split = ft_split(inner_pwd, '/');
-	dest_split = ft_split(dest, '/');
 	i = 0;
-	inner_len = 0;
-	while (inner_split[inner_len])
-		++inner_len;
 	while (dest_split[i])
 	{
 		if (ft_strncmp(dest_split[i], "..", 3) == 0 && inner_len > 0)
@@ -152,61 +138,107 @@ char	*get_abs_path(char *dest, char ***envp)
 		}
 		++i;
 	}
-	char *rtn = ft_union(inner_split, '/');
+	return (inner_split);
+}
+
+char	*get_abs_path(char *dest, char ***envp)
+{
+	char	*inner_pwd;
+	char	**inner_split;
+	char	**dest_split;
+	char	*rtn;
+	int		inner_len;
+
+	//TODO: devとmergeしたときに最初に42_INNER_PWDに値を代入する
+	inner_pwd = ft_getenv("TEST_INNER_PWD", *envp);
+	inner_split = ft_split(inner_pwd, '/');
+	if (!inner_split)
+		return (NULL);
+	dest_split = ft_split(dest, '/');
+	if (!dest_split)
+	{
+		free_2d_array(inner_split);
+		return (NULL);
+	}
+	inner_len = 0;
+	while (inner_split[inner_len])
+		++inner_len;
+	inner_split = make_abs_path(dest_split, inner_split, inner_len);
+	rtn = ft_union(inner_split, '/');
+	free_2d_array(inner_split);
+	free_2d_array(dest_split);
 	return (rtn);
 }
 
-void	build_full_path(char *dest, char ***envp, int i)
+char	*move_to_env(char ***envp, char *val_name)
 {
-	char	*abs_path;
+	int		val_idx;
+	int		res;
+	char	*path;
 
-	if (ft_strncmp("./", dest, 2) == 0)
+	val_idx = ft_getenvidx(val_name, envp);
+	if (val_idx < 0)
 	{
-		set_env(ft_strjoin("PWD=", get_abs_path(dest, envp)), envp, &i);
+		write(STDERR_FILENO, "minishell: cd: ", 16);
+		write(STDERR_FILENO, val_name, ft_strlen(val_name));
+		write(STDERR_FILENO, " not set\n", 9);
+		return (NULL);
 	}
-	else
+	res = chdir((*envp)[val_idx] + ft_strlen(val_name) + 1);
+	path = ft_getenv(val_name, *envp);
+	if (res != 0)
 	{
-		abs_path = get_abs_path(ft_strjoin("./", dest), envp);
-		set_env(ft_strjoin("PWD=", abs_path), envp, &i);
+		perror("minishell: ");
+		return (NULL);
 	}
+	return (path);
 }
 
-void	update_pwd(char *dest, char ***envp)
+char	*move_to_some(char *dest, char ***envp)
 {
-	int	i;
+	char	*path;
+	int		res;
+
+	if (dest[0] == '/')
+		path = dest;
+	else if (ft_strncmp("-", dest, 2) == 0)
+		path = move_to_env(envp, "OLDPWD");
+	else if (ft_strncmp("./", dest, 2) == 0)
+		path = get_abs_path(dest, envp);
+	else
+		path = get_abs_path(ft_strjoin("./", dest), envp);
+	res = chdir(path);
+	if (res != 0)
+	{
+		perror("minishell: ");
+		if (dest[0] != '/')
+			free(path);
+		return (NULL);
+	}
+	return (path);
+}
+
+void	update_envs(char *path, char ***envp)
+{
+	char	*old_pwd;
+	char	*pwd;
+	int		i;
 
 	i = 0;
 	while ((*envp)[i])
 		++i;
-	if (dest[0] == '/')
-		set_env(ft_strjoin("PWD=", dest), envp, &i);
-	else
-		build_full_path(dest, envp, i);
-}
-
-int	move_to_home(char ***envp)
-{
-	int	home_idx;
-
-	home_idx = ft_getenvidx("HOME", envp);
-	if (home_idx < 0)
-	{
-		write(STDERR_FILENO, "minishell: cd: HOME not set\n", 28);
-		return (EXIT_FAILURE);
-	}
-	update_pwd(ft_getenv("HOME", *envp), envp);
-	return (chdir((*envp)[home_idx] + 5));
-}
-
-int	move_to_some(char *dest, char ***envp)
-{
-	update_pwd(dest, envp);
-	return (chdir(dest));
+	old_pwd = ft_getenv("OLDPWD", *envp);
+	pwd = ft_getenv("PWD", *envp);
+	if (!pwd && old_pwd)
+		set_env(ft_strdup("OLDPWD="), envp, &i);
+	if (pwd)
+		set_env(ft_strjoin("PWD=", path), envp, &i);
+	set_env(ft_strjoin("TEST_INNER_PWD=", path), envp, &i);
 }
 
 int	cd(int argc, char **argv, char ***envp)
 {
-	int		res;
+	char	*path;
 
 	if (argc > 2)
 	{
@@ -214,17 +246,17 @@ int	cd(int argc, char **argv, char ***envp)
 		return (EXIT_FAILURE);
 	}
 	if (argc == 1)
-	{
-		res = move_to_home(envp);
-	}
+		path = move_to_env(envp, "HOME");
 	else
-		res = move_to_some(argv[1], envp);
-	if (res != EXIT_SUCCESS)
-	{
-		perror("minishell");
+		path = move_to_some(argv[1], envp);
+	if (!path)
 		return (EXIT_FAILURE);
+	else
+	{
+		update_envs(path, envp);
 	}
 	printf("pwd: %s\n", getcwd(NULL, PATH_MAX));
 	printf("$PWD: %s\n", ft_getenv("PWD", *envp));
+	printf("$INNER: %s\n", ft_getenv("TEST_INNER_PWD", *envp));
 	return (EXIT_SUCCESS);
 }
