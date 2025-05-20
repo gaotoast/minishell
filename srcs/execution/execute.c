@@ -3,8 +3,8 @@
 // 子プロセス内での実行
 void	child_exec(t_node *node, char **envp)
 {
-	// if (apply_redirs(node->redir_count, node->redirs) != 0)
-	// 	exit (1);
+	if (apply_redirs(node->redir_count, node->redirs) != 0)
+		exit (1);
 	if (!node->argv)
 		exit(0);
 	if (is_builtin(node->argv[0]))
