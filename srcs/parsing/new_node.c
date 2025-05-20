@@ -20,6 +20,9 @@ t_node	*new_pipe_node(t_node *lhs, t_node *rhs)
 	node->lhs = lhs;
 	node->rhs = rhs;
 	node->next_cmd = NULL;
+	node->in_fd = -1;
+	node->pipefd[0] = -1;
+	node->pipefd[1] = -1;
 	return (node);
 }
 
@@ -39,5 +42,8 @@ t_node	*new_command_node(void)
 	node->lhs = NULL;
 	node->rhs = NULL;
 	node->next_cmd = NULL;
+	node->in_fd = STDIN_FILENO;
+	node->pipefd[0] = -1;
+	node->pipefd[1] = -1;
 	return (node);
 }

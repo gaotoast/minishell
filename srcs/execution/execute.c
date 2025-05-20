@@ -1,70 +1,49 @@
 #include "minishell.h"
 
-// // パイプラインの実行
-// void	exec_pipe(t_node *node, t_exec *ctx, char **envp, int in_fd, int out_fd)
-// {
-// 	int	pipefd[2];
+// パイプラインの実行
+pid_t	run_pipeline(t_node *node, char **envp, int count)
+{
+	pid_t	pid;
 
-// 	if (pipe(pipefd) == -1)
-// 	{
-// 		perror("minishell");
-// 		close_fds(in_fd, out_fd);
-// 		return ;
-// 	}
-// 	execute_segment(node->lhs, ctx, envp, in_fd, pipefd[1]);
-// 	close(pipefd[1]);
-// 	execute_segment(node->rhs, ctx, envp, pipefd[0], out_fd);
-// 	close(pipefd[0]);
-// }
-
-// // 木構造をたどりながら実行
-// void	execute_segment(t_node *node, t_exec *ctx, char **envp, int in_fd,
-// 		int out_fd)
-// {
-// 	pid_t	pid;
-
-// 	if (!node)
-// 	{
-// 		close_fds(in_fd, out_fd);
-// 		return ;
-// 	}
-// 	if (node->kind == ND_PIPE)
-// 		exec_pipe(node, ctx, envp, in_fd, out_fd);
-// 	else if (node->kind == ND_CMD)
-// 	{
-// 		pid = fork();
-// 		if (pid == -1)
-// 		{
-// 			perror("minishell");
-// 			close_fds(in_fd, out_fd);
-// 			return ;
-// 		}
-// 		if (pid == 0)
-// 			process_exec_cmd(node, envp, in_fd, out_fd);
-// 		ctx->child_pids[ctx->child_count++] = pid;
-// 		close_fds(in_fd, out_fd);
-// 	}
-// }
+	if (!node)
+		return (-1);
+	prepare_pipe(node);
+	pid = fork();
+	if (pid < 0)
+	{
+		perror("minishell");
+		return (-1);
+	}
+	if (pid == 0)
+	{
+		prepare_pipe_child(node, count);
+		// apply_redirs(node->redir_count, node->redirs);
+		// exec_cmd(node->argv, envp);
+	}
+	prepare_pipe_parent(node, count);
+	if (node->next_cmd)
+		return (run_pipeline(node->next_cmd, envp, count + 1));
+	return (pid);
+}
 
 // 実行部メイン処理
 void	execute(t_node *root, char **envp)
 {
-	t_exec	ctx;
+	pid_t	last_pid;
 	t_node	*first_cmd;
 	t_node	*last_cmd;
 
 	if (!root)
 		return ;
-	ctx.child_count = 0;
 	first_cmd = NULL;
 	last_cmd = NULL;
-    // ビルトインコマンド単体の場合直接実行
+	// ビルトインコマンド単体の場合直接実行
 	if (root->kind == ND_CMD && root->argv && is_builtin(root->argv[0]))
 	{
 		process_builtin_direct(root, envp);
 		return ;
 	}
 	link_exec_nodes(root, root->rhs, &first_cmd, &last_cmd);
-	// execute_segment(root, &ctx, envp, STDIN_FILENO, STDOUT_FILENO);
-	// wait_children(ctx);
+	last_pid = run_pipeline(first_cmd, envp, 0);
+	// wait_children(last_pid);
 }
