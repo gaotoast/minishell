@@ -6,44 +6,11 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:29:37 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/04/29 17:18:21 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/21 03:56:58 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-char	*get_cwd(void)
-{
-	char	*rtn;
-
-	rtn = (char *)malloc(sizeof(char) * PATH_MAX);
-	if (!rtn)
-	{
-		perror("minishell");
-		return (NULL);
-	}
-	if (!getcwd(rtn, PATH_MAX))
-	{
-		perror("minishell");
-		free(rtn);
-		return (NULL);
-	}
-	return (rtn);
-}
-
-char	*get_pwd(char **envp)
-{
-	int	i;
-
-	i = 0;
-	while (envp[i])
-	{
-		if (strncmp(envp[i], "PWD=", 4) == 0)
-			return (envp[i]);
-		++i;
-	}
-	return (get_cwd());
-}
 
 int	is_pwd_error(int argc, char **argv)
 {
@@ -68,7 +35,7 @@ int	pwd(int argc, char **argv, char **envp)
 		write(STDERR_FILENO, ": invalid option\n", 17);
 		return (EXIT_FAILURE);
 	}
-	bufs = get_pwd(envp);
+	bufs = ft_getenv("TEST_INNER_PWD", envp);
 	if (!bufs)
 	{
 		perror("minishell");
