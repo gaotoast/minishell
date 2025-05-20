@@ -109,7 +109,6 @@ int					is_builtin(char *cmd);
 void				prepare_pipe(t_node *node);
 void				prepare_pipe_child(t_node *node, int count);
 void				prepare_pipe_parent(t_node *node, int count);
-void				child_exec(t_node *node, char **envp);
 int					wait_children(pid_t last_pid);
 
 // tokenization
