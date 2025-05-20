@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/21 03:59:35 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/21 04:32:58 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ char	*get_abs_path(char *dest, char ***envp)
 	int		inner_len;
 
 	//TODO: devとmergeしたときに最初に42_INNER_PWDに値を代入する
-	inner_pwd = ft_getenv("TEST_INNER_PWD", *envp);
+	inner_pwd = ft_getcwd(PWD_GET, NULL);
 	inner_split = ft_split(inner_pwd, '/');
 	if (!inner_split)
 		return (NULL);
@@ -233,7 +233,7 @@ void	update_envs(char *path, char ***envp)
 		set_env(ft_strdup("OLDPWD="), envp, &i);
 	if (pwd)
 		set_env(ft_strjoin("PWD=", path), envp, &i);
-	set_env(ft_strjoin("TEST_INNER_PWD=", path), envp, &i);
+	ft_getcwd(PWD_SET, path);
 }
 
 void	free_2d_array(char **array)
@@ -270,8 +270,5 @@ int	cd(int argc, char **argv, char ***envp)
 	{
 		update_envs(path, envp);
 	}
-	printf("pwd: %s\n", getcwd(NULL, PATH_MAX));
-	printf("$PWD: %s\n", ft_getenv("PWD", *envp));
-	printf("$INNER: %s\n", ft_getenv("TEST_INNER_PWD", *envp));
 	return (EXIT_SUCCESS);
 }

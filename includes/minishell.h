@@ -28,6 +28,12 @@ typedef enum e_st_op
 	ST_SET,
 }					t_st_op;
 
+typedef enum e_pwd_op
+{
+	PWD_GET,
+	PWD_SET,
+}					t_pwd_op;
+
 // 字句解析
 typedef enum e_token_type
 {
@@ -151,6 +157,7 @@ char				*ft_getenv(char *name, char **envp);
 int					sh_stat(t_st_op op, int val);
 char				*ft_strndup(char *s, int len);
 char				*ft_union(char **split, char delim);
+char				*ft_getcwd(t_pwd_op op, char *path);
 
 // free
 void				free_2d_array(char **array);
