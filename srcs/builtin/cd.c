@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/21 03:34:40 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/21 03:59:35 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,6 +234,21 @@ void	update_envs(char *path, char ***envp)
 	if (pwd)
 		set_env(ft_strjoin("PWD=", path), envp, &i);
 	set_env(ft_strjoin("TEST_INNER_PWD=", path), envp, &i);
+}
+
+void	free_2d_array(char **array)
+{
+	int	i;
+
+	if (!array)
+		return ;
+	i = 0;
+	while (array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
 }
 
 int	cd(int argc, char **argv, char ***envp)
