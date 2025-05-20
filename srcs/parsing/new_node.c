@@ -13,13 +13,13 @@ t_node	*new_pipe_node(t_node *lhs, t_node *rhs)
 		return (NULL);
 	}
 	node->kind = ND_PIPE;
-	node->lhs = lhs;
-	node->rhs = rhs;
-	// node->next_cmd = NULL;
 	node->argv = NULL;
 	node->argc = 0;
 	node->redirs = NULL;
 	node->redir_count = 0;
+	node->lhs = lhs;
+	node->rhs = rhs;
+	node->next_cmd = NULL;
 	return (node);
 }
 
@@ -32,12 +32,12 @@ t_node	*new_command_node(void)
 	if (!node)
 		return (NULL);
 	node->kind = ND_CMD;
-	node->lhs = NULL;
-	node->rhs = NULL;
-	// node->next_cmd = NULL;
 	node->argv = NULL;
 	node->argc = 0;
 	node->redirs = NULL;
 	node->redir_count = 0;
+	node->lhs = NULL;
+	node->rhs = NULL;
+	node->next_cmd = NULL;
 	return (node);
 }
