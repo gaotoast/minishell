@@ -61,6 +61,7 @@ char	*expand_var(char **s, char **envp)
 	if (ft_strncmp(name, "?", 2) == 0)
 	{
 		value = ft_itoa(get_last_exit_status());
+		// TODO: あとで消す
 		printf("value: %s\n", value);
 	}
 	else
@@ -180,6 +181,8 @@ void	expand_cmd_node(t_node *node, char **envp)
 	}
 }
 
+// FIXME: どこかでstat間違えて設定してそう
+
 // 変数展開メイン処理
 void	expand(t_node *node, char **envp)
 {
@@ -187,30 +190,14 @@ void	expand(t_node *node, char **envp)
 		return ;
 	// 再帰で一番左のノードから根に向かって展開
 	expand(node->lhs, envp);
-	if (sh_stat(ST_GET, 0) != 0)
-		return ;
+	// if (sh_stat(ST_GET, 0) != 0)
+	// 	return ;
 	// 自身がND_PIPEなら先に右のノードを展開
 	expand(node->rhs, envp);
-	if (sh_stat(ST_GET, 0) != 0)
-		return ;
+	// if (sh_stat(ST_GET, 0) != 0)
+		// return ;
 	// ND_CMDのみ展開を行う
 	if (node->kind != ND_CMD)
 		return ;
 	expand_cmd_node(node, envp);
-	// コマンドと引数の文字列を展開
-	// while (i < node->argc)
-	// {
-	// 	if (expand_node_str(&node->argv[i], envp) != 0)
-	// 	{
-	// 		sh_stat(ST_SET, 1);
-	// 		return ;
-	// 	}
-	// 	i++;
-	// }
-	// // リダイレクトの文字列を展開
-	// if (expand_redirs(node->redirs, node->redir_count, envp) != 0)
-	// {
-	// 	sh_stat(ST_SET, 1);
-	// 	return ;
-	// }
 }

@@ -7,6 +7,8 @@ void	child_exec(t_node *node, char **envp)
 		exit (1);
 	if (!node->argv)
 		exit(0);
+	set_exec_sigint();
+	set_exec_sigquit();
 	if (is_builtin(node->argv[0]))
 	{
 		exec_builtin_cmd(node, envp);
