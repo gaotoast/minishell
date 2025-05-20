@@ -20,10 +20,10 @@ char	**copy_env(char **envp)
 	return (rtn);
 }
 
-int main(int argc, char **argv, char **envp)
+int main(int argc, char **argv)
 {
-	char	**cenv = copy_env(envp);
-	cd(argc, argv, &cenv);
+	sh_stat(ST_SET, 42);
+	ft_exit(argc, argv);
 }
 
 // int	main(void)
