@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/21 04:32:58 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/21 06:00:29 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ char	**make_abs_path(char **dest_split, char **inner_split, int inner_len)
 	return (inner_split);
 }
 
-char	*get_abs_path(char *dest, char ***envp)
+char	*get_abs_path(char *dest)
 {
 	char	*inner_pwd;
 	char	**inner_split;
@@ -204,9 +204,9 @@ char	*move_to_some(char *dest, char ***envp)
 	else if (ft_strncmp("-", dest, 2) == 0)
 		path = move_to_env(envp, "OLDPWD");
 	else if (ft_strncmp("./", dest, 2) == 0)
-		path = get_abs_path(dest, envp);
+		path = get_abs_path(dest);
 	else
-		path = get_abs_path(ft_strjoin("./", dest), envp);
+		path = get_abs_path(ft_strjoin("./", dest));
 	res = chdir(path);
 	if (res != 0)
 	{
