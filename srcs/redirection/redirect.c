@@ -58,14 +58,14 @@ int	process_redir(t_redir *redir, int index)
 }
 
 // リダイレクトの適用メイン処理
-int	apply_redirs(t_node *node)
+int	apply_redirs(int redir_count, t_redir **redirs)
 {
 	int	i;
 
 	i = 0;
-	while (i < node->redir_count)
+	while (i < redir_count)
 	{
-		if (process_redir(node->redirs[i], i) != 0)
+		if (process_redir(redirs[i], i) != 0)
 			return (1);
 		i++;
 	}
