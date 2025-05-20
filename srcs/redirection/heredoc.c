@@ -37,7 +37,8 @@ int	write_heredoc_input(char *temp_file, t_redir *redir)
 	}
 	while (1)
 	{
-		line = readline("> ");
+		write(STDOUT_FILENO, "> ", 2);
+		line = get_next_line(STDIN_FILENO);
 		if (!line)
 			break ;
 		if (ft_strncmp(line, redir->str, ft_strlen(redir->str)) == 0)
@@ -46,7 +47,6 @@ int	write_heredoc_input(char *temp_file, t_redir *redir)
 			break ;
 		}
 		write(temp_fd, line, ft_strlen(line));
-		write(temp_fd, "\n", 1);
 		free(line);
 	}
     close(temp_fd);

@@ -17,8 +17,7 @@ pid_t	run_pipeline(t_node *node, char **envp, int count)
 	if (pid == 0)
 	{
 		prepare_pipe_child(node, count);
-		// apply_redirs(node->redir_count, node->redirs);
-		// exec_cmd(node->argv, envp);
+		child_exec(node, envp);
 	}
 	prepare_pipe_parent(node, count);
 	if (node->next_cmd)
@@ -45,5 +44,5 @@ void	execute(t_node *root, char **envp)
 	}
 	link_exec_nodes(root, root->rhs, &first_cmd, &last_cmd);
 	last_pid = run_pipeline(first_cmd, envp, 0);
-	// wait_children(last_pid);
+	sh_stat(ST_SET, wait_children(last_pid));
 }

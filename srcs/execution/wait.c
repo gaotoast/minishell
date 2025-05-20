@@ -1,20 +1,21 @@
 #include "minishell.h"
 
-void	wait_children(t_exec ctx)
+int	wait_children(pid_t last_pid)
 {
-	int	i;
-	int	w_status;
+	pid_t	wait_ret;
+	int		w_status;
+	int		status;
 
-	i = 0;
-	while (i < ctx.child_count)
+	while (1)
 	{
-		waitpid(ctx.child_pids[i], &w_status, 0);
-		if (WIFEXITED(w_status))
-			sh_stat(ST_SET, WEXITSTATUS(w_status));
-		else if (WIFSIGNALED(w_status))
-			sh_stat(ST_SET, 128 + WTERMSIG(w_status));
-		else
-			sh_stat(ST_SET, 1);
-		i++;
+		wait_ret = wait(&w_status);
+		if (wait_ret == last_pid)
+			status = WEXITSTATUS(w_status);
+		else if (wait_ret < 0)
+		{
+			if (errno == ECHILD)
+				break ;
+		}
 	}
+	return (status);
 }
