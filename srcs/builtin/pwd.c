@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:29:37 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/21 03:56:58 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/21 18:26:28 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	pwd(int argc, char **argv, char **envp)
 		perror("minishell");
 		return (EXIT_FAILURE);
 	}
-	printf("%s\n", bufs + 4);
+	printf("%s\n", bufs);
 	return (EXIT_SUCCESS);
 }
 

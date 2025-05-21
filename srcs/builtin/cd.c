@@ -6,13 +6,13 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/21 06:00:29 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/21 18:27:54 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_valid_name(char *name)
+int	is_valid_env(char *name)
 {
 	int	i;
 
@@ -28,12 +28,12 @@ int	is_valid_name(char *name)
 	return (1);
 }
 
-int	ft_getenvidx(char *name, char ***envp)
+int	ft_getenv_idx(char *name, char ***envp)
 {
 	int	i;
 	int	name_len;
 
-	if (!is_valid_name(name))
+	if (!is_valid_env(name))
 		return (-1);
 	i = 0;
 	name_len = ft_strlen(name);
@@ -176,7 +176,7 @@ char	*move_to_env(char ***envp, char *val_name)
 	int		res;
 	char	*path;
 
-	val_idx = ft_getenvidx(val_name, envp);
+	val_idx = ft_getenv_idx(val_name, envp);
 	if (val_idx < 0)
 	{
 		write(STDERR_FILENO, "minishell: cd: ", 16);
@@ -211,7 +211,7 @@ char	*move_to_some(char *dest, char ***envp)
 	if (res != 0)
 	{
 		perror("minishell: ");
-		if (dest[0] != '/')
+		if (dest[0] != '/' && ft_strncmp("-", dest, 2) != 0)
 			free(path);
 		return (NULL);
 	}
