@@ -122,7 +122,7 @@ int					is_two_metachar(char *p);
 int					is_single_metachar(char *p);
 int					is_two_metachar(char *p);
 int					is_quote(char *p);
-int					is_space(char c);
+int					is_blank(char c);
 
 // parsing
 void				parse(t_token *tokens, t_node **ast);
