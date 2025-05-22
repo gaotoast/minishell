@@ -28,7 +28,6 @@ int	write_heredoc_input(char *temp_file, t_redir *redir)
 	int		temp_fd;
 	char	*line;
 
-	set_heredoc_sigint();
 	temp_fd = open(temp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (temp_fd < 0)
 	{
