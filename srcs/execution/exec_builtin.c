@@ -57,8 +57,6 @@ void	process_builtin_direct(t_node *node, char ***envp)
 		sh_stat(ST_SET, 1);
 		return ;
 	}
-	for (int i = 0; (*envp)[i]; ++i)
-		printf("%s\n", (*envp)[i]);
 	if (apply_redirs(node->redir_count, node->redirs) == 0)
 		exec_builtin_cmd(node, envp);
 	else
