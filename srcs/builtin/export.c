@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 02:47:53 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/22 16:29:23 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/22 21:52:25 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,21 @@ int	overwrite_env(char *str, char ***envp, int idx)
 	return (0);
 }
 
+int	extent_env(char *str, char ***envp, int idx)
+{
+	char	*rtn;
+
+	rtn = ft_strjoin((*envp)[idx], str);
+	if (!rtn)
+	{
+		perror("minishell");
+		return (2);
+	}
+	free((*envp)[idx]);
+	(*envp)[idx] = rtn;
+	return (0);
+}
+
 int	get_eq_idx(char *str)
 {
 	int	i;
@@ -59,7 +74,7 @@ int	get_eq_idx(char *str)
 	i = 0;
 	if (!ft_isalpha(str[0]) && str[0] != '_')
 		return (-1);
-	while (str[i] != '=')
+	while (str[i] != '=' && ft_strncmp(&str[i], "+=", 2) != 0)
 	{
 		if (ft_isalnum(str[i]) || str[i] == '_')
 			++i;
@@ -81,13 +96,17 @@ int	set_env(char *str, char ***envp, int *len)
 		return (1);
 	while (j < *len)
 	{
-		if (ft_strncmp((*envp)[j], str, i + 1))
-			++j;
-		else
+		if (ft_strncmp((*envp)[j], str, i) == 0 && (*envp)[j][i] == '=')
 			break ;
+		else
+			++j;
 	}
-	if (j != *len)
+	if (j != *len && str[i] == '+')
+		return (extent_env(&str[i + 2], envp, j));
+	else if (j != *len)
 		return (overwrite_env(str, envp, j));
+	else if (str[i] == '+')
+		return (add_bottom_env(ft_strfilter(str, '+'), envp, len));
 	else
 		return (add_bottom_env(str, envp, len));
 }
