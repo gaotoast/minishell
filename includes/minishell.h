@@ -149,8 +149,7 @@ char				*append_char_free(char *dst, char c);
 int					set_env(char *str, char ***envp, int *len);
 int					cd(int argc, char **argv, char ***envp);
 int					pwd(int argc, char **argv, char **envp);
-
-
+int					ft_exit(int argc, char **argv);
 
 // utils
 char				*ft_getenv(char *name, char **envp);
