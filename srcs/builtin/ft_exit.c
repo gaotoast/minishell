@@ -1,24 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 04:02:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/22 11:29:58 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/22 13:59:21 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	ft_isspace(char c)
-{
-	if (c == ' ' || c == '\f' || c == '\n'
-		|| c == '\r' || c == '\t' || c == '\v')
-		return (1);
-	return (0);
-}
 
 int	is_numeric(char *s)
 {
@@ -102,17 +94,6 @@ long long int	get_exit_num(char *num)
 	if (rtn < 0)
 		return (rtn + 256);
 	return (rtn);
-}
-
-int	sh_stat(t_st_op op, int val)
-{
-	static int	status;
-
-	if (op == ST_SET)
-		status = val;
-	else if (op == ST_GET)
-		return (status);
-	return (status);
 }
 
 int	ft_exit(int argc, char **argv)

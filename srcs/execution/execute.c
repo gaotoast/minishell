@@ -1,7 +1,7 @@
 #include "minishell.h"
 
 // 子プロセス内での実行
-void	child_exec(t_node *node, char **envp)
+void	child_exec(t_node *node, char ***envp)
 {
 	if (apply_redirs(node->redir_count, node->redirs) != 0)
 		exit(1);
@@ -13,11 +13,11 @@ void	child_exec(t_node *node, char **envp)
 		exit(sh_stat(ST_GET, 0));
 	}
 	else
-		exec_cmd(node->argv, envp);
+		exec_cmd(node->argv, *envp);
 }
 
 // パイプラインの実行
-pid_t	run_pipeline(t_node *node, char **envp, int count)
+pid_t	run_pipeline(t_node *node, char ***envp, int count)
 {
 	pid_t	pid;
 
@@ -43,7 +43,7 @@ pid_t	run_pipeline(t_node *node, char **envp, int count)
 
 // 実行部メイン処理
 // ASTのコマンドノードをリストとしてつなげる -> ヒアドキュメントの入力を処理 -> ビルトイン単体かその他かで分岐して実行
-void	execute(t_node *root, char **envp)
+void	execute(t_node *root, char ***envp)
 {
 	pid_t	last_pid;
 	t_node	*first_cmd;

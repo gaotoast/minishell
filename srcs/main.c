@@ -23,7 +23,7 @@ int	main(int argc, char **argv, char **envp)
 		tokenize(input, &shell->tokens);
         parse(shell->tokens, &shell->ast);
 		expand(shell->ast, shell->envp_cp);
-		execute(shell->ast, envp);
+		execute(shell->ast, &shell->envp_cp);
 		// 毎ループ更新されるためfree
 		free(input);
 		free_tokens(shell->tokens);

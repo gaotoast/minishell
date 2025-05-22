@@ -6,28 +6,11 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 21:58:27 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/18 21:52:44 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/22 14:06:10 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	is_valid_name(char *name)
-{
-	int	i;
-
-	i = 0;
-	if (!ft_isalpha(name[0]) && name[0] != '_')
-		return (0);
-	while (name[i])
-	{
-		if (ft_isalnum(name[i]) || name[i] == '_')
-			++i;
-		else
-			return (0);
-	}
-	return (1);
-}
 
 // 指定された変数名のindexを返す
 int	ft_getenvidx(char *name, char ***envp)
@@ -35,7 +18,7 @@ int	ft_getenvidx(char *name, char ***envp)
 	int	i;
 	int	name_len;
 
-	if (!is_valid_name(name))
+	if (!is_valid_env(name))
 		return (-1);
 	i = 0;
 	name_len = ft_strlen(name);
