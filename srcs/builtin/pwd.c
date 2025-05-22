@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:29:37 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/21 18:26:28 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/22 12:45:34 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	pwd(int argc, char **argv, char **envp)
 		write(STDERR_FILENO, ": invalid option\n", 17);
 		return (EXIT_FAILURE);
 	}
-	bufs = ft_getenv("TEST_INNER_PWD", envp);
+	bufs = ft_getcwd(PWD_GET, NULL);
 	if (!bufs)
 	{
 		perror("minishell");
