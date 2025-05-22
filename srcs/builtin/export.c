@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 02:47:53 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/05 08:10:43 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/18 16:59:21 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ int	get_eq_idx(char *str)
 	return (i);
 }
 
-int	set_input(char *str, char ***envp, int *len)
+int	set_env(char *str, char ***envp, int *len)
 {
 	int	i;
 	int	j;
@@ -163,7 +163,7 @@ int	export(int argc, char **argv, char ***envp)
 	error = 0;
 	while (i < argc && argv[i])
 	{
-		rtn = set_input(argv[i], envp, &env_len);
+		rtn = set_env(argv[i], envp, &env_len);
 		if (rtn == 2)
 			return (EXIT_FAILURE);
 		else if (rtn == 1)
