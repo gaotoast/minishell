@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:29:37 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/22 12:45:34 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/22 12:58:20 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	is_pwd_error(int argc, char **argv)
 	return (1);
 }
 
-int	pwd(int argc, char **argv, char **envp)
+int	pwd(int argc, char **argv)
 {
 	char	*bufs;
 
