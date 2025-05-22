@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-// execve内のSIGQUIT設定
+// execve用のSIGQUIT設定
 void	set_exec_sigquit(void)
 {
 	struct sigaction	sa;

@@ -8,7 +8,7 @@ void	handle_sigint(int signum)
 	rl_done = 1;
 }
 
-// コマンド実行時のSIGINT設定
+// execve用のSIGINT設定
 void	set_exec_sigint(void)
 {
 	struct sigaction	sa;
