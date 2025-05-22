@@ -1,23 +1,23 @@
 #include "minishell.h"
 
 // ヒアドキュメントの適用
-int	apply_heredoc_redir(t_redir *redir, int index)
+int	apply_heredoc_redir(t_redir *redir)
 {
-	int	cur_heredoc_fd;
+	int	heredoc_fd;
 
-	cur_heredoc_fd = get_heredoc_fd(redir, index);
-	if (cur_heredoc_fd < 0)
+	heredoc_fd = open(redir->temp_file, O_RDONLY);
+	if (heredoc_fd < 0)
 	{
 		perror("minishell");
 		return (1);
 	}
-	if (dup2(cur_heredoc_fd, STDIN_FILENO) == -1)
+	if (dup2(heredoc_fd, STDIN_FILENO) == -1)
 	{
-		close(cur_heredoc_fd);
+		close(heredoc_fd);
 		perror("minishell");
 		return (1);
 	}
-	close(cur_heredoc_fd);
+	close(heredoc_fd);
 	return (0);
 }
 
@@ -43,7 +43,7 @@ int	apply_io_redir(t_redir *redir, int flags, int std_fd)
 }
 
 // 適用するリダイレクトによって分岐
-int	process_redir(t_redir *redir, int index)
+int	process_redir(t_redir *redir)
 {
 	if (redir->kind == REDIR_IN)
 		return (apply_io_redir(redir, O_RDONLY, STDIN_FILENO));
@@ -54,7 +54,7 @@ int	process_redir(t_redir *redir, int index)
 		return (apply_io_redir(redir, O_WRONLY | O_CREAT | O_APPEND,
 				STDOUT_FILENO));
 	else
-		return (apply_heredoc_redir(redir, index));
+		return (apply_heredoc_redir(redir));
 }
 
 // リダイレクトの適用メイン処理
@@ -65,9 +65,13 @@ int	apply_redirs(int redir_count, t_redir **redirs)
 	i = 0;
 	while (i < redir_count)
 	{
-		if (process_redir(redirs[i], i) != 0)
+		if (process_redir(redirs[i]) != 0)
+		{
+			unlink_all_temp(redir_count, redirs);
 			return (1);
+		}
 		i++;
 	}
+	unlink_all_temp(redir_count, redirs);
 	return (0);
 }
