@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 02:47:53 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/22 14:16:02 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/22 16:29:23 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	add_bottom_env(char *str, char ***envp, int *len)
 		rtn[i] = (*envp)[i];
 		++i;
 	}
-	rtn[i] = str;
+	rtn[i] = ft_strdup(str);
 	rtn[i + 1] = NULL;
 	free(*envp);
 	*envp = rtn;

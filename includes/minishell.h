@@ -156,6 +156,7 @@ int					set_env(char *str, char ***envp, int *len);
 char				*move_to_some(char *dest, char ***envp);
 char				*move_to_env(char ***envp, char *val_name);
 int					print_envs(char **envp, int len);
+int					ft_getenv_idx(char *name, char ***envp);
 
 // utils
 char				*ft_getenv(char *name, char **envp);

@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/22 15:17:39 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/22 16:31:31 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@ void	update_envs(char *path, char ***envp)
 		++i;
 	old_pwd = ft_getenv("OLDPWD", *envp);
 	pwd = ft_getenv("PWD", *envp);
-	if (!pwd && old_pwd)
-		set_env(ft_strdup("OLDPWD="), envp, &i);
+	if (pwd && old_pwd)
+		set_env(ft_strjoin("OLDPWD=", pwd), envp, &i);
 	if (pwd)
 		set_env(ft_strjoin("PWD=", path), envp, &i);
 	ft_cwd(PWD_SET, cp_path);
