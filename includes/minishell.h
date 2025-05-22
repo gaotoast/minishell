@@ -178,6 +178,8 @@ int					ft_isspace(char c);
 int					is_valid_env(char *name);
 int					event(void);
 char				*ft_strfilter(char *str, char c);
+int					ft_split_len(char **split);
+
 
 // free
 void				free_2d_array(char **array);

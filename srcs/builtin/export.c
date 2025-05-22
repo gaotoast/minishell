@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 02:47:53 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/22 21:52:25 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/23 00:38:57 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ int	get_eq_idx(char *str)
 	int	i;
 
 	i = 0;
+	if (!str)
+		return (-1);
 	if (!ft_isalpha(str[0]) && str[0] != '_')
 		return (-1);
 	while (str[i] != '=' && ft_strncmp(&str[i], "+=", 2) != 0)
