@@ -62,6 +62,7 @@ typedef struct s_redir
 {
 	t_redir_kind	kind;
 	char			*str;
+	char			*temp_file;
 }					t_redir;
 
 typedef struct s_node
@@ -103,13 +104,16 @@ void				execute(t_node *root, char **envp);
 char				*search_path(char *cmd_name, char **path_list,
 						char *path_tail, int *status);
 char				*resolve_cmd_path(char *cmd, char *path_env, int *status);
-int					apply_redirs(int redir_count, t_redir **redirs);
-int					get_heredoc_fd(t_redir *redir, int index);
 int					is_builtin(char *cmd);
 void				prepare_pipe(t_node *node);
 void				prepare_pipe_child(t_node *node, int count);
 void				prepare_pipe_parent(t_node *node, int count);
 int					wait_children(pid_t last_pid);
+
+// redirection
+int					handle_all_heredocs(t_node *node);
+int					apply_redirs(int redir_count, t_redir **redirs);
+void				unlink_all_temp(int redir_count, t_redir **redirs);
 
 // tokenization
 void				tokenize(char *line, t_token **tokens);

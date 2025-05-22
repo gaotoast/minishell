@@ -26,6 +26,7 @@ t_redir	*parse_redir(t_token **rest)
         sh_stat(ST_SET, 2);
 		return (NULL);
 	}
+	redir->temp_file = NULL;
 	sh_stat(ST_SET, consume_word(rest, &redir->str));
     if (sh_stat(ST_GET, 0) == 1)
 	{
