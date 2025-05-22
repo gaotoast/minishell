@@ -152,6 +152,7 @@ void				set_exec_sigquit(void);
 char				*ft_getenv(char *name, char **envp);
 int					sh_stat(t_st_op op, int val);
 char				*ft_strndup(char *s, int len);
+int					event(void);
 // free
 void				free_2d_array(char **array);
 void				free_tokens(t_token *token);

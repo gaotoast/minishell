@@ -28,6 +28,7 @@ int	write_heredoc_input(char *temp_file, t_redir *redir)
 	int		temp_fd;
 	char	*line;
 
+	set_heredoc_sigint();
 	temp_fd = open(temp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (temp_fd < 0)
 	{
@@ -39,10 +40,7 @@ int	write_heredoc_input(char *temp_file, t_redir *redir)
 		line = readline("> ");
 		if (g_sig_received)
 		{
-			close(temp_fd);
-			unlink(temp_file);
-			free(temp_file);
-			exit(0);
+			break;
 		}
 		if (!line)
 		{

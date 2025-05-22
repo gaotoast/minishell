@@ -2,11 +2,6 @@
 
 volatile sig_atomic_t    g_sig_received;
 
-int event(void)
-{
-    return (0);
-}
-
 int	main(int argc, char **argv, char **envp)
 {
 	char	*input;
