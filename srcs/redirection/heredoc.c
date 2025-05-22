@@ -37,8 +37,17 @@ int	write_heredoc_input(char *temp_file, t_redir *redir)
 	while (1)
 	{
 		line = readline("> ");
+		if (g_sig_received)
+		{
+			break;
+		}
 		if (!line)
+		{
+			ft_dprintf(STDERR_FILENO,
+				"minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",
+				redir->str);
 			break ;
+		}
 		if (ft_strncmp(line, redir->str, ft_strlen(redir->str)) == 0
 			&& ft_strlen(line) == ft_strlen(redir->str))
 		{

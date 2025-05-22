@@ -9,6 +9,7 @@
 # include <linux/limits.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/stat.h>
@@ -17,6 +18,8 @@
 # include <unistd.h>
 // debug用
 # include <stdbool.h>
+
+extern volatile sig_atomic_t    g_sig_received;
 
 // TODO: 頭に"./tmp"をつける
 # define HEREDOC_TMP "heredoc_tmp_"
@@ -91,7 +94,7 @@ typedef struct s_shell
 
 // init
 int					init(t_shell **shell, char **envp);
-
+void	            init_signals(void);
 // execution
 void				exec_if_relative_path(char **cmds, char **envp);
 void				exec_if_absolute_path(char **cmds, char **envp);
@@ -138,10 +141,18 @@ void				expand(t_node *node, char **envp);
 char				*append_string_free(char *dst, char *src);
 char				*append_char_free(char *dst, char c);
 
+// signal
+void				set_main_sigint(void);
+void				set_heredoc_sigint(void);
+void				set_exec_sigint(void);
+void				set_main_sigquit(void);
+void				set_exec_sigquit(void);
+
 // utils
 char				*ft_getenv(char *name, char **envp);
 int					sh_stat(t_st_op op, int val);
 char				*ft_strndup(char *s, int len);
+int					event(void);
 // free
 void				free_2d_array(char **array);
 void				free_tokens(t_token *token);
