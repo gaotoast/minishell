@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:15:50 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/22 14:17:32 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/22 16:47:48 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,9 @@ void	print_env(char *env)
 	while (env[i] && env[i] != '=')
 		write(STDOUT_FILENO, &env[i++], 1);
 	++i;
-	if (env[i])
-	{
-		write(STDOUT_FILENO, "=\"", 2);
-		write(STDOUT_FILENO, env + i, ft_strlen(env + i));
-		write(STDOUT_FILENO, "\"", 1);
-	}
+	write(STDOUT_FILENO, "=\"", 2);
+	write(STDOUT_FILENO, env + i, ft_strlen(env + i));
+	write(STDOUT_FILENO, "\"", 1);
 	write(STDOUT_FILENO, "\n", 1);
 }
 
