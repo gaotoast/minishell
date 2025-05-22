@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 04:02:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/21 06:26:58 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/22 11:29:58 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	ft_isspace(char c)
 {
 	if (c == ' ' || c == '\f' || c == '\n'
-			|| c == '\r' || c == '\t' || c == '\v')
+		|| c == '\r' || c == '\t' || c == '\v')
 		return (1);
 	return (0);
 }
@@ -52,8 +52,8 @@ int	get_digit(char *num, int minus)
 	if (num[i] != '\0' || digit > 19)
 		return (-1);
 	if (digit == 19
-		&& ((minus== 1 && ft_strncmp(num, "9223372036854775807", 19) > 0)
-		|| (minus == -1 && ft_strncmp(num, "9223372036854775808", 19) > 0)))
+		&& ((minus == 1 && ft_strncmp(num, "9223372036854775807", 19) > 0)
+			|| (minus == -1 && ft_strncmp(num, "9223372036854775808", 19) > 0)))
 		return (-1);
 	return (digit);
 }
@@ -84,6 +84,8 @@ long long int	get_exit_num(char *num)
 
 	i = 0;
 	minus = 1;
+	if (ft_strlen(num) == 0)
+		return (-1);
 	while (ft_isspace(num[i]))
 		++i;
 	if (num[i] == '-')
@@ -96,8 +98,7 @@ long long int	get_exit_num(char *num)
 	digit = get_digit(&num[i], minus);
 	if (digit == -1)
 		return (-1);
-	rtn = ft_atol(&num[i], minus, digit);
-	rtn %= 256;
+	rtn = ft_atol(&num[i], minus, digit) % 256;
 	if (rtn < 0)
 		return (rtn + 256);
 	return (rtn);
