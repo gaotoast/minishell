@@ -4,7 +4,7 @@
 void	child_exec(t_node *node, char **envp)
 {
 	if (apply_redirs(node->redir_count, node->redirs) != 0)
-		exit (1);
+		exit(1);
 	if (!node->argv)
 		exit(0);
 	set_exec_sigint();
@@ -44,6 +44,7 @@ pid_t	run_pipeline(t_node *node, char **envp, int count)
 }
 
 // 実行部メイン処理
+// ASTのコマンドノードをリストとしてつなげる -> ヒアドキュメントの入力を処理 -> ビルトイン単体かその他かで分岐して実行
 void	execute(t_node *root, char **envp)
 {
 	pid_t	last_pid;
@@ -54,13 +55,19 @@ void	execute(t_node *root, char **envp)
 		return ;
 	first_cmd = NULL;
 	last_cmd = NULL;
-	// ビルトインコマンド単体の場合直接実行
+	link_exec_nodes(root, root->rhs, &first_cmd, &last_cmd);
+	if (handle_all_heredocs(first_cmd) != 0)
+	{
+		unlink_all_temp(first_cmd->redir_count, first_cmd->redirs);
+		sh_stat(ST_SET, 1);
+		return ;
+	}
+	// ビルトインコマンド単体の場合
 	if (root->kind == ND_CMD && root->argv && is_builtin(root->argv[0]))
 	{
 		process_builtin_direct(root, envp);
 		return ;
 	}
-	link_exec_nodes(root, root->rhs, &first_cmd, &last_cmd);
 	last_pid = run_pipeline(first_cmd, envp, 0);
 	sh_stat(ST_SET, wait_children(last_pid));
 }

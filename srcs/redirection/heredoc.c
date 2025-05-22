@@ -52,7 +52,7 @@ int	write_heredoc_input(char *temp_file, t_redir *redir)
 			break ;
 		}
 		if (ft_strncmp(line, redir->str, ft_strlen(redir->str)) == 0
-			&& ((ft_strlen(line)) == ft_strlen(redir->str)))
+			&& ft_strlen(line) == ft_strlen(redir->str))
 		{
 			free(line);
 			break ;
@@ -65,43 +65,31 @@ int	write_heredoc_input(char *temp_file, t_redir *redir)
 	return (0);
 }
 
-// 一時ファイルを開いて、読み込みFDを返してからファイルを削除する
-int	open_and_unlink_temp(char *temp_file)
+// すべてのヒアドキュメントの入力を読み取って一時ファイルを作成して書き込む
+int	handle_all_heredocs(t_node *node)
 {
-	int	read_fd;
+	int	i;
+	int	n;
 
-	read_fd = open(temp_file, O_RDONLY);
-	if (read_fd < 0)
+	n = 0;
+	while (node)
 	{
-		unlink(temp_file);
-		return (-1);
+		i = 0;
+		while (i < node->redir_count)
+		{
+			if (node->redirs[i]->kind == REDIR_HEREDOC)
+			{
+				create_temp_file(n, &node->redirs[i]->temp_file);
+				if (!node->redirs[i]->temp_file)
+					return (1);
+				if (write_heredoc_input(node->redirs[i]->temp_file,
+						node->redirs[i]) != 0)
+					return (1);
+			}
+			i++;
+			n++;
+		}
+		node = node->next_cmd;
 	}
-	unlink(temp_file);
-	return (read_fd);
-}
-
-// ヒアドキュメントのメイン処理
-int	get_heredoc_fd(t_redir *redir, int index)
-{
-	char	*temp_file;
-	int		read_fd;
-
-	if (create_temp_file(index, &temp_file) != 0)
-		return (-1);
-    set_heredoc_sigint();
-	if (write_heredoc_input(temp_file, redir) != 0)
-	{
-		free(temp_file);
-		set_main_sigint();
-		return (-1);
-	}
-	set_main_sigint();
-	read_fd = open_and_unlink_temp(temp_file);
-	if (read_fd < 0)
-	{
-		free(temp_file);
-		return (-1);
-	}
-	free(temp_file);
-	return (read_fd);
+	return (0);
 }
