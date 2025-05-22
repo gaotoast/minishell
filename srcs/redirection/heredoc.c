@@ -36,17 +36,17 @@ int	write_heredoc_input(char *temp_file, t_redir *redir)
 	}
 	while (1)
 	{
-		write(STDOUT_FILENO, "> ", 2);
-		line = get_next_line(STDIN_FILENO);
+		line = readline("> ");
 		if (!line)
 			break ;
 		if (ft_strncmp(line, redir->str, ft_strlen(redir->str)) == 0
-			&& ft_strlen(line) - 1 == ft_strlen(redir->str))
+			&& ft_strlen(line) == ft_strlen(redir->str))
 		{
 			free(line);
 			break ;
 		}
 		write(temp_fd, line, ft_strlen(line));
+		write(temp_fd, "\n", 1);
 		free(line);
 	}
 	close(temp_fd);
