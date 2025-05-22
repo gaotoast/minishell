@@ -165,6 +165,8 @@ char				*ft_union(char **split, char delim);
 char				*ft_cwd(t_pwd_op op, char *path);
 int					ft_isspace(char c);
 int					is_valid_env(char *name);
+int					ft_split_len(char **split);
+
 
 // free
 void				free_2d_array(char **array);
