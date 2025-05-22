@@ -65,39 +65,3 @@ void	exec_cmd(char **cmds, char **envp)
 	free_2d_array(cmds);
 	exit(EXIT_FAILURE);
 }
-
-void	handle_std_redirs(int in_fd, int out_fd)
-{
-	if (in_fd != STDIN_FILENO && in_fd != -1)
-	{
-		if (dup2(in_fd, STDIN_FILENO) == -1)
-		{
-			perror("minishell");
-			exit(EXIT_FAILURE);
-		}
-		close(in_fd);
-	}
-	if (out_fd != STDOUT_FILENO && out_fd != -1)
-	{
-		if (dup2(out_fd, STDOUT_FILENO) == -1)
-		{
-			perror("minishell");
-			exit(EXIT_FAILURE);
-		}
-		close(out_fd);
-	}
-}
-
-void	process_exec_cmd(t_node *node, char **envp, int in_fd, int out_fd)
-{
-	handle_std_redirs(in_fd, out_fd);
-	if (apply_redirs(node) != 0)
-		exit(EXIT_FAILURE);
-	if (is_builtin(node->argv[0]))
-	{
-		exec_builtin_cmd(node, envp);
-		exit(sh_stat(ST_GET, 0));
-	}
-	else
-		exec_cmd(node->argv, envp);
-}

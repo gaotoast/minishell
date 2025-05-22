@@ -67,23 +67,18 @@ typedef struct s_redir
 typedef struct s_node
 {
 	t_node_kind		kind;
-	char			*value;
+	// コマンドとオプション、引数
+	int				argc;
+	char			**argv;
+	// リダイレクト
+	int				redir_count;
+	t_redir			**redirs;
 	struct s_node	*lhs;
 	struct s_node	*rhs;
-	// コマンドとオプション、引数
-	char			**argv;
-	int				argc;
-	// リダイレクト
-	t_redir			**redirs;
-	int				redir_count;
+	struct s_node	*next_cmd;
+	int				in_fd;
+	int				pipefd[2];
 }					t_node;
-
-// 実行部分の子プロセス管理
-typedef struct s_exec
-{
-	int				child_count;
-	int				child_pids[128];
-}					t_exec;
 
 // minishell全体
 typedef struct s_shell
@@ -102,19 +97,19 @@ void				exec_if_absolute_path(char **cmds, char **envp);
 void				exec_cmd(char **cmds, char **envp);
 int					exec_builtin_cmd(t_node *node, char **envp);
 void				process_builtin_direct(t_node *node, char **envp);
-void				process_exec_cmd(t_node *node, char **envp, int in_fd,
-						int out_fd);
+void				link_exec_nodes(t_node *node, t_node *rhs, t_node **first,
+						t_node **last);
 void				execute(t_node *root, char **envp);
-void				execute_segment(t_node *node, t_exec *ctx, char **envp,
-						int in_fd, int out_fd);
 char				*search_path(char *cmd_name, char **path_list,
 						char *path_tail, int *status);
 char				*resolve_cmd_path(char *cmd, char *path_env, int *status);
-int					apply_redirs(t_node *node);
+int					apply_redirs(int redir_count, t_redir **redirs);
 int					get_heredoc_fd(t_redir *redir, int index);
 int					is_builtin(char *cmd);
-void				close_fds(int in_fd, int out_fd);
-void				wait_children(t_exec ctx);
+void				prepare_pipe(t_node *node);
+void				prepare_pipe_child(t_node *node, int count);
+void				prepare_pipe_parent(t_node *node, int count);
+int					wait_children(pid_t last_pid);
 
 // tokenization
 void				tokenize(char *line, t_token **tokens);
@@ -158,5 +153,6 @@ void				print_redir(t_redir *redir, int depth);
 void				print_ast(t_node *node, int depth);
 void				debug_parser(t_node *ast);
 void				debug_expand(t_node *ast);
+void				debug_exec_list(t_node *node);
 
 #endif
