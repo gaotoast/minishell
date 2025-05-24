@@ -214,7 +214,6 @@ void				set_exec_sigquit(void);
 void				*ft_env(t_env_op op, char *str);
 
 // utils
-char				*ft_getenv(char *name, char **envp);
 int					sh_stat(t_st_op op, int val);
 char				*ft_strndup(char *s, int len);
 char				*ft_union(char **split, char delim);
