@@ -6,13 +6,37 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 22:38:00 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/25 05:39:46 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/25 06:04:10 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_env	*new_env(char *str)
+
+char	*ft_strjoin_delim(char *s1, char delim, char *s2)
+{
+	char	*rtn;
+	int		len1;
+	int		len2;
+
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	rtn = (char *)malloc(sizeof(char) * (len1 + len2 + 2));
+	ft_strlcpy(rtn, s1, len1 + 1);
+	rtn[len1] = delim;
+	rtn[len1 + 1] = '\0';
+	ft_strlcat(rtn, s2, len2 + len1 + 2);
+	return (rtn);
+}
+
+/*
+新しいenv構造体をつくる
+str はAAA+=XXXを許容する
++,=以降はなくても構わない
+=がない場合VAL_SHとして、ある場合VAL_EXとして構造体が作成される
+offsetは+が存在する場合のindexのずらす値である
+*/
+t_env	*new_env(char *str, int offset)
 {
 	t_env	*rtn;
 	char	*eq;
@@ -31,9 +55,9 @@ t_env	*new_env(char *str)
 	else
 	{
 		rtn->type = VAL_EX;
-		rtn->full = ft_skip_first(str, '+');
-		rtn->name = ft_strndup(str, (int)(eq - str));
+		rtn->name = ft_strndup(str, (int)(eq - str - offset));
 		rtn->val = ft_strdup(eq + 1);
+		rtn->full = ft_strjoin_delim(rtn->name, '=', rtn->val);
 	}
 	rtn->next = NULL;
 	if ((eq && !rtn->val) || !rtn->name || !rtn->full)
@@ -47,19 +71,19 @@ t_env	*new_env(char *str)
 	return (rtn);
 }
 
-t_env	*ft_add_env(t_env **head, char *str)
+t_env	*ft_add_env(t_env **head, char *str, int offset)
 {
 	t_env	*tmp;
 
 	if (!(*head))
 	{
-		*head = new_env(str);
+		*head = new_env(str, offset);
 		return (*head);
 	}
 	tmp = *head;
 	while (tmp->next)
 		tmp = tmp->next;
-	tmp->next = new_env(str);
+	tmp->next = new_env(str, offset);
 	if (!tmp->next)
 		return (NULL);
 	return (*head);
@@ -157,22 +181,11 @@ void	*get_env_all(t_env *head, t_env_op op)
 	return (rtn);
 }
 
-char	*ft_strjoin_delim(char *s1, char delim, char *s2)
-{
-	char	*rtn;
-	int		len1;
-	int		len2;
-
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
-	rtn = (char *)malloc(sizeof(char) * (len1 + len2 + 2));
-	ft_strlcpy(rtn, s1, len1 + 1);
-	rtn[len1] = delim;
-	rtn[len1 + 1] = '\0';
-	ft_strlcat(rtn, s2, len2 + len1 + 2);
-	return (rtn);
-}
-
+/*
+既存の変数を更新する。
+存在しない場合新規作成する。
+offsetはname+=valの場合にindexをずらすための値である。
+*/
 t_env	*ft_update_env(t_env **head, char *str, int offset)
 {
 	t_env	*target;
@@ -181,7 +194,7 @@ t_env	*ft_update_env(t_env **head, char *str, int offset)
 
 	target = search_val(*head, str, offset, VAL_SH);
 	if (!target)
-		return (ft_add_env(head, str));
+		return (ft_add_env(head, str, offset));
 	val = ft_strchr(str, '=') + 1;
 	if (offset && target->type == VAL_EX)
 		tmp = ft_strjoin(target->val, val);
@@ -243,7 +256,7 @@ void	*ft_env(t_env_op op, char *str)
 	else if (op == ENV_GET_ALL_EX || op == ENV_GET_ALL_SH)
 		return (get_env_all(head, op));
 	else if (op == ENV_ADD)
-		return (ft_add_env(&head, str));
+		return (ft_add_env(&head, str, 0));
 	else if (op == ENV_SET)
 		return (ft_update_env(&head, str, 0));
 	else if (op == ENV_SET_PLUS)
