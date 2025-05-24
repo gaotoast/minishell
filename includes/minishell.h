@@ -151,15 +151,14 @@ int					consume_word(t_token **rest, char **redir_str);
 int					consume_reserved(t_token **rest, char *op);
 
 // expansion
-void				expand(t_node *node, char **envp);
+int					expand(t_node *node, char **envp);
 int					tokenize_with_expansion(t_exp_tkn **head, char *str, char **envp);
+int					split_exp_tokens(t_exp_tkn **head);
 t_exp_tkn			*expand_env_var(char **s, char **envp);
+char				**exp_token_to_argv(t_exp_tkn *head);
 t_exp_tkn			*new_exp_token(char *str, bool is_expanded);
 void				append_exp_token(t_exp_tkn **head, t_exp_tkn *new);
-void				free_exp_tokens(t_exp_tkn *token);
-char				**exp_token_to_argv(t_exp_tkn *head);
-int	split_expanded_tokens(t_exp_tkn **head);
-
+void				free_exp_tokens(t_exp_tkn *head);
 
 // bulitin
 int					cd(int argc, char **argv, char ***envp);

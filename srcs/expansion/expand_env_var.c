@@ -43,24 +43,11 @@ int	get_last_exit_status(void)
 	return (sh_stat(ST_GET, 0));
 }
 
-// 環境変数または$?を展開してexpトークンを作成
-t_exp_tkn	*expand_env_var(char **s, char **envp)
+char	*get_var_value(char *name, char **envp)
 {
-	char		*name;
-	char		*value;
-	char		*env_value;
+	char	*value;
+	char	*env_value;
 
-	(*s)++;
-	if (extract_var_name(*s, &name) < 0)
-		return (NULL);
-	if (!name)
-	{
-		value = ft_strdup("$");
-		if (!value)
-			return (NULL);
-		return (new_exp_token(ft_strdup("$"), false));
-	}
-	*s += ft_strlen(name);
 	if (ft_strncmp(name, "?", 2) == 0)
 		value = ft_itoa(get_last_exit_status());
 	else
@@ -70,9 +57,30 @@ t_exp_tkn	*expand_env_var(char **s, char **envp)
 			value = ft_strdup("");
 		else
 			value = ft_strdup(env_value);
+	}
+	return (value);
+}
+
+// 環境変数または$?を展開してexpトークンを作成
+t_exp_tkn	*expand_env_var(char **s, char **envp)
+{
+	char		*name;
+	char		*value;
+
+	(*s)++;
+	if (extract_var_name(*s, &name) < 0)
+		return (NULL);
+	if (!name)
+	{
+		value = ft_strdup("$");
 		if (!value)
 			return (NULL);
+		return (new_exp_token(value, false));
 	}
+	*s += ft_strlen(name);
+	value = get_var_value(name, envp);
 	free(name);
+	if (!value)
+		return (NULL);
 	return (new_exp_token(value, true));
 }
