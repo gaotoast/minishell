@@ -29,7 +29,7 @@ int	apply_io_redir(t_redir *redir, int flags, int std_fd)
 	fd = open(redir->str, flags, 0644);
 	if (fd < 0)
 	{
-		perror("minishell");
+		ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", redir->str, strerror(errno));
 		return (1);
 	}
 	if (dup2(fd, std_fd) == -1)
