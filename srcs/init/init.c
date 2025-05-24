@@ -79,7 +79,7 @@ int	pure_atoi(char *num)
 		rtn += num[i] - '0';
 		++i;
 	}
-	return (rtn);
+	return (rtn * sign);
 }
 
 int	is_valid_shlvl(char *num)
