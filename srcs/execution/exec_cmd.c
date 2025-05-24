@@ -60,6 +60,8 @@ void	exec_cmd(char **cmds, char **envp)
 		free_2d_array(cmds);
 		exit(status);
 	}
+	set_exec_sigint();
+	set_exec_sigquit();
 	execve(cmd_path, cmds, envp);
 	ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmds[0], strerror(errno));
 	free_2d_array(cmds);
