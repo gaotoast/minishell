@@ -39,6 +39,22 @@ char	**get_envp_copy(char **envp)
 	return (cp);
 }
 
+int	init_pwd(char **envp)
+{
+	char	*pwd;
+
+	pwd = ft_strdup(ft_getenv("PWD", envp));
+	if (!pwd)
+	{
+		pwd = malloc(sizeof(char) * (PATH_MAX + 1));
+		if (!pwd)
+			return (1);
+		getcwd(pwd, PATH_MAX);
+	}
+	ft_cwd(PWD_SET, pwd);
+	return (0);
+}
+
 int	init(t_shell **shell, char **envp)
 {
 	(*shell) = (t_shell *)malloc(sizeof(t_shell));
@@ -49,17 +65,17 @@ int	init(t_shell **shell, char **envp)
 	}
 	sh_stat(ST_SET, 0);
 	(*shell)->tokens = NULL;
-	if (!envp)
-		(*shell)->envp_cp = NULL;
-	else
+	(*shell)->envp_cp = get_envp_copy(envp);
+	if (!(*shell)->envp_cp)
 	{
-		(*shell)->envp_cp = get_envp_copy(envp);
-		if (!(*shell)->envp_cp)
-		{
-			free(*shell);
-			return (-1);
-		}
+		free(*shell);
+		return (-1);
 	}
-    (*shell)->ast = NULL;
+	if (init_pwd((*shell)->envp_cp))
+	{
+		free_2d_array((*shell)->envp_cp);
+		return (-1);
+	}
+	(*shell)->ast = NULL;
 	return (0);
 }

@@ -31,6 +31,12 @@ typedef enum e_st_op
 	ST_SET,
 }					t_st_op;
 
+typedef enum e_pwd_op
+{
+	PWD_GET,
+	PWD_SET,
+}					t_pwd_op;
+
 // 字句解析
 typedef enum e_token_type
 {
@@ -99,11 +105,11 @@ void	            init_signals(void);
 void				exec_if_relative_path(char **cmds, char **envp);
 void				exec_if_absolute_path(char **cmds, char **envp);
 void				exec_cmd(char **cmds, char **envp);
-int					exec_builtin_cmd(t_node *node, char **envp);
-void				process_builtin_direct(t_node *node, char **envp);
+int					exec_builtin_cmd(t_node *node, char ***envp);
+void				process_builtin_direct(t_node *node, char ***envp);
 void				link_exec_nodes(t_node *node, t_node *rhs, t_node **first,
 						t_node **last);
-void				execute(t_node *root, char **envp);
+void				execute(t_node *root, char ***envp);
 char				*search_path(char *cmd_name, char **path_list,
 						char *path_tail, int *status);
 char				*resolve_cmd_path(char *cmd, char *path_env, int *status);
@@ -141,6 +147,20 @@ void				expand(t_node *node, char **envp);
 char				*append_string_free(char *dst, char *src);
 char				*append_char_free(char *dst, char c);
 
+// bulitin
+int					cd(int argc, char **argv, char ***envp);
+int					echo(int argc, char **argv);
+int					export(int argc, char **argv, char ***envp);
+int					pwd(int argc, char **argv);
+int					unset(int argc, char **argv, char ***envp);
+int					env(int argc, char **argv, char **envp);
+int					ft_exit(int argc, char **argv);
+int					set_env(char *str, char ***envp, int *len);
+char				*move_to_some(char *dest, char ***envp);
+char				*move_to_env(char ***envp, char *val_name);
+int					print_envs(char **envp, int len);
+int					ft_getenv_idx(char *name, char ***envp);
+
 // signal
 void				set_main_sigint(void);
 void				set_heredoc_sigint(void);
@@ -152,7 +172,12 @@ void				set_exec_sigquit(void);
 char				*ft_getenv(char *name, char **envp);
 int					sh_stat(t_st_op op, int val);
 char				*ft_strndup(char *s, int len);
+char				*ft_union(char **split, char delim);
+char				*ft_cwd(t_pwd_op op, char *path);
+int					ft_isspace(char c);
+int					is_valid_env(char *name);
 int					event(void);
+
 // free
 void				free_2d_array(char **array);
 void				free_tokens(t_token *token);
