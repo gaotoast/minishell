@@ -55,6 +55,82 @@ int	init_pwd(char **envp)
 	return (0);
 }
 
+int	pure_atoi(char *num)
+{
+	int	rtn;
+	int	i;
+	int	sign;
+
+	rtn = 0;
+	i = 0;
+	sign = 1;
+	if (ft_isspace(num[i]))
+		++i;
+	if (num[i] == '-')
+	{
+		sign = -1;
+		++i;
+	}
+	else if (num[i] == '+')
+		++i;
+	while (ft_isdigit(num[i]))
+	{
+		rtn *= 10;
+		rtn += num[i] - '0';
+		++i;
+	}
+	return (rtn * sign);
+}
+
+int	is_valid_shlvl(char *num)
+{
+	int	i;
+
+	i = 0;
+	while (ft_isspace(num[i]))
+		++i;
+	if (num[i] == '+' || num[i] == '-')
+		++i;
+	while (ft_isdigit(num[i]))
+		++i;
+	while (ft_isspace(num[i]))
+		++i;
+	if (num[i] == '\0')
+		return (0);
+	return (1);
+}
+
+void	init_shlvl(char ***envp)
+{
+	char	*shlvl;
+	int		lvl;
+	int		len;
+
+	shlvl = ft_getenv("SHLVL", *envp);
+	len = ft_split_len(*envp);
+	if (!shlvl)
+	{
+		set_env("SHLVL=1", envp, &len);
+		return ;
+	}
+	if (is_valid_shlvl(shlvl))
+	{
+		set_env("SHLVL=1", envp, &len);
+		return ;
+	}
+	lvl = pure_atoi(shlvl);
+	if (lvl > 998)
+	{
+		printf("minishell: warning: shell level (%d) "
+			"too high, resetting to 1\n", lvl + 1);
+		set_env("SHLVL=1", envp, &len);
+	}
+	else if (lvl < 0)
+		set_env("SHLVL=0", envp, &len);
+	else
+		set_env(ft_strjoin("SHLVL=", ft_itoa(lvl + 1)), envp, &len);
+}
+
 int	init(t_shell **shell, char **envp)
 {
 	(*shell) = (t_shell *)malloc(sizeof(t_shell));
@@ -76,6 +152,7 @@ int	init(t_shell **shell, char **envp)
 		free_2d_array((*shell)->envp_cp);
 		return (-1);
 	}
+	init_shlvl(&(*shell)->envp_cp);
 	(*shell)->ast = NULL;
 	return (0);
 }
