@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	process_expand_cmds(t_exp_tkn **head, char **argv, char **envp)
+int	process_expand_cmds(t_exp_tkn **head, char **argv)
 {
 	int	i;
 
@@ -8,7 +8,7 @@ int	process_expand_cmds(t_exp_tkn **head, char **argv, char **envp)
 	while (argv[i])
 	{
 		// 変数展開とクォート除去
-		if (tokenize_with_expansion(head, argv[i], envp) != 0)
+		if (tokenize_with_expansion(head, argv[i]) != 0)
 		{
 			free_exp_tokens(*head);
 			return (1);
@@ -19,12 +19,12 @@ int	process_expand_cmds(t_exp_tkn **head, char **argv, char **envp)
 }
 
 // コマンドのargvの展開
-int	expand_cmds(t_node *node, char **envp)
+int	expand_cmds(t_node *node)
 {
 	t_exp_tkn	*head;
 
 	head = NULL;
-	if (process_expand_cmds(&head, node->argv, envp) != 0)
+	if (process_expand_cmds(&head, node->argv) != 0)
 		return (1);
 	// 変数展開の結果を単語分割
 	if (split_exp_tokens(&head) != 0)
@@ -70,7 +70,7 @@ int	process_expand_redirs(t_exp_tkn **head, char *str)
 }
 
 // リダイレクトのファイル名の展開
-int	expand_redirs(t_node *node, char **envp)
+int	expand_redirs(t_node *node)
 {
 	int			i;
 	t_exp_tkn	*new;
@@ -82,7 +82,7 @@ int	expand_redirs(t_node *node, char **envp)
 		if (node->redirs[i]->kind != REDIR_HEREDOC)
 		{
 			// 変数展開とクォート除去
-			if (tokenize_with_expansion(&new, node->redirs[i]->str, envp) != 0)
+			if (tokenize_with_expansion(&new, node->redirs[i]->str) != 0)
 			{
 				free_exp_tokens(new);
 				return (1);
@@ -99,7 +99,7 @@ int	expand_redirs(t_node *node, char **envp)
 	return (0);
 }
 
-int	expand(t_node *node, char **envp)
+int	expand(t_node *node)
 {
 	if (!node)
 		return (0);
@@ -107,19 +107,19 @@ int	expand(t_node *node, char **envp)
 	{
 		if (node->argv)
 		{
-			if (expand_cmds(node, envp) != 0)
+			if (expand_cmds(node) != 0)
 				return (1);
 		}
 		if (node->redirs)
 		{
-			if (expand_redirs(node, envp) != 0)
+			if (expand_redirs(node) != 0)
 				return (1);
 		}
 		return (0);
 	}
-	if (expand(node->lhs, envp) != 0)
+	if (expand(node->lhs) != 0)
 		return (1);
-	if (expand(node->rhs, envp) != 0)
+	if (expand(node->rhs) != 0)
 		return (1);
 	return (0);
 }

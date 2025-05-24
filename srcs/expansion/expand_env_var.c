@@ -43,7 +43,7 @@ int	get_last_exit_status(void)
 	return (sh_stat(ST_GET, 0));
 }
 
-char	*get_var_value(char *name, char **envp)
+char	*get_var_value(char *name)
 {
 	char	*value;
 	char	*env_value;
@@ -52,7 +52,7 @@ char	*get_var_value(char *name, char **envp)
 		value = ft_itoa(get_last_exit_status());
 	else
 	{
-		env_value = ft_getenv(name, envp);
+		env_value = ft_env(ENV_GET_VAL, name);
 		if (!env_value)
 			value = ft_strdup("");
 		else
@@ -62,7 +62,7 @@ char	*get_var_value(char *name, char **envp)
 }
 
 // 環境変数または$?を展開してexpトークンを作成
-t_exp_tkn	*expand_env_var(char **s, char **envp)
+t_exp_tkn	*expand_env_var(char **s)
 {
 	char		*name;
 	char		*value;
@@ -78,7 +78,7 @@ t_exp_tkn	*expand_env_var(char **s, char **envp)
 		return (new_exp_token(value, false));
 	}
 	*s += ft_strlen(name);
-	value = get_var_value(name, envp);
+	value = get_var_value(name);
 	free(name);
 	if (!value)
 		return (NULL);

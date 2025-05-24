@@ -14,7 +14,7 @@ t_exp_tkn	*extract_literal(char **s, int len)
 }
 
 // ダブルクォート内の処理
-int	handle_double_quote(t_exp_tkn **head, char **p, char **envp)
+int	handle_double_quote(t_exp_tkn **head, char **p)
 {
 	int			len;
 	t_exp_tkn	*new;
@@ -23,7 +23,7 @@ int	handle_double_quote(t_exp_tkn **head, char **p, char **envp)
 	{
 		if (**p == '$')
 		{
-			new = expand_env_var(p, envp);
+			new = expand_env_var(p);
 			if (!new)
 				return (1);
 			append_exp_token(head, new);
@@ -59,14 +59,14 @@ int	handle_single_quote(t_exp_tkn **head, char **p)
 }
 
 // クォートなし部分の処理
-int	handle_no_quote(t_exp_tkn **head, char **p, char **envp)
+int	handle_no_quote(t_exp_tkn **head, char **p)
 {
 	int			len;
 	t_exp_tkn	*new;
 
 	if (**p == '$')
 	{
-		new = expand_env_var(p, envp);
+		new = expand_env_var(p);
 		if (!new)
 			return (1);
 		append_exp_token(head, new);
@@ -85,7 +85,7 @@ int	handle_no_quote(t_exp_tkn **head, char **p, char **envp)
 }
 
 // 変数展開とクォート除去
-int	tokenize_with_expansion(t_exp_tkn **head, char *str, char **envp)
+int	tokenize_with_expansion(t_exp_tkn **head, char *str)
 {
 	char	*p;
 	int		res;
@@ -96,7 +96,7 @@ int	tokenize_with_expansion(t_exp_tkn **head, char *str, char **envp)
 		if (*p == '"')
 		{
 			p++;
-			res = handle_double_quote(head, &p, envp);
+			res = handle_double_quote(head, &p);
 			p++;
 		}
 		else if (*p == '\'')
@@ -106,7 +106,7 @@ int	tokenize_with_expansion(t_exp_tkn **head, char *str, char **envp)
 			p++;
 		}
 		else
-			res = handle_no_quote(head, &p, envp);
+			res = handle_no_quote(head, &p);
 		if (res != 0)
 			return (1);
 	}
