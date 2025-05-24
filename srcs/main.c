@@ -21,10 +21,7 @@ int	main(int argc, char **argv, char **envp)
         init_signals();
 		input = readline("minishell$ ");
 		if (!input)
-        {
-            write(STDOUT_FILENO, "exit\n", 5);
 			break ;
-        }
 		if (*input)
 			add_history(input);
         // TODO: それぞれエラー時の処理を追加
@@ -42,7 +39,7 @@ int	main(int argc, char **argv, char **envp)
 		shell->ast = NULL;
 	}
 	free_shell(shell);
-	exit(0);
+	ft_exit(1, NULL);
 }
 
 // int	main(void)
