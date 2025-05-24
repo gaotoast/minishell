@@ -51,7 +51,7 @@ void	exec_cmd(char **cmds, char **envp)
 
 	status = 1;
 	exec_if_relative_path(cmds, envp);
-	path_env = ft_getenv("PATH", envp);
+	path_env = ft_env(ENV_GET_VAL, "PATH");
 	if (!path_env || ft_strncmp(cmds[0], "/", 1) == 0)
 		exec_if_absolute_path(cmds, envp);
 	cmd_path = resolve_cmd_path(cmds[0], path_env, &status);

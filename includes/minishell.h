@@ -181,10 +181,10 @@ int					consume_word(t_token **rest, char **redir_str);
 int					consume_reserved(t_token **rest, char *op);
 
 // expansion
-int					expand(t_node *node, char **envp);
-int					tokenize_with_expansion(t_exp_tkn **head, char *str, char **envp);
+int					expand(t_node *node);
+int					tokenize_with_expansion(t_exp_tkn **head, char *str);
 int					split_exp_tokens(t_exp_tkn **head);
-t_exp_tkn			*expand_env_var(char **s, char **envp);
+t_exp_tkn			*expand_env_var(char **s);
 int					exp_token_to_argv(t_exp_tkn *head, char ***argv);
 t_exp_tkn			*new_exp_token(char *str, bool is_expanded);
 void				append_exp_token(t_exp_tkn **head, t_exp_tkn *new);
@@ -214,7 +214,6 @@ void				set_exec_sigquit(void);
 void				*ft_env(t_env_op op, char *str);
 
 // utils
-char				*ft_getenv(char *name, char **envp);
 int					sh_stat(t_st_op op, int val);
 char				*ft_strndup(char *s, int len);
 char				*ft_union(char **split, char delim);
