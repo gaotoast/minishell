@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 22:38:00 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/25 06:52:42 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/25 07:48:56 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,7 @@ t_env	*new_env(char *str, int offset)
 	if ((eq && !rtn->val) || !rtn->name || !rtn->full)
 	{
 		ft_dprintf(STDERR_FILENO, "minishell: %s\n", strerror(errno));
-		free(rtn->val);
-		free(rtn->name);
-		free(rtn);
+		free_env(rtn);
 		return (NULL);
 	}
 	return (rtn);
