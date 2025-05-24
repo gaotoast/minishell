@@ -93,16 +93,16 @@ int	tokenize_with_expansion(t_exp_tkn **head, char *str, char **envp)
 	p = str;
 	while (*p)
 	{
-		if (*p == '\'')
-		{
-			p++;
-			res = handle_single_quote(head, &p);
-			p++;
-		}
-		else if (*p == '"')
+		if (*p == '"')
 		{
 			p++;
 			res = handle_double_quote(head, &p, envp);
+			p++;
+		}
+		else if (*p == '\'')
+		{
+			p++;
+			res = handle_single_quote(head, &p);
 			p++;
 		}
 		else
