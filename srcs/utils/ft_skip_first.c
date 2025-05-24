@@ -1,30 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_util.c                                         :+:      :+:    :+:   */
+/*   ft_skip_first.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/22 14:05:05 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/22 14:06:15 by yumiyao          ###   ########.fr       */
+/*   Created: 2025/05/22 21:46:06 by yumiyao           #+#    #+#             */
+/*   Updated: 2025/05/25 04:54:50 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_valid_env(char *name)
+char	*ft_skip_first(char *str, char c)
 {
-	int	i;
+	int		i;
+	int		j;
+	int		skip;
+	char	*rtn;
 
 	i = 0;
-	if (!ft_isalpha(name[0]) && name[0] != '_')
-		return (0);
-	while (name[i])
+	skip = 0;
+	while (str[i])
 	{
-		if (ft_isalnum(name[i]) || name[i] == '_')
-			++i;
-		else
-			return (0);
+		if (!skip && str[i] == c)
+			skip = 1;
+		++i;
 	}
-	return (1);
+	rtn = malloc(sizeof(char) * (i - skip));
+	if (!rtn)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (str[i])
+	{
+		if (str[i] == c && skip)
+			skip = 0;
+		else
+			rtn[j++] = str[i];
+		++i;
+	}
+	return (rtn);
 }

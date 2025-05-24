@@ -46,7 +46,7 @@ int get_last_exit_status(void)
 // ${変数名}を変数展開した文字列を返す
 // 例: $HOME -> /home/stakada
 // 同時に${変数名}の次の文字までポインタを進める
-char	*expand_var(char **s, char **envp)
+char	*expand_var(char **s)
 {
 	char	*name;
 	char	*value;
@@ -66,7 +66,7 @@ char	*expand_var(char **s, char **envp)
 	}
 	else
 	{
-		env = ft_getenv(name, envp);
+		env = (char *)ft_env(ENV_GET_VAL, name);
 		if (!env)
 			value = ft_strdup("");
 		else
@@ -78,7 +78,7 @@ char	*expand_var(char **s, char **envp)
 
 // ${変数名}と$?を展開後の文字列を置き換える
 // 同時にクォートの除去を行う
-char	*process_quotes(char *str, char **envp)
+char	*process_quotes(char *str)
 {
 	char	*result;
 	char	*ptr;
@@ -98,7 +98,7 @@ char	*process_quotes(char *str, char **envp)
 			{
 				if (quote == '"' && *ptr == '$')
 				{
-					expanded = expand_var(&ptr, envp);
+					expanded = expand_var(&ptr);
 					if (!expanded)
 					{
 						free(result);
@@ -120,7 +120,7 @@ char	*process_quotes(char *str, char **envp)
 		}
 		else if (*ptr == '$')
 		{
-			expanded = expand_var(&ptr, envp);
+			expanded = expand_var(&ptr);
 			if (!expanded)
 			{
 				free(result);
@@ -142,11 +142,11 @@ char	*process_quotes(char *str, char **envp)
 }
 
 // 文字列を展開
-int	expand_node_str(char **str, char **envp)
+int	expand_node_str(char **str)
 {
 	char	*expanded;
 
-	expanded = process_quotes(*str, envp);
+	expanded = process_quotes(*str);
 	if (!expanded)
 		return (1);
 	free(*str);
@@ -155,14 +155,14 @@ int	expand_node_str(char **str, char **envp)
 }
 
 // ND_CMDの展開
-void	expand_cmd_node(t_node *node, char **envp)
+void	expand_cmd_node(t_node *node)
 {
 	int	i;
 
 	i = 0;
 	while (i < node->argc)
 	{
-		if (expand_node_str(&node->argv[i], envp) != 0)
+		if (expand_node_str(&node->argv[i]) != 0)
 		{
 			sh_stat(ST_SET, 1);
 			return ;
@@ -172,7 +172,7 @@ void	expand_cmd_node(t_node *node, char **envp)
 	i = 0;
 	while (i < node->redir_count)
 	{
-		if (expand_node_str(&node->redirs[i]->str, envp) != 0)
+		if (expand_node_str(&node->redirs[i]->str) != 0)
 		{
 			sh_stat(ST_SET, 1);
 			return ;
@@ -184,20 +184,20 @@ void	expand_cmd_node(t_node *node, char **envp)
 // FIXME: どこかでstat間違えて設定してそう
 
 // 変数展開メイン処理
-void	expand(t_node *node, char **envp)
+void	expand(t_node *node)
 {
 	if (!node)
 		return ;
 	// 再帰で一番左のノードから根に向かって展開
-	expand(node->lhs, envp);
+	expand(node->lhs);
 	// if (sh_stat(ST_GET, 0) != 0)
 	// 	return ;
 	// 自身がND_PIPEなら先に右のノードを展開
-	expand(node->rhs, envp);
+	expand(node->rhs);
 	// if (sh_stat(ST_GET, 0) != 0)
 		// return ;
 	// ND_CMDのみ展開を行う
 	if (node->kind != ND_CMD)
 		return ;
-	expand_cmd_node(node, envp);
+	expand_cmd_node(node);
 }

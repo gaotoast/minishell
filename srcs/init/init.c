@@ -39,75 +39,48 @@ char	**get_envp_copy(char **envp)
 	return (cp);
 }
 
-t_env	*new_env(char *str)
-{
-	t_env	*rtn;
-
-	rtn = (t_env *)malloc(sizeof(t_env));
-	if (!rtn)
-		return (NULL);
-	rtn->type = VAL_EX;
-	rtn->val = ft_strdup(str);
-	rtn->next = NULL;
-	if (!rtn->val)
-	{
-		ft_dprintf(STDERR_FILENO, "minishell: %s\n", strerror(errno));
-		free(rtn);
-		return (NULL);
-	}
-	return (rtn);
-}
-
-t_env	*add_env_last(t_env *head, char *str)
-{
-	t_env	*tmp;
-
-	if (!head)
-		return (new_env(str));
-	tmp = head;
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = new_env(str);
-	if (!tmp->next)
-		return (NULL);
-	return (tmp->next);
-}
-
-t_env	*get_env_list(char **envp)
+int	init_env(char **envp)
 {
 	t_env	*head;
-	t_env	*tmp;
 	int		i;
 
 	i = 0;
-	head = NULL;
-	tmp = NULL;
 	while (envp[i])
 	{
-		tmp = add_env_last(tmp, envp[i]);
-		if (i == 0)
-			head = tmp;
-		if (!tmp)
+		head = (t_env *)ft_env(ENV_ADD, envp[i]);
+		if (!head)
 		{
-			free_envs(head);
-			return (NULL);
+			ft_env(ENV_DEL_ALL, NULL);
+			return (1);
 		}
 		++i;
 	}
-	return (head);
+	return (0);
 }
 
-int	init_pwd(char **envp)
+int	init_pwd(void)
 {
 	char	*pwd;
 
-	pwd = ft_strdup(ft_getenv("PWD", envp));
+	pwd = ft_env(ENV_GET_VAL, "PWD");
 	if (!pwd)
 	{
 		pwd = malloc(sizeof(char) * (PATH_MAX + 1));
 		if (!pwd)
+		{
+			perror("minishell: ");
 			return (1);
+		}
 		getcwd(pwd, PATH_MAX);
+	}
+	else
+	{
+		pwd = ft_strdup(pwd);
+		if (!pwd)
+		{
+			perror("minishell: ");
+			return (1);
+		}
 	}
 	ft_cwd(PWD_SET, pwd);
 	return (0);
@@ -158,35 +131,28 @@ int	is_valid_shlvl(char *num)
 	return (1);
 }
 
-void	init_shlvl(char ***envp)
+void	init_shlvl(void)
 {
 	char	*shlvl;
 	int		lvl;
-	int		len;
 
-	shlvl = ft_getenv("SHLVL", *envp);
-	len = ft_split_len(*envp);
-	if (!shlvl)
+	shlvl = ft_env(ENV_GET_VAL, "SHLVL");
+	if (!shlvl || is_valid_shlvl(shlvl))
 	{
-		set_env("SHLVL=1", envp, &len);
-		return ;
-	}
-	if (is_valid_shlvl(shlvl))
-	{
-		set_env("SHLVL=1", envp, &len);
+		ft_env(ENV_ADD, "SHLVL=1");
 		return ;
 	}
 	lvl = pure_atoi(shlvl);
 	if (lvl > 998)
 	{
-		printf("minishell: warning: shell level (%d) "
+		ft_dprintf(STDERR_FILENO, "minishell: warning: shell level (%d) "
 			"too high, resetting to 1\n", lvl + 1);
-		set_env("SHLVL=1", envp, &len);
+		ft_env(ENV_SET, "SHLVL=1");
 	}
 	else if (lvl < 0)
-		set_env("SHLVL=0", envp, &len);
+		ft_env(ENV_SET, "SHLVL=0");
 	else
-		set_env(ft_strjoin("SHLVL=", ft_itoa(lvl + 1)), envp, &len);
+		ft_env(ENV_SET, ft_strjoin("SHLVL=", ft_itoa(lvl + 1)));
 }
 
 int	init(t_shell **shell, char **envp)
@@ -199,24 +165,18 @@ int	init(t_shell **shell, char **envp)
 	}
 	sh_stat(ST_SET, 0);
 	(*shell)->tokens = NULL;
-	(*shell)->envp_cp = get_envp_copy(envp);
-	if (!(*shell)->envp_cp)
+	if (init_env(envp))
 	{
 		free(*shell);
 		return (-1);
 	}
-	(*shell)->env_list = get_env_list(envp);
-	if (!(*shell)->env_list)
+	if (init_pwd())
 	{
 		free(*shell);
+		ft_env(ENV_DEL_ALL, NULL);
 		return (-1);
 	}
-	if (init_pwd((*shell)->envp_cp))
-	{
-		free_2d_array((*shell)->envp_cp);
-		return (-1);
-	}
-	init_shlvl(&(*shell)->envp_cp);
+	init_shlvl();
 	(*shell)->ast = NULL;
 	return (0);
 }

@@ -28,9 +28,9 @@ int	main(int argc, char **argv, char **envp)
 		tokenize(input, &shell->tokens);
 		// debug_tokenizer(shell->tokens);
         parse(shell->tokens, &shell->ast);
-		expand(shell->ast, shell->envp_cp);
+		expand(shell->ast);
 		// debug_expand(shell->ast);
-		execute(shell->ast, &shell->envp_cp);
+		execute(shell->ast);
 		// 毎ループ更新されるためfree
 		free(input);
 		free_tokens(shell->tokens);
@@ -38,6 +38,7 @@ int	main(int argc, char **argv, char **envp)
 		free_ast(shell->ast);
 		shell->ast = NULL;
 	}
+	ft_env(ENV_DEL_ALL, NULL);
 	free_shell(shell);
 	ft_exit(1, NULL);
 }

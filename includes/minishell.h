@@ -37,6 +37,19 @@ typedef enum e_pwd_op
 	PWD_SET,
 }					t_pwd_op;
 
+typedef enum e_env_op
+{
+	ENV_GET_VAL,
+	ENV_GET_STRUCT,
+	ENV_GET_ALL_EX,
+	ENV_GET_ALL_SH,
+	ENV_ADD,
+	ENV_SET,
+	ENV_SET_PLUS,
+	ENV_DEL,
+	ENV_DEL_ALL
+}					t_env_op;
+
 typedef enum e_val_type
 {
 	VAL_SH,
@@ -46,7 +59,9 @@ typedef enum e_val_type
 typedef struct s_env
 {
 	t_val_type		type;
+	char			*name;
 	char			*val;
+	char			*full;
 	struct s_env	*next;
 }					t_env;
 
@@ -120,11 +135,11 @@ void	            init_signals(void);
 void				exec_if_relative_path(char **cmds, char **envp);
 void				exec_if_absolute_path(char **cmds, char **envp);
 void				exec_cmd(char **cmds, char **envp);
-int					exec_builtin_cmd(t_node *node, char ***envp);
-void				process_builtin_direct(t_node *node, char ***envp);
+int					exec_builtin_cmd(t_node *node);
+void				process_builtin_direct(t_node *node);
 void				link_exec_nodes(t_node *node, t_node *rhs, t_node **first,
 						t_node **last);
-void				execute(t_node *root, char ***envp);
+void				execute(t_node *root);
 char				*search_path(char *cmd_name, char **path_list,
 						char *path_tail, int *status);
 char				*resolve_cmd_path(char *cmd, char *path_env, int *status);
@@ -158,23 +173,21 @@ int					consume_word(t_token **rest, char **redir_str);
 int					consume_reserved(t_token **rest, char *op);
 
 // expansion
-void				expand(t_node *node, char **envp);
+void				expand(t_node *node);
 char				*append_string_free(char *dst, char *src);
 char				*append_char_free(char *dst, char c);
 
 // bulitin
-int					cd(int argc, char **argv, char ***envp);
+int					cd(int argc, char **argv);
 int					echo(int argc, char **argv);
-int					export(int argc, char **argv, char ***envp);
+int					export(int argc, char **argv);
 int					pwd(int argc, char **argv);
-int					unset(int argc, char **argv, char ***envp);
-int					env(int argc, char **argv, char **envp);
+int					unset(int argc, char **argv);
+int					env(int argc, char **argv);
 int					ft_exit(int argc, char **argv);
-int					set_env(char *str, char ***envp, int *len);
-char				*move_to_some(char *dest, char ***envp);
-char				*move_to_env(char ***envp, char *val_name);
-int					print_envs(char **envp, int len);
-int					ft_getenv_idx(char *name, char ***envp);
+char				*move_to_some(char *dest);
+char				*move_to_env(char *val_name);
+int					print_envs(char **envp);
 
 // signal
 void				set_main_sigint(void);
@@ -182,6 +195,9 @@ void				set_heredoc_sigint(void);
 void				set_exec_sigint(void);
 void				set_main_sigquit(void);
 void				set_exec_sigquit(void);
+
+// env
+void				*ft_env(t_env_op op, char *str);
 
 // utils
 char				*ft_getenv(char *name, char **envp);
@@ -192,7 +208,7 @@ char				*ft_cwd(t_pwd_op op, char *path);
 int					ft_isspace(char c);
 int					is_valid_env(char *name);
 int					event(void);
-char				*ft_strfilter(char *str, char c);
+char				*ft_skip_first(char *str, char c);
 int					ft_split_len(char **split);
 
 
@@ -202,7 +218,7 @@ void				free_tokens(t_token *token);
 void				free_redirs(t_redir **redirs);
 void				free_ast(t_node *ast);
 void				free_shell(t_shell *shell);
-void				free_envs(t_env *env_head);
+void				free_env(t_env *env);
 
 // debug
 void				print_tokens(t_token *token);

@@ -6,140 +6,80 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 02:47:53 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/24 17:06:19 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/25 05:19:21 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	add_bottom_env(char *str, char ***envp, int *len)
+int	is_valid_env(char *str)
 {
-	char	**rtn;
-	int		i;
+	int	i;
 
-	rtn = (char **)malloc(sizeof(char *) * (*len + 2));
-	if (!rtn)
-	{
-		perror("minishell");
-		return (2);
-	}
 	i = 0;
-	while (i < *len)
+	if (!ft_isalpha(str[0]) && str[0] != '_')
+		return (0);
+	while (str[i] && str[i] != '+' && str[i] != '=')
 	{
-		rtn[i] = (*envp)[i];
+		if (!ft_isalnum(str[i]) && str[0] != '_')
+			return (0);
 		++i;
 	}
-	rtn[i] = ft_strdup(str);
-	rtn[i + 1] = NULL;
-	free(*envp);
-	*envp = rtn;
-	++(*len);
-	return (0);
+	if (str[i] == '+' && str[i + 1] != '=')
+		return (0);
+	return (1);
 }
 
-int	overwrite_env(char *str, char ***envp, int idx)
+int	get_eq_idx(char *str, int *plus)
 {
-	char	*rtn;
-
-	rtn = ft_strdup(str);
-	if (!rtn)
-	{
-		perror("minishell");
-		return (2);
-	}
-	free((*envp)[idx]);
-	(*envp)[idx] = rtn;
-	return (0);
-}
-
-int	extent_env(char *str, char ***envp, int idx)
-{
-	char	*rtn;
-
-	rtn = ft_strjoin((*envp)[idx], str);
-	if (!rtn)
-	{
-		perror("minishell");
-		return (2);
-	}
-	free((*envp)[idx]);
-	(*envp)[idx] = rtn;
-	return (0);
-}
-
-int	get_eq_idx(char *str)
-{
-	int	i;
+	int		i;
+	char	*eq;
 
 	i = 0;
-	if (!str)
-		return (-1);
-	if (!ft_isalpha(str[0]) && str[0] != '_')
-		return (-1);
-	while (str[i] != '=' && ft_strncmp(&str[i], "+=", 2) != 0)
+	*plus = 0;
+	if (!str || !is_valid_env(str))
 	{
-		if (ft_isalnum(str[i]) || str[i] == '_')
-			++i;
-		else
-			return (-1);
+		ft_dprintf(STDERR_FILENO, "minishell: export: `%s"
+			"' :not a valid identifier\n", str);
+		return (-1);
 	}
-	return (i);
+	eq = ft_strchr(str, '=');
+	if (eq && *(eq - 1) == '+')
+		*plus = 1;
+	return ((int)(eq - str));
 }
 
-int	set_env(char *str, char ***envp, int *len)
+t_env	*set_env(char *str)
 {
 	int	i;
-	int	j;
+	int	plus;
 	//TODO エラー処理
 
-	i = get_eq_idx(str);
-	j = 0;
+	i = get_eq_idx(str, &plus);
 	if (i == -1)
-		return (1);
-	while (j < *len)
-	{
-		if (ft_strncmp((*envp)[j], str, i) == 0 && (*envp)[j][i] == '=')
-			break ;
-		else
-			++j;
-	}
-	if (j != *len && str[i] == '+')
-		return (extent_env(&str[i + 2], envp, j));
-	else if (j != *len)
-		return (overwrite_env(str, envp, j));
-	else if (str[i] == '+')
-		return (add_bottom_env(ft_strfilter(str, '+'), envp, len));
+		return (NULL);
+	if (plus)
+		return (ft_env(ENV_SET_PLUS, str));
 	else
-		return (add_bottom_env(str, envp, len));
+		return (ft_env(ENV_SET, str));
 }
 
-int	export(int argc, char **argv, char ***envp)
+int	export(int argc, char **argv)
 {
-	int	env_len;
-	int	i;
-	int	rtn;
-	int	error;
+	int		i;
+	t_env	*rtn;
+	int		error;
 
-	env_len = 0;
-	while ((*envp)[env_len])
-		++env_len;
 	if (argc == 1)
-		return (print_envs(*envp, env_len));
+		return (print_envs((char **)(ft_env(ENV_GET_ALL_EX, NULL))));
 	i = 1;
 	rtn = 0;
 	error = 0;
 	while (i < argc && argv[i])
 	{
-		rtn = set_env(argv[i], envp, &env_len);
-		if (rtn == 2)
-			return (EXIT_FAILURE);
-		else if (rtn == 1)
-		{
-			write(STDERR_FILENO, "minishell: export: `", 20);
-			write(STDERR_FILENO, argv[i], strlen(argv[i]));
-			write(STDERR_FILENO, "' :not a valid identifier\n", 26);
+		rtn = set_env(argv[i]);
+		if (!rtn)
 			error = 1;
-		}
 		++i;
 	}
 	if (error)

@@ -6,78 +6,51 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/22 16:31:31 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/25 02:45:19 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_getenv_idx(char *name, char ***envp)
+char	*move_to_env(char *val_name)
 {
-	int	i;
-	int	name_len;
-
-	if (!is_valid_env(name))
-		return (-1);
-	i = 0;
-	name_len = ft_strlen(name);
-	while ((*envp)[i])
-	{
-		if (ft_strncmp(name, (*envp)[i], name_len) == 0
-			&& (*envp)[i][name_len] == '=')
-			return (i);
-		++i;
-	}
-	return (-1);
-}
-
-char	*move_to_env(char ***envp, char *val_name)
-{
-	int		val_idx;
 	int		res;
-	char	*path;
+	t_env	*env;
 
-	val_idx = ft_getenv_idx(val_name, envp);
-	if (val_idx < 0)
+	env = (t_env *)ft_env(ENV_GET_STRUCT, val_name);
+	if (!env)
 	{
-		write(STDERR_FILENO, "minishell: cd: ", 16);
-		write(STDERR_FILENO, val_name, ft_strlen(val_name));
-		write(STDERR_FILENO, " not set\n", 9);
+		ft_dprintf(STDOUT_FILENO, "minishell: cd: %s not set\n", val_name);
 		return (NULL);
 	}
-	res = chdir((*envp)[val_idx] + ft_strlen(val_name) + 1);
-	path = ft_getenv(val_name, *envp);
+	res = chdir(env->val);
 	if (res != 0)
 	{
 		perror("minishell: ");
 		return (NULL);
 	}
-	return (path);
+	return (env->val);
 }
 
-void	update_envs(char *path, char ***envp)
+void	update_envs(char *path)
 {
-	char	*old_pwd;
-	char	*pwd;
-	int		i;
+	t_env	*old_pwd;
+	t_env	*pwd;
 	char	*cp_path;
 
-	i = 0;
 	cp_path = ft_strdup(path);
 	if (!cp_path)
 		return ;
-	while ((*envp)[i])
-		++i;
-	old_pwd = ft_getenv("OLDPWD", *envp);
-	pwd = ft_getenv("PWD", *envp);
+	old_pwd = (t_env *)ft_env(ENV_GET_STRUCT, "OLDPWD");
+	pwd = (t_env *)ft_env(ENV_GET_STRUCT, "PWD");
 	if (pwd && old_pwd)
-		set_env(ft_strjoin("OLDPWD=", pwd), envp, &i);
+		ft_env(ENV_SET, ft_strjoin("OLDPWD=", pwd->val));
 	if (pwd)
-		set_env(ft_strjoin("PWD=", path), envp, &i);
+		ft_env(ENV_SET, ft_strjoin("PWD=", path));
 	ft_cwd(PWD_SET, cp_path);
 }
 
-int	cd(int argc, char **argv, char ***envp)
+int	cd(int argc, char **argv)
 {
 	char	*path;
 
@@ -87,14 +60,14 @@ int	cd(int argc, char **argv, char ***envp)
 		return (EXIT_FAILURE);
 	}
 	if (argc == 1)
-		path = move_to_env(envp, "HOME");
+		path = move_to_env("HOME");
 	else
-		path = move_to_some(argv[1], envp);
+		path = move_to_some(argv[1]);
 	if (!path)
 		return (EXIT_FAILURE);
 	else
 	{
-		update_envs(path, envp);
+		update_envs(path);
 	}
 	return (EXIT_SUCCESS);
 }
