@@ -1,5 +1,21 @@
 #include "minishell.h"
 
+int	is_empty_cmds(char **argv)
+{
+	int	i;
+
+	if (!argv || !argv[0])
+		return (1);
+	i = 0;
+	while (argv[i])
+	{
+		if (argv[i][0] != '\0')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 // 子プロセス内での実行
 void	child_exec(t_node *node)
 {
@@ -10,7 +26,7 @@ void	child_exec(t_node *node)
 		exit(1);
 	if (apply_redirs(node->redir_count, node->redirs) != 0)
 		exit(1);
-	if (!node->argv)
+	if (is_empty_cmds(node->argv))
 		exit(0);
 	if (is_builtin(node->argv[0]))
 	{

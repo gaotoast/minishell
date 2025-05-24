@@ -6,32 +6,64 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 00:20:46 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/04/18 00:40:06 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/24 18:28:03 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int	is_n_option(char *opt)
+{
+	int	i;
+
+	if (opt[0] != '-')
+		return (0);
+	i = 1;
+	while (opt[i])
+	{
+		if (opt[i] != 'n')
+			return (0);
+		++i;
+	}
+	return (1);
+}
+
+int	check_argv(char **argv, int *endnew)
+{
+	int	i;
+	int	op;
+
+	i = 1;
+	op = 1;
+	*endnew = 1;
+	while (argv[i])
+	{
+		if (is_n_option(argv[i]))
+		{
+			op = i + 1;
+			*endnew = 0;
+		}
+		++i;
+	}
+	return (op);
+}
+
 /* TODO : libftの使用*/
 int	echo(int argc, char **argv)
 {
-	char	endnew;
+	int	endnew;
 	int		i;
 
 	if (argc < 1)
 		return (EXIT_SUCCESS);
-	if (argc >= 2 && ft_strncmp(argv[1], "-n", 3) == 0)
-		endnew = 1;
-	else
-		endnew = 0;
-	i = 1 + endnew;
+	i = check_argv(argv, &endnew);
 	while (i < argc)
 	{
 		printf("%s", argv[i++]);
 		if (i < argc)
 			printf(" ");
 	}
-	if (!endnew)
+	if (endnew)
 		printf("\n");
 	return (EXIT_SUCCESS);
 }
