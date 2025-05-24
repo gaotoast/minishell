@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:15:50 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/22 16:47:48 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/25 01:21:45 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,17 @@ void	print_env(char *env)
 	write(STDOUT_FILENO, "\n", 1);
 }
 
-int	print_envs(char **envp, int len)
+void	sort_envs(char **envp)
 {
 	char	*tmp;
 	int		i;
 	int		j;
+	int		len;
 
+	len = 0;
+	while (envp[len])
+		++len;
 	i = 0;
-	// ascii順にソート
 	while (i < len - 1)
 	{
 		j = i + 1;
@@ -57,8 +60,17 @@ int	print_envs(char **envp, int len)
 		}
 		++i;
 	}
+}
+
+int	print_envs(char **envp)
+{
+	int	i;
+
+	if (!envp)
+		return (EXIT_FAILURE);
+	sort_envs(envp);
 	i = 0;
 	while (envp[i])
 		print_env(envp[i++]);
-	return (0);
+	return (EXIT_SUCCESS);
 }

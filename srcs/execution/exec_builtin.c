@@ -3,7 +3,7 @@
 // ビルトインコマンドを実行
 // 関数の戻り値をexitステータスにする
 // TODO: marge後コメントアウトを外す
-int	exec_builtin_cmd(t_node *node, char ***envp)
+int	exec_builtin_cmd(t_node *node)
 {
 	char	*cmd;
 
@@ -11,15 +11,15 @@ int	exec_builtin_cmd(t_node *node, char ***envp)
 	if (ft_strncmp(cmd, "echo", 5) == 0)
 		sh_stat(ST_SET, echo(node->argc, node->argv));
 	else if (ft_strncmp(cmd, "cd", 3) == 0)
-		sh_stat(ST_SET, cd(node->argc, node->argv, envp));
+		sh_stat(ST_SET, cd(node->argc, node->argv));
 	else if (ft_strncmp(cmd, "pwd", 4) == 0)
 		sh_stat(ST_SET, pwd(node->argc, node->argv));
 	else if (ft_strncmp(cmd, "export", 7) == 0)
-		sh_stat(ST_SET, export(node->argc, node->argv, envp));
+		sh_stat(ST_SET, export(node->argc, node->argv));
 	else if (ft_strncmp(cmd, "unset", 6) == 0)
-		sh_stat(ST_SET, unset(node->argc, node->argv, envp));
+		sh_stat(ST_SET, unset(node->argc, node->argv));
 	else if (ft_strncmp(cmd, "env", 4) == 0)
-		sh_stat(ST_SET, env(node->argc, node->argv, *envp));
+		sh_stat(ST_SET, env(node->argc, node->argv));
 	else if (ft_strncmp(cmd, "exit", 5) == 0)
 		sh_stat(ST_SET, ft_exit(node->argc, node->argv));
 	return (sh_stat(ST_GET, 0));
@@ -44,7 +44,7 @@ int	restore_std_fds(int stashed_stdin, int stashed_stdout)
 }
 
 // 標準入出力を退避（複製）→リダイレクト適用→ビルトインコマンドを実行→標準入出力を戻す
-void	process_builtin_direct(t_node *node, char ***envp)
+void	process_builtin_direct(t_node *node)
 {
 	int	stashed_stdin;
 	int	stashed_stdout;
@@ -58,7 +58,7 @@ void	process_builtin_direct(t_node *node, char ***envp)
 		return ;
 	}
 	if (apply_redirs(node->redir_count, node->redirs) == 0)
-		exec_builtin_cmd(node, envp);
+		exec_builtin_cmd(node);
 	else
 		sh_stat(ST_SET, 1);
 	if (restore_std_fds(stashed_stdin, stashed_stdout) != 0)
