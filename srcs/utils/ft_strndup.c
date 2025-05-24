@@ -11,7 +11,7 @@ char	*ft_strndup(char *s, int len)
 	new = (char *)malloc(sizeof(char) * (len + 1));
 	if (!new)
 	{
-		perror("minishell");
+		perror("minishell: malloc");
 		return (NULL);
 	}
 	i = 0;
