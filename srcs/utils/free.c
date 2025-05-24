@@ -70,3 +70,18 @@ void	free_shell(t_shell *shell)
 	if (shell->envp_cp)
 		free_2d_array(shell->envp_cp);
 }
+
+void	free_envs(t_env *env_head)
+{
+	t_env	*tmp;
+
+	if (!env_head)
+		return ;
+	while (env_head)
+	{
+		tmp = env_head->next;
+		free(env_head->val);
+		free(env_head);
+		env_head = tmp;
+	}
+}

@@ -39,6 +39,64 @@ char	**get_envp_copy(char **envp)
 	return (cp);
 }
 
+t_env	*new_env(char *str)
+{
+	t_env	*rtn;
+
+	rtn = (t_env *)malloc(sizeof(t_env));
+	if (!rtn)
+		return (NULL);
+	rtn->type = VAL_EX;
+	rtn->val = ft_strdup(str);
+	rtn->next = NULL;
+	if (!rtn->val)
+	{
+		ft_dprintf(STDERR_FILENO, "minishell: %s\n", strerror(errno));
+		free(rtn);
+		return (NULL);
+	}
+	return (rtn);
+}
+
+t_env	*add_env_last(t_env *head, char *str)
+{
+	t_env	*tmp;
+
+	if (!head)
+		return (new_env(str));
+	tmp = head;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new_env(str);
+	if (!tmp->next)
+		return (NULL);
+	return (tmp->next);
+}
+
+t_env	*get_env_list(char **envp)
+{
+	t_env	*head;
+	t_env	*tmp;
+	int		i;
+
+	i = 0;
+	head = NULL;
+	tmp = NULL;
+	while (envp[i])
+	{
+		tmp = add_env_last(tmp, envp[i]);
+		if (i == 0)
+			head = tmp;
+		if (!tmp)
+		{
+			free_envs(head);
+			return (NULL);
+		}
+		++i;
+	}
+	return (head);
+}
+
 int	init_pwd(char **envp)
 {
 	char	*pwd;
@@ -143,6 +201,12 @@ int	init(t_shell **shell, char **envp)
 	(*shell)->tokens = NULL;
 	(*shell)->envp_cp = get_envp_copy(envp);
 	if (!(*shell)->envp_cp)
+	{
+		free(*shell);
+		return (-1);
+	}
+	(*shell)->env_list = get_env_list(envp);
+	if (!(*shell)->env_list)
 	{
 		free(*shell);
 		return (-1);

@@ -37,6 +37,20 @@ typedef enum e_pwd_op
 	PWD_SET,
 }					t_pwd_op;
 
+typedef enum e_val_type
+{
+	VAL_SH,
+	VAL_EX
+}					t_val_type;
+
+typedef struct s_env
+{
+	t_val_type		type;
+	char			*val;
+	struct s_env	*next;
+}					t_env;
+
+
 // 字句解析
 typedef enum e_token_type
 {
@@ -94,6 +108,7 @@ typedef struct s_node
 typedef struct s_shell
 {
 	char			**envp_cp;
+	t_env			*env_list;
 	t_token			*tokens;
 	t_node			*ast;
 }					t_shell;
@@ -187,6 +202,7 @@ void				free_tokens(t_token *token);
 void				free_redirs(t_redir **redirs);
 void				free_ast(t_node *ast);
 void				free_shell(t_shell *shell);
+void				free_envs(t_env *env_head);
 
 // debug
 void				print_tokens(t_token *token);
