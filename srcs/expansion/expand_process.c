@@ -74,8 +74,7 @@ int	handle_no_quote(t_exp_tkn **head, char **p, char **envp)
 	else
 	{
 		len = 0;
-		while ((*p)[len] && (*p)[len] != '\'' && (*p)[len] != '"'
-			&& (*p)[len] != '$')
+		while ((*p)[len] && (*p)[len] != '$')
 			len++;
 		new = extract_literal(p, len);
 		if (!new)

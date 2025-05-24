@@ -155,10 +155,11 @@ int					expand(t_node *node, char **envp);
 int					tokenize_with_expansion(t_exp_tkn **head, char *str, char **envp);
 int					split_exp_tokens(t_exp_tkn **head);
 t_exp_tkn			*expand_env_var(char **s, char **envp);
-char				**exp_token_to_argv(t_exp_tkn *head);
+int					exp_token_to_argv(t_exp_tkn *head, char ***argv);
 t_exp_tkn			*new_exp_token(char *str, bool is_expanded);
 void				append_exp_token(t_exp_tkn **head, t_exp_tkn *new);
 void				free_exp_tokens(t_exp_tkn *head);
+int					count_argv(char **argv);
 
 // bulitin
 int					cd(int argc, char **argv, char ***envp);
@@ -210,5 +211,7 @@ void				print_ast(t_node *node, int depth);
 void				debug_parser(t_node *ast);
 void				debug_expand(t_node *ast);
 void				debug_exec_list(t_node *node);
+void	print_exp_token_list(t_exp_tkn *head);
+void	print_2d_array(char **array);
 
 #endif

@@ -22,7 +22,6 @@ int	process_expand_cmds(t_exp_tkn **head, char **argv, char **envp)
 int	expand_cmds(t_node *node, char **envp)
 {
 	t_exp_tkn	*head;
-	char		**new_argv;
 
 	head = NULL;
 	if (process_expand_cmds(&head, node->argv, envp) != 0)
@@ -34,12 +33,10 @@ int	expand_cmds(t_node *node, char **envp)
 		return (1);
 	}
 	// リストから新しいargvを構築して割当→元のargvを解放
-	new_argv = exp_token_to_argv(head);
+	exp_token_to_argv(head, &node->argv);
+	// argcを更新
+	node->argc = count_argv(node->argv);
 	free_exp_tokens(head);
-	if (!new_argv)
-		return (1);
-	free_2d_array(node->argv);
-	node->argv = new_argv;
 	return (0);
 }
 

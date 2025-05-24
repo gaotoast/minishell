@@ -1,7 +1,7 @@
 #include "minishell.h"
 
-// 空でない文字列を数える
-int	count_non_empty_tokens(t_exp_tkn *head)
+// 文字列の数を数える
+int	count_exp_tokens(t_exp_tkn *head)
 {
 	int			count;
 	t_exp_tkn	*cur;
@@ -10,13 +10,13 @@ int	count_non_empty_tokens(t_exp_tkn *head)
 	cur = head;
 	while (cur)
 	{
-		if (cur->str[0] != '\0')
-			count++;
+		count++;
 		cur = cur->next;
 	}
 	return (count);
 }
 
+// リストから新しい二次元配列に文字列をコピー
 int	copy_exp_to_argv(char **argv, t_exp_tkn *head)
 {
 	t_exp_tkn	*cur;
@@ -26,22 +26,20 @@ int	copy_exp_to_argv(char **argv, t_exp_tkn *head)
 	i = 0;
 	while (cur)
 	{
-		if (cur->str[0] != '\0')
+		argv[i] = ft_strdup(cur->str);
+		if (!argv[i])
 		{
-			argv[i] = ft_strdup(cur->str);
-			if (!argv[i])
-			{
-				free_2d_array(argv);
-				return (1);
-			}
-			i++;
+			free_2d_array(argv);
+			return (1);
 		}
+		i++;
 		cur = cur->next;
 	}
 	argv[i] = NULL;
 	return (0);
 }
 
+// リストから新しい二次元配列を構築
 char	**build_argv_from_exp(t_exp_tkn *head, int count)
 {
 	char	**argv;
@@ -58,14 +56,17 @@ char	**build_argv_from_exp(t_exp_tkn *head, int count)
 }
 
 // 空文字列以外の文字列からargvを構築
-char	**exp_token_to_argv(t_exp_tkn *head)
+int	exp_token_to_argv(t_exp_tkn *head, char ***argv)
 {
-	int		count;
-	char	**argv;
+	int	count;
 
-	count = count_non_empty_tokens(head);
+	count = count_exp_tokens(head);
+	free_2d_array(*argv);
 	if (count == 0)
-		return (NULL);
-	argv = build_argv_from_exp(head, count);
-	return (argv);
+	{
+		*argv = NULL;
+		return (0);
+	}
+	*argv = build_argv_from_exp(head, count);
+	return (0);
 }
