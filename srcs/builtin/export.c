@@ -29,7 +29,7 @@ int	add_bottom_env(char *str, char ***envp, int *len)
 		rtn[i] = (*envp)[i];
 		++i;
 	}
-	rtn[i] = str;
+	rtn[i] = ft_strdup(str);
 	rtn[i + 1] = NULL;
 	free(*envp);
 	*envp = rtn;

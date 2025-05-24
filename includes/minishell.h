@@ -9,6 +9,7 @@
 # include <linux/limits.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/stat.h>
@@ -17,6 +18,8 @@
 # include <unistd.h>
 // debug用
 # include <stdbool.h>
+
+extern volatile sig_atomic_t    g_sig_received;
 
 // TODO: 頭に"./tmp"をつける
 # define HEREDOC_TMP "heredoc_tmp_"
@@ -97,7 +100,7 @@ typedef struct s_shell
 
 // init
 int					init(t_shell **shell, char **envp);
-
+void	            init_signals(void);
 // execution
 void				exec_if_relative_path(char **cmds, char **envp);
 void				exec_if_absolute_path(char **cmds, char **envp);
@@ -128,7 +131,7 @@ int					is_two_metachar(char *p);
 int					is_single_metachar(char *p);
 int					is_two_metachar(char *p);
 int					is_quote(char *p);
-int					is_space(char c);
+int					is_blank(char c);
 
 // parsing
 void				parse(t_token *tokens, t_node **ast);
@@ -156,6 +159,14 @@ int					set_env(char *str, char ***envp, int *len);
 char				*move_to_some(char *dest, char ***envp);
 char				*move_to_env(char ***envp, char *val_name);
 int					print_envs(char **envp, int len);
+int					ft_getenv_idx(char *name, char ***envp);
+
+// signal
+void				set_main_sigint(void);
+void				set_heredoc_sigint(void);
+void				set_exec_sigint(void);
+void				set_main_sigquit(void);
+void				set_exec_sigquit(void);
 
 // utils
 char				*ft_getenv(char *name, char **envp);
@@ -166,7 +177,7 @@ char				*ft_cwd(t_pwd_op op, char *path);
 int					ft_isspace(char c);
 int					is_valid_env(char *name);
 int					ft_split_len(char **split);
-
+int					event(void);
 
 // free
 void				free_2d_array(char **array);

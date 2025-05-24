@@ -6,31 +6,11 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 21:58:27 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/22 14:06:10 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/22 16:18:17 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// 指定された変数名のindexを返す
-int	ft_getenvidx(char *name, char ***envp)
-{
-	int	i;
-	int	name_len;
-
-	if (!is_valid_env(name))
-		return (-1);
-	i = 0;
-	name_len = ft_strlen(name);
-	while ((*envp)[i])
-	{
-		if (ft_strncmp(name, (*envp)[i], name_len) == 0
-			&& (*envp)[i][name_len] == '=')
-			return (i);
-		++i;
-	}
-	return (-1);
-}
 
 // rm_index番目をfreeしそれ以外はcopyした新しいenvpを作成し代入する
 int	rm_env(int rm_idx, char ***envp)
@@ -79,7 +59,7 @@ int	unset(int argc, char **argv, char ***envp)
 	error = 0;
 	while (i < argc && argv[i])
 	{
-		env_idx = ft_getenvidx(argv[i], envp);
+		env_idx = ft_getenv_idx(argv[i], envp);
 		if (env_idx < 0)
 		{
 			write(STDERR_FILENO, "minishell: unset: `", 19);
