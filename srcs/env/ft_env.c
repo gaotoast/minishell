@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 22:38:00 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/25 06:39:29 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/25 06:52:42 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,6 +181,7 @@ void	*get_env_all(t_env *head, t_env_op op)
 			rtn[i++] = tmp->full;
 		tmp = tmp->next;
 	}
+	rtn[i] = NULL;
 	return (rtn);
 }
 
