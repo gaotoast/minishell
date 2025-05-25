@@ -34,22 +34,13 @@ int	extract_var_name(char *str, char **name)
 	return (0);
 }
 
-// 最後の終了ステータスを取得
-// シグナルがあったなら128+シグナルの値
-int	get_last_exit_status(void)
-{
-	if (g_sig_received)
-		return (128 + g_sig_received);
-	return (sh_stat(ST_GET, 0));
-}
-
 char	*get_var_value(char *name)
 {
 	char	*value;
 	char	*env_value;
 
 	if (ft_strncmp(name, "?", 2) == 0)
-		value = ft_itoa(get_last_exit_status());
+		value = ft_itoa(sh_stat(ST_GET, 0));
 	else
 	{
 		env_value = ft_env(ENV_GET_VAL, name);

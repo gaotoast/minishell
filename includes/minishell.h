@@ -21,7 +21,7 @@
 
 extern volatile sig_atomic_t    g_sig_received;
 
-// TODO: 頭に"./tmp"をつける
+// TODO: 頭に"/tmp"をつける
 # define HEREDOC_TMP "heredoc_tmp_"
 
 // exitステータス操作
@@ -29,6 +29,7 @@ typedef enum e_st_op
 {
 	ST_GET,
 	ST_SET,
+	ST_LOOK,
 }					t_st_op;
 
 typedef enum e_pwd_op
@@ -84,8 +85,8 @@ typedef struct s_token
 // 構文解析
 typedef enum e_node_kind
 {
-	ND_PIPE, // "|"単体
-	ND_CMD,  // その他のコマンドとリダイレクト記号のまとまり
+	ND_PIPE,
+	ND_CMD,
 }					t_node_kind;
 
 typedef enum s_redir_kind
@@ -130,6 +131,7 @@ typedef struct s_exp_tkn
 // minishell全体
 typedef struct s_shell
 {
+	char			*input;
 	char			**envp_cp;
 	t_env			*env_list;
 	t_token			*tokens;
@@ -205,7 +207,6 @@ int					print_envs(char **envp);
 
 // signal
 void				set_main_sigint(void);
-void				set_heredoc_sigint(void);
 void				set_exec_sigint(void);
 void				set_main_sigquit(void);
 void				set_exec_sigquit(void);
@@ -222,6 +223,11 @@ int					ft_isspace(char c);
 int					is_valid_env(char *name);
 int					event(void);
 int					ft_split_len(char **split);
+
+int					shell_loop(t_shell *shell);
+void				exit_shell(t_shell *shell);
+void				finish_loop(t_shell *shell);
+int					interpret(t_shell *shell);
 
 
 // free

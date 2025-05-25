@@ -164,7 +164,9 @@ int	init(t_shell **shell, char **envp)
 		return (-1);
 	}
 	sh_stat(ST_SET, 0);
+	(*shell)->input = NULL;
 	(*shell)->tokens = NULL;
+	(*shell)->ast = NULL;
 	if (init_env(envp))
 	{
 		free(*shell);
@@ -177,6 +179,5 @@ int	init(t_shell **shell, char **envp)
 		return (-1);
 	}
 	init_shlvl();
-	(*shell)->ast = NULL;
 	return (0);
 }
