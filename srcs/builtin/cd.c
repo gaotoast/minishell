@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/25 02:45:19 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/25 09:13:27 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@ char	*move_to_env(char *val_name)
 	env = (t_env *)ft_env(ENV_GET_STRUCT, val_name);
 	if (!env)
 	{
-		ft_dprintf(STDOUT_FILENO, "minishell: cd: %s not set\n", val_name);
+		ft_dprintf(STDERR_FILENO, "minishell: cd: %s not set\n", val_name);
 		return (NULL);
 	}
 	res = chdir(env->val);
 	if (res != 0)
 	{
-		perror("minishell: ");
+		ft_dprintf(STDERR_FILENO, "minishell: cd: %s", strerror(errno));
 		return (NULL);
 	}
 	return (env->val);
