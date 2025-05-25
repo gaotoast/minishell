@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/25 09:13:27 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/25 09:44:08 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,16 @@ char	*move_to_env(char *val_name)
 		ft_dprintf(STDERR_FILENO, "minishell: cd: %s not set\n", val_name);
 		return (NULL);
 	}
+	if (access(env->val, X_OK) != 0)
+	{
+		ft_dprintf(STDERR_FILENO, "minishell: cd:"
+			" %s: Permission denied\n", env->val);
+		return (NULL);
+	}
 	res = chdir(env->val);
 	if (res != 0)
 	{
-		ft_dprintf(STDERR_FILENO, "minishell: cd: %s", strerror(errno));
+		ft_dprintf(STDERR_FILENO, "minishell: cd: %s\n", strerror(errno));
 		return (NULL);
 	}
 	return (env->val);
@@ -61,6 +67,8 @@ int	cd(int argc, char **argv)
 	}
 	if (argc == 1)
 		path = move_to_env("HOME");
+	else if (ft_strncmp("-", argv[1], 2) == 0)
+		path = move_to_env("OLDPWD");
 	else
 		path = move_to_some(argv[1]);
 	if (!path)

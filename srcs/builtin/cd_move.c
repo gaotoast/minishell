@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:10:15 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/25 09:29:49 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/25 09:41:30 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,15 +94,14 @@ char	*move_to_some(char *dest)
 
 	if (dest[0] == '/')
 		path = dest;
-	else if (ft_strncmp("-", dest, 2) == 0)
-		path = move_to_env("OLDPWD");
 	else if (ft_strncmp("./", dest, 2) == 0)
 		path = get_abs_path(dest);
 	else
 		path = get_abs_path(ft_strjoin("./", dest));
 	if (access(path, X_OK) != 0)
 	{
-		ft_dprintf(STDERR_FILENO, "minishell: cd: %s: Permission denied\n", dest);
+		ft_dprintf(STDERR_FILENO, "minishell: cd:"
+			" %s: Permission denied\n", path);
 		if (dest[0] != '/' && ft_strncmp("-", dest, 2) != 0)
 			free(path);
 		return (NULL);
