@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 22:38:00 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/25 08:51:50 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/25 09:02:46 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ char	*rm_quotes(char *val)
 		return (NULL);
 	while (val[i])
 	{
-		if ((quote && val[i] != quote) || (val[i] != '\'' && val[i] != '"'))
+		if ((quote && val[i] != quote) || !is_quote(val[i]))
 			++j;
 		else if (!quote)
 			quote = val[i];
@@ -52,11 +52,17 @@ char	*rm_quotes(char *val)
 		++i;
 	}
 	rtn = malloc(sizeof(char) * j + 1);
+	if (!rtn)
+	{
+		ft_dprintf("minishell: malloc: %s", strerror(errno));
+		free(val);
+		return (NULL);
+	}
 	i = 0;
 	j = 0;
 	while (val[i])
 	{
-		if ((quote && val[i] != quote) || (val[i] != '\'' && val[i] != '"'))
+		if ((quote && val[i] != quote) || !is_quote(val[i]))
 			rtn[j++] = val[i];
 		else if (!quote)
 			quote = val[i];
