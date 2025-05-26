@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:10:15 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/25 09:41:30 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/27 05:24:52 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,11 @@ char	**get_longer_split(char **split, char *new, int len)
 	i = 0;
 	rtn = malloc(sizeof(char *) * (len + 2));
 	if (!rtn)
+	{
+		ft_dprintf(STDERR_FILENO, "minishell: malloc %s\n", strerror(errno));
+		free_2d_array(split);
 		return (NULL);
+	}
 	while (split[i])
 	{
 		rtn[i] = split[i];
@@ -50,7 +54,10 @@ char	**make_abs_path(char **dest_split, char **inner_split, int inner_len)
 			inner_split = get_longer_split(inner_split,
 					dest_split[i], inner_len);
 			if (!inner_split)
+			{
+				free_2d_array(dest_split);
 				return (NULL);
+			}
 			++inner_len;
 		}
 		++i;
@@ -66,8 +73,9 @@ char	*get_abs_path(char *dest)
 	char	*rtn;
 	int		inner_len;
 
-	//TODO: devとmergeしたときに最初に42_INNER_PWDに値を代入する
 	inner_pwd = ft_cwd(PWD_GET, NULL);
+	if (!inner_pwd || !dest)
+		return (NULL);
 	inner_split = ft_split(inner_pwd, '/');
 	if (!inner_split)
 		return (NULL);
@@ -87,11 +95,30 @@ char	*get_abs_path(char *dest)
 	return (rtn);
 }
 
+int	check_cwd(char *path)
+{
+	char	buf[PATH_MAX];
+	char	*rtn;
+
+	if (path[0] != '.')
+		return (0);
+	rtn = getcwd(buf, PATH_MAX);
+	if (!rtn)
+	{
+		ft_dprintf(STDERR_FILENO, "cd: error retrieving "
+			"current directory: getcwd: %s\n", strerror(errno));
+		return (1);
+	}
+	return (0);
+}
+
 char	*move_to_some(char *dest)
 {
 	char	*path;
 	int		res;
 
+	if (check_cwd(dest))
+		return (NULL);
 	if (dest[0] == '/')
 		path = dest;
 	else if (ft_strncmp("./", dest, 2) == 0)
@@ -109,6 +136,7 @@ char	*move_to_some(char *dest)
 	res = chdir(path);
 	if (res != 0)
 	{
+		ft_dprintf(STDERR_FILENO, "cd: %s\n", strerror(errno));
 		if (dest[0] != '/' && ft_strncmp("-", dest, 2) != 0)
 			free(path);
 		return (NULL);
