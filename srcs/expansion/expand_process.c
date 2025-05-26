@@ -14,14 +14,14 @@ t_exp_tkn	*extract_literal(char **s, int len)
 }
 
 // ダブルクォート内の処理
-int	handle_double_quote(t_exp_tkn **head, char **p)
+int	handle_double_quote(t_exp_tkn **head, char **p, int env_flag)
 {
 	int			len;
 	t_exp_tkn	*new;
 
 	while (**p && **p != '"')
 	{
-		if (**p == '$')
+		if (**p == '$' && env_flag)
 		{
 			new = expand_env_var(p);
 			if (!new)
@@ -31,12 +31,16 @@ int	handle_double_quote(t_exp_tkn **head, char **p)
 		else
 		{
 			len = 0;
-			while ((*p)[len] && (*p)[len] != '"' && (*p)[len] != '$')
+			while ((*p)[len] && (*p)[len] != '"')
+			{
+				if ((*p)[len] == '$' && env_flag)
+					break ;
 				len++;
-			new = extract_literal(p, len);
-			if (!new)
-				return (1);
-			append_exp_token(head, new);
+			}
+            new = extract_literal(p, len);
+            if (!new)
+                return (1);
+            append_exp_token(head, new);
 		}
 	}
 	return (0);
@@ -59,12 +63,12 @@ int	handle_single_quote(t_exp_tkn **head, char **p)
 }
 
 // クォートなし部分の処理
-int	handle_no_quote(t_exp_tkn **head, char **p)
+int	handle_no_quote(t_exp_tkn **head, char **p, int env_flag)
 {
 	int			len;
 	t_exp_tkn	*new;
 
-	if (**p == '$')
+	if (**p == '$' && env_flag)
 	{
 		new = expand_env_var(p);
 		if (!new)
@@ -74,7 +78,7 @@ int	handle_no_quote(t_exp_tkn **head, char **p)
 	else
 	{
 		len = 0;
-		while ((*p)[len] && (*p)[len] != '$')
+		while ((*p)[len] && (!env_flag || (*p)[len] != '$'))
 			len++;
 		new = extract_literal(p, len);
 		if (!new)
@@ -85,7 +89,8 @@ int	handle_no_quote(t_exp_tkn **head, char **p)
 }
 
 // 変数展開とクォート除去
-int	tokenize_with_expansion(t_exp_tkn **head, char *str)
+// env_flagは$展開を行うかどうかのフラグ（heredocのデリミタなら$展開を行わない）
+int	tokenize_with_expansion(t_exp_tkn **head, char *str, int env_flag)
 {
 	char	*p;
 	int		res;
@@ -96,7 +101,7 @@ int	tokenize_with_expansion(t_exp_tkn **head, char *str)
 		if (*p == '"')
 		{
 			p++;
-			res = handle_double_quote(head, &p);
+			res = handle_double_quote(head, &p, env_flag);
 			p++;
 		}
 		else if (*p == '\'')
@@ -106,7 +111,7 @@ int	tokenize_with_expansion(t_exp_tkn **head, char *str)
 			p++;
 		}
 		else
-			res = handle_no_quote(head, &p);
+			res = handle_no_quote(head, &p, env_flag);
 		if (res != 0)
 			return (1);
 	}
