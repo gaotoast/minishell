@@ -4,8 +4,6 @@ int	is_empty_cmds(char **argv)
 {
 	int	i;
 
-	if (!argv || !argv[0])
-		return (1);
 	i = 0;
 	while (argv[i])
 	{
@@ -27,7 +25,10 @@ void	child_exec(t_node *node)
 	if (apply_redirs(node->redir_count, node->redirs) != 0)
 		exit(1);
 	if (is_empty_cmds(node->argv))
-		exit(0);
+	{
+		ft_dprintf(STDERR_FILENO, "%s: command not found\n", node->argv[0]);
+		exit(127);
+	}
 	if (is_builtin(node->argv[0]))
 	{
 		exec_builtin_cmd(node);
