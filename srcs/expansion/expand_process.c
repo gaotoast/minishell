@@ -56,7 +56,7 @@ int	handle_double_quote(t_exp_tkn **head, char **p, int env_flag)
 		append_exp_token(head, new_tkn);
 		return (0);
 	}
-	if (!process_double_quote(head, p, env_flag) != 0)
+	if (process_double_quote(head, p, env_flag) != 0)
 		return (1);
 	return (0);
 }
