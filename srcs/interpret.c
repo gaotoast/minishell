@@ -28,6 +28,7 @@ void	interpret(t_shell *shell)
 {
 	int	ret;
 
+    ret = 0;
 	ret = tokenize(shell->input, &shell->tokens);
 	if (handle_stage_ret(shell, ret) != 0)
 		return ;

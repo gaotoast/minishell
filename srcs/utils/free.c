@@ -69,8 +69,6 @@ void	free_shell(t_shell *shell)
 		free_tokens(shell->tokens);
 	if (shell->ast)
 		free_ast(shell->ast);
-	if (shell->envp_cp)
-		free_2d_array(shell->envp_cp);
 	free(shell);
 }
 

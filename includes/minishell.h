@@ -131,7 +131,6 @@ typedef struct s_exp_tkn
 typedef struct s_shell
 {
 	char			*input;
-	char			**envp_cp;
 	t_env			*env_list;
 	t_token			*tokens;
 	t_node			*ast;

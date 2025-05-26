@@ -15,11 +15,15 @@ void	exec_if_relative_path(char **cmds, char **envp)
 				free_2d_array(cmds);
 				exit(1);
 			}
+			ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmds[0],
+				strerror(errno));
+			free_2d_array(cmds);
+			exit(126);
 		}
 		ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmds[0],
 			strerror(errno));
 		free_2d_array(cmds);
-		exit(EXIT_FAILURE);
+		exit(127);
 	}
 }
 
@@ -34,12 +38,16 @@ void	exec_if_absolute_path(char **cmds, char **envp)
 			ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmds[0],
 				strerror(errno));
 			free_2d_array(cmds);
-			exit(EXIT_FAILURE);
+			exit(1);
 		}
+		ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmds[0],
+			strerror(errno));
+		free_2d_array(cmds);
+		exit(126);
 	}
 	ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmds[0], strerror(errno));
 	free_2d_array(cmds);
-	exit(EXIT_FAILURE);
+	exit(127);
 }
 
 // コマンド実行
@@ -65,5 +73,5 @@ void	exec_cmd(char **cmds, char **envp)
 	execve(cmd_path, cmds, envp);
 	ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmds[0], strerror(errno));
 	free_2d_array(cmds);
-	exit(EXIT_FAILURE);
+	exit(1);
 }

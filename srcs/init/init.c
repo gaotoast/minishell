@@ -134,6 +134,7 @@ void	init_shlvl(void)
 {
 	char	*shlvl;
 	int		lvl;
+	char	*lvl_str;
 
 	shlvl = ft_env(ENV_GET_VAL, "SHLVL");
 	if (!shlvl || is_valid_shlvl(shlvl))
@@ -144,14 +145,21 @@ void	init_shlvl(void)
 	lvl = pure_atoi(shlvl);
 	if (lvl > 998)
 	{
-		ft_dprintf(STDERR_FILENO, "minishell: warning: shell level (%d) "
-			"too high, resetting to 1\n", lvl + 1);
+		ft_dprintf(STDERR_FILENO,
+					"minishell: warning: shell level (%d) "
+					"too high, resetting to 1\n",
+					lvl + 1);
 		ft_env(ENV_SET, "SHLVL=1");
 	}
 	else if (lvl < 0)
 		ft_env(ENV_SET, "SHLVL=0");
 	else
-		ft_env(ENV_SET, ft_strjoin("SHLVL=", ft_itoa(lvl + 1)));
+	{
+		lvl_str = ft_itoa(lvl + 1);
+		// TODO: ft_itoaのエラーハンドリング？
+		ft_env(ENV_SET, ft_strjoin("SHLVL=", lvl_str));
+		free(lvl_str);
+	}
 }
 
 int	init(t_shell **shell, char **envp)

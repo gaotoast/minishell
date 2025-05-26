@@ -18,7 +18,7 @@ char	*search_path(char *cmd_name, char **path_list, char *path_tail,
 		free(path);
 		i++;
 	}
-	ft_dprintf(STDERR_FILENO, "minishell: %s: command not found\n", cmd_name);
+	ft_dprintf(STDERR_FILENO, "%s: command not found\n", cmd_name);
 	(*status) = 127;
 	return (NULL);
 }

@@ -167,6 +167,7 @@ int	parse(t_token *tokens, t_node **ast)
 	t_token	*rest;
 	int		ret;
 
+    ret = 0;
 	if (tokens->type == TK_EOF)
 	{
 		(*ast) = NULL;
