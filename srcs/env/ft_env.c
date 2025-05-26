@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 22:38:00 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/25 09:08:02 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/27 05:51:09 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@ char	*ft_strjoin_delim(char *s1, char delim, char *s2)
 	len1 = ft_strlen(s1);
 	len2 = ft_strlen(s2);
 	rtn = (char *)malloc(sizeof(char) * (len1 + len2 + 2));
+	if (!rtn)
+	{
+		ft_dprintf(STDERR_FILENO, "minishell: malloc: %s\n", strerr(errno));
+		return (NULL);
+	}
 	ft_strlcpy(rtn, s1, len1 + 1);
 	rtn[len1] = delim;
 	rtn[len1 + 1] = '\0';
@@ -212,7 +217,7 @@ void	*get_env_all(t_env *head, t_env_op op)
 	rtn = (char **)malloc(sizeof(char *) * (len + 1));
 	if (!rtn)
 	{
-		perror("minishell: ");
+		ft_dprintf(STDERR_FILENO, "minishell: malloc: %s\n", strerr(errno));
 		return (NULL);
 	}
 	tmp = head;
@@ -251,18 +256,12 @@ t_env	*ft_update_env(t_env **head, char *str, int offset)
 		tmp = rm_quotes(ft_strdup(val));
 	}
 	if (!tmp)
-	{
-		perror("minishell: ");
 		return (NULL);
-	}
 	free(target->val);
 	target->val = tmp;
 	tmp = ft_strjoin_delim(target->name, '=', target->val);
 	if (!tmp)
-	{
-		perror("minishell: ");
 		return (NULL);
-	}
 	free(target->full);
 	target->full = tmp;
 	return (*head);
