@@ -22,7 +22,10 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	len = ft_strlen(s1) + ft_strlen(s2) + 1;
 	joined = (char *)malloc(sizeof(char) * len);
 	if (!joined)
+    {
+        perror("minishell: malloc");    
 		return (NULL);
+    }
 	joined[0] = '\0';
 	ft_strlcpy(joined, s1, ft_strlen(s1) + 1);
 	ft_strlcat(joined, s2, len);

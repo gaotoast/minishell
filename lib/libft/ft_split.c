@@ -68,7 +68,10 @@ char	**ft_split(char const *s, char c)
 	words = count_words(s, c);
 	strs = (char **)malloc(sizeof(char *) * (words + 1));
 	if (!strs)
+    {
+        perror("minishell: malloc");
 		return (NULL);
+    }
 	strs = contain_words(strs, s, c, words);
 	strs[words] = NULL;
 	return (strs);

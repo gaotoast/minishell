@@ -29,7 +29,6 @@ typedef enum e_st_op
 {
 	ST_GET,
 	ST_SET,
-	ST_LOOK,
 }					t_st_op;
 
 typedef enum e_pwd_op
@@ -141,20 +140,21 @@ typedef struct s_shell
 // init
 int					init(t_shell **shell, char **envp);
 void	            init_signals(void);
+
 // execution
 void				exec_if_relative_path(char **cmds, char **envp);
 void				exec_if_absolute_path(char **cmds, char **envp);
 void				exec_cmd(char **cmds, char **envp);
 int					exec_builtin_cmd(t_node *node);
-void				process_builtin_direct(t_node *node);
+int	                process_builtin_direct(t_node *node);
 void				link_exec_nodes(t_node *node, t_node *rhs, t_node **first,
 						t_node **last);
-void				execute(t_node *root);
+int	                execute(t_node *root);
 char				*search_path(char *cmd_name, char **path_list,
 						char *path_tail, int *status);
 char				*resolve_cmd_path(char *cmd, char *path_env, int *status);
 int					is_builtin(char *cmd);
-void				prepare_pipe(t_node *node);
+int                 prepare_pipe(t_node *node);
 void				prepare_pipe_child(t_node *node, int count);
 void				prepare_pipe_parent(t_node *node, int count);
 int					wait_children(pid_t last_pid);
@@ -165,7 +165,7 @@ int					apply_redirs(int redir_count, t_redir **redirs);
 void				unlink_all_temp(int redir_count, t_redir **redirs);
 
 // tokenization
-void				tokenize(char *line, t_token **tokens);
+int                 tokenize(char *line, t_token **tokens);
 int					is_single_metachar(char *p);
 int					is_two_metachar(char *p);
 int					is_single_metachar(char *p);
@@ -174,7 +174,7 @@ int					is_quote(char *p);
 int					is_blank(char c);
 
 // parsing
-void				parse(t_token *tokens, t_node **ast);
+int	                parse(t_token *tokens, t_node **ast);
 t_node				*new_pipe_node(t_node *lhs, t_node *rhs);
 t_node				*new_command_node(void);
 int					peek_word(t_token *token);
@@ -224,10 +224,9 @@ int					is_valid_env(char *name);
 int					event(void);
 int					ft_split_len(char **split);
 
-int					shell_loop(t_shell *shell);
+void	            interpret(t_shell *shell);
 void				exit_shell(t_shell *shell);
 void				finish_loop(t_shell *shell);
-int					interpret(t_shell *shell);
 
 
 // free

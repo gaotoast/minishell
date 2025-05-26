@@ -19,7 +19,7 @@ char	**get_envp_copy(char **envp)
 	cp = (char **)malloc(sizeof(char *) * (env_count + 1));
 	if (!cp)
 	{
-		perror("minishell");
+		perror("minishell: malloc");
 		return (NULL);
 	}
 	i = 0;
@@ -68,7 +68,7 @@ int	init_pwd(void)
 		pwd = malloc(sizeof(char) * (PATH_MAX + 1));
 		if (!pwd)
 		{
-			perror("minishell: ");
+			perror("minishell: malloc");
 			return (1);
 		}
 		getcwd(pwd, PATH_MAX);
@@ -78,7 +78,6 @@ int	init_pwd(void)
 		pwd = ft_strdup(pwd);
 		if (!pwd)
 		{
-			perror("minishell: ");
 			return (1);
 		}
 	}
@@ -160,7 +159,7 @@ int	init(t_shell **shell, char **envp)
 	(*shell) = (t_shell *)malloc(sizeof(t_shell));
 	if (!(*shell))
 	{
-		perror("minishell");
+		perror("minishell: malloc");
 		return (-1);
 	}
 	sh_stat(ST_SET, 0);

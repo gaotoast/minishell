@@ -20,7 +20,7 @@ char	*ft_strdup(const char *s)
 	new = (char *)malloc(sizeof(char) * (ft_strlen(s) + 1));
 	if (!new)
 	{
-		perror("minishell");
+		perror("minishell: malloc");
 		return (NULL);
 	}
 	i = 0;

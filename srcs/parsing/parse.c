@@ -1,7 +1,7 @@
 #include "minishell.h"
 
 // トークンを解析してリダイレクトノードを生成
-t_redir	*parse_redir(t_token **rest)
+t_redir	*parse_redir(t_token **rest, int *ret)
 {
 	t_redir	*redir;
 
@@ -23,12 +23,12 @@ t_redir	*parse_redir(t_token **rest)
 			`%s\n'",
 					(*rest)->str);
 		free(redir);
-        sh_stat(ST_SET, 2);
+		*ret = 2;
 		return (NULL);
 	}
 	redir->temp_file = NULL;
-	sh_stat(ST_SET, consume_word(rest, &redir->str));
-    if (sh_stat(ST_GET, 0) == 1)
+	*ret = consume_word(rest, &redir->str);
+	if (*ret == 1)
 	{
 		free(redir);
 		return (NULL);
@@ -37,7 +37,7 @@ t_redir	*parse_redir(t_token **rest)
 }
 
 // トークンを解析してコマンドノード（パイプ以外の部分をまとめたノード）を生成
-t_node	*parse_command(t_token **rest)
+t_node	*parse_command(t_token **rest, int *ret)
 {
 	t_token	*cur;
 	t_node	*node;
@@ -49,7 +49,7 @@ t_node	*parse_command(t_token **rest)
 	node = new_command_node();
 	if (!node)
 	{
-		sh_stat(ST_SET, 1);
+		*ret = 1;
 		return (NULL);
 	}
 	// TK_WORDがある間、argvに追加
@@ -61,9 +61,9 @@ t_node	*parse_command(t_token **rest)
 			argv_tmp = (char **)malloc(sizeof(char *) * (node->argc + 1));
 			if (!argv_tmp)
 			{
-				perror("minishell");
+				perror("minishell: malloc");
 				free_ast(node);
-				sh_stat(ST_SET, 1);
+				*ret = 1;
 				return (NULL);
 			}
 			i = 0;
@@ -77,7 +77,7 @@ t_node	*parse_command(t_token **rest)
 			{
 				free_ast(node);
 				free(argv_tmp);
-				sh_stat(ST_SET, 1);
+				*ret = 1;
 				return (NULL);
 			}
 			argv_tmp[node->argc] = NULL;
@@ -93,9 +93,9 @@ t_node	*parse_command(t_token **rest)
 					* (node->redir_count + 1));
 			if (!redirs_tmp)
 			{
-				perror("minishell");
+				perror("minishell: malloc");
 				free_ast(node);
-				sh_stat(ST_SET, 1);
+				*ret = 1;
 				return (NULL);
 			}
 			i = 0;
@@ -104,7 +104,7 @@ t_node	*parse_command(t_token **rest)
 				redirs_tmp[i] = node->redirs[i];
 				i++;
 			}
-			redirs_tmp[node->redir_count - 1] = parse_redir(&cur);
+			redirs_tmp[node->redir_count - 1] = parse_redir(&cur, ret);
 			if (!redirs_tmp[node->redir_count - 1])
 			{
 				free_ast(node);
@@ -124,7 +124,7 @@ t_node	*parse_command(t_token **rest)
 		ft_dprintf(STDERR_FILENO,
 			"minishell: syntax error near unexpected token `|'\n");
 		free_ast(node);
-		sh_stat(ST_SET, 2);
+		*ret = 2;
 		return (NULL);
 	}
 	*rest = cur;
@@ -132,19 +132,19 @@ t_node	*parse_command(t_token **rest)
 }
 
 // / トークンを解析してASTを生成
-t_node	*parse_line(t_token **rest)
+t_node	*parse_line(t_token **rest, int *ret)
 {
 	t_node	*node;
 	t_node	*rhs;
 
 	// 最初のパイプまでを解析
-	node = parse_command(rest);
+	node = parse_command(rest, ret);
 	if (!node)
 		return (NULL);
 	while (consume_reserved(rest, "|"))
 	{
 		// 右側のコマンドを（次のパイプまで）解析
-		rhs = parse_command(rest);
+		rhs = parse_command(rest, ret);
 		if (!rhs)
 		{
 			free_ast(node);
@@ -154,7 +154,7 @@ t_node	*parse_line(t_token **rest)
 		node = new_pipe_node(node, rhs);
 		if (!node)
 		{
-			sh_stat(ST_SET, 1);
+			*ret = 1;
 			return (NULL);
 		}
 	}
@@ -162,15 +162,17 @@ t_node	*parse_line(t_token **rest)
 }
 
 // 構文解析
-void	parse(t_token *tokens, t_node **ast)
+int	parse(t_token *tokens, t_node **ast)
 {
 	t_token	*rest;
+	int		ret;
 
 	if (tokens->type == TK_EOF)
 	{
 		(*ast) = NULL;
-		return ;
+		return (0);
 	}
 	rest = tokens;
-	(*ast) = parse_line(&rest);
+	(*ast) = parse_line(&rest, &ret);
+	return (ret);
 }

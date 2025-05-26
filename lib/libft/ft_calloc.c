@@ -21,7 +21,7 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	result = malloc(nmemb * size);
 	if (!result)
     {
-        perror("minishell");
+        perror("minishell: malloc");
 		return (NULL);
     }
 	ft_bzero(result, nmemb * size);

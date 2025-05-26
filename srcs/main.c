@@ -4,7 +4,6 @@ volatile sig_atomic_t	g_sig_received;
 
 int	main(int argc, char **argv, char **envp)
 {
-	int		ret;
 	t_shell	*shell;
 
 	(void)argc;
@@ -21,9 +20,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		if (*shell->input)
 			add_history(shell->input);
-		ret = interpret(shell);
-		if (ret < 0)
-			break ;
+		interpret(shell);
 		finish_loop(shell);
 	}
 	exit_shell(shell);

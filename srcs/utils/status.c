@@ -23,7 +23,5 @@ int	sh_stat(t_st_op op, int val)
 			return (ret);
 		}
 	}
-	else if (op == ST_LOOK)
-		return (status);
 	return (status);
 }
