@@ -6,7 +6,7 @@ char	*ft_strndup(char *s, int len)
 	char	*new;
 	int		i;
 
-	if (!s || len < 0)
+	if (!s || len <= 0)
 		return (NULL);
 	new = (char *)malloc(sizeof(char) * (len + 1));
 	if (!new)
