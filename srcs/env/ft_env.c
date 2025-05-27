@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 22:38:00 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/27 05:51:09 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/27 19:57:06 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ char	*rm_quotes(char *val)
 			quote = '\0';
 		++i;
 	}
+	rtn[j] = '\0';
 	free(val);
 	return (rtn);
 }
