@@ -25,12 +25,19 @@ void	child_exec(t_node *node)
 	if (!cp_env)
 		exit(1);
 	if (apply_redirs(node->redir_count, node->redirs) != 0)
+	{
+		free(cp_env);
 		exit(1);
+	}
 	if (is_empty_cmds(node->argv))
+	{
+		free(cp_env);
 		exit(0);
+	}
 	if (is_builtin(node->argv[0]))
 	{
 		exec_builtin_cmd(node);
+		free(cp_env);
 		exit(sh_stat(ST_GET, 0));
 	}
 	else

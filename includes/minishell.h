@@ -201,7 +201,7 @@ int					env(int argc, char **argv);
 int					ft_exit(int argc, char **argv);
 char				*move_to_some(char *dest);
 char				*move_to_env(char *val_name);
-int					print_envs(char **envp);
+int					print_envs(void);
 
 // signal
 void				set_main_sigint(void);

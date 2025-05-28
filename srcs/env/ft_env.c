@@ -6,12 +6,24 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 22:38:00 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/27 19:57:06 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/29 03:01:03 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+t_env	*env_del_all(t_env **head)
+{
+	t_env	*tmp;
+
+	while (*head)
+	{
+		tmp = (*head)->next;
+		free_env(*head);
+		*head = tmp;
+	}
+	return (NULL);
+}
 
 char	*ft_strjoin_delim(char *s1, char delim, char *s2)
 {
@@ -24,7 +36,7 @@ char	*ft_strjoin_delim(char *s1, char delim, char *s2)
 	rtn = (char *)malloc(sizeof(char) * (len1 + len2 + 2));
 	if (!rtn)
 	{
-		ft_dprintf(STDERR_FILENO, "minishell: malloc: %s\n", strerr(errno));
+		ft_dprintf(STDERR_FILENO, "minishell: malloc: %s\n", strerror(errno));
 		return (NULL);
 	}
 	ft_strlcpy(rtn, s1, len1 + 1);
@@ -94,7 +106,10 @@ t_env	*new_env(char *str, int offset)
 
 	rtn = (t_env *)malloc(sizeof(t_env));
 	if (!rtn)
+	{
+		ft_dprintf(STDOUT_FILENO, "minishell: malloc: %s\n", strerror(errno));
 		return (NULL);
+	}
 	eq = ft_strchr(str, '=');
 	if (!eq)
 	{
@@ -113,7 +128,6 @@ t_env	*new_env(char *str, int offset)
 	rtn->next = NULL;
 	if ((eq && !rtn->val) || !rtn->name || !rtn->full)
 	{
-		ft_dprintf(STDERR_FILENO, "minishell: %s\n", strerror(errno));
 		free_env(rtn);
 		return (NULL);
 	}
@@ -135,22 +149,11 @@ t_env	*ft_add_env(t_env **head, char *str, int offset)
 		tmp = tmp->next;
 	tmp->next = new_env(str, offset);
 	if (!tmp->next)
-		return (NULL);
-	return (*head);
-}
-
-t_env	*env_del_all(t_env **head)
-{
-	t_env	*tmp;
-
-	while (*head)
 	{
-		tmp = (*head)->next;
-		free_env(*head);
-		*head = tmp;
+		env_del_all(head);
+		return (NULL);
 	}
-	*head = NULL;
-	return (NULL);
+	return (*head);
 }
 
 t_env	*search_val(t_env *head, char *name, int offset, t_val_type type)
@@ -207,21 +210,22 @@ int	list_len(t_env *head, t_env_op op)
 }
 
 //変数全て or VAL_EXのみをまとめて返す
-void	*get_env_all(t_env *head, t_env_op op)
+void	*get_env_all(t_env **head, t_env_op op)
 {
 	int		len;
 	char	**rtn;
 	t_env	*tmp;
 	int		i;
 
-	len = list_len(head, op);
+	len = list_len(*head, op);
 	rtn = (char **)malloc(sizeof(char *) * (len + 1));
 	if (!rtn)
 	{
-		ft_dprintf(STDERR_FILENO, "minishell: malloc: %s\n", strerr(errno));
+		ft_dprintf(STDERR_FILENO, "minishell: malloc: %s\n", strerror(errno));
+		env_del_all(head);
 		return (NULL);
 	}
-	tmp = head;
+	tmp = *head;
 	i = 0;
 	while (tmp)
 	{
@@ -262,7 +266,10 @@ t_env	*ft_update_env(t_env **head, char *str, int offset)
 	target->val = tmp;
 	tmp = ft_strjoin_delim(target->name, '=', target->val);
 	if (!tmp)
+	{
+		env_del_all(head);
 		return (NULL);
+	}
 	free(target->full);
 	target->full = tmp;
 	return (*head);
@@ -301,7 +308,7 @@ void	*ft_env(t_env_op op, char *str)
 	if (op == ENV_GET_VAL || op == ENV_GET_STRUCT)
 		return (get_env(head, str, op));
 	else if (op == ENV_GET_ALL_EX || op == ENV_GET_ALL_SH)
-		return (get_env_all(head, op));
+		return (get_env_all(&head, op));
 	else if (op == ENV_ADD)
 		return (ft_add_env(&head, str, 0));
 	else if (op == ENV_SET)

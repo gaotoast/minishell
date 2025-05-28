@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/27 04:21:29 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/29 00:16:19 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	*move_to_env(char *val_name)
 	return (env->val);
 }
 
-void	update_envs(char *path)
+char	*update_envs(char *path)
 {
 	t_env	*old_pwd;
 	t_env	*pwd;
@@ -46,14 +46,16 @@ void	update_envs(char *path)
 
 	cp_path = ft_strdup(path);
 	if (!cp_path)
-		return ;
+		return (NULL);
 	old_pwd = (t_env *)ft_env(ENV_GET_STRUCT, "OLDPWD");
 	pwd = (t_env *)ft_env(ENV_GET_STRUCT, "PWD");
 	if (pwd && old_pwd)
-		ft_env(ENV_SET, ft_strjoin("OLDPWD=", pwd->val));
+		if (ft_env(ENV_SET, ft_strjoin("OLDPWD=", pwd->val)) == NULL)
+			return (NULL);
 	if (pwd)
-		ft_env(ENV_SET, ft_strjoin("PWD=", path));
-	ft_cwd(PWD_SET, cp_path);
+		if (ft_env(ENV_SET, ft_strjoin("PWD=", path)) == NULL)
+			return (NULL);
+	return (ft_cwd(PWD_SET, cp_path));
 }
 
 int	cd(int argc, char **argv)
@@ -73,9 +75,9 @@ int	cd(int argc, char **argv)
 		path = move_to_some(argv[1]);
 	if (!path)
 		return (EXIT_FAILURE);
-	else
+	else if (update_envs(path) == NULL)
 	{
-		update_envs(path);
+		return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
 }

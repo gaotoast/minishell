@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:15:50 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/25 01:21:45 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/29 03:12:06 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,12 @@ void	sort_envs(char **envp)
 	}
 }
 
-int	print_envs(char **envp)
+int	print_envs(void)
 {
-	int	i;
+	int		i;
+	char	**envp;
 
+	envp = (char **)(ft_env(ENV_GET_ALL_EX, NULL));
 	if (!envp)
 		return (EXIT_FAILURE);
 	sort_envs(envp);
