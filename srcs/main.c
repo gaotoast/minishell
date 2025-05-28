@@ -13,8 +13,9 @@ int	main(int argc, char **argv, char **envp)
     rl_event_hook = event;
     g_sig_received = 0;
 	input = NULL;
-	if (init(&shell, envp) < 0)
+	if (init(envp) < 0)
         exit(1);
+	shell = sh_op(SH_GET, NULL);
     rl_clear_history();
 	while (1)
 	{
@@ -39,7 +40,7 @@ int	main(int argc, char **argv, char **envp)
 		shell->ast = NULL;
 	}
 	ft_env(ENV_DEL_ALL, NULL);
-	free_shell(shell);
+	free_shell(&shell);
 	ft_exit(1, NULL);
 }
 

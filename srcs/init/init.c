@@ -188,32 +188,35 @@ int	init_shlvl(void)
 	return (0);
 }
 
-int	init(t_shell **shell, char **envp)
+int	init(char **envp)
 {
-	(*shell) = (t_shell *)malloc(sizeof(t_shell));
-	if (!(*shell))
+	t_shell	*shell;
+
+	shell = (t_shell *)malloc(sizeof(t_shell));
+	if (!shell)
 	{
 		perror("minishell");
 		return (-1);
 	}
+	sh_op(SH_SET, shell);
 	sh_stat(ST_SET, 0);
-	(*shell)->tokens = NULL;
+	shell->tokens = NULL;
 	if (init_env(envp))
 	{
-		free(*shell);
+		free(shell);
 		return (-1);
 	}
 	if (init_pwd())
 	{
-		free(*shell);
+		free(shell);
 		ft_env(ENV_DEL_ALL, NULL);
 		return (-1);
 	}
 	if (init_shlvl())
 	{
-		free(*shell);
+		free(shell);
 		return (-1);
 	}
-	(*shell)->ast = NULL;
+	shell->ast = NULL;
 	return (0);
 }
