@@ -28,13 +28,13 @@ int	main(int argc, char **argv, char **envp)
 		tokenize(input, &shell->tokens);
 		// debug_tokenizer(shell->tokens);
         parse(shell->tokens, &shell->ast);
+		free_tokens(shell->tokens);
+		shell->tokens = NULL;
 		expand(shell->ast);
 		// debug_expand(shell->ast);
 		execute(shell->ast);
 		// 毎ループ更新されるためfree
 		free(input);
-		free_tokens(shell->tokens);
-		shell->tokens = NULL;
 		free_ast(shell->ast);
 		shell->ast = NULL;
 	}

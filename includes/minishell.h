@@ -130,7 +130,6 @@ typedef struct s_exp_tkn
 // minishell全体
 typedef struct s_shell
 {
-	char			**envp_cp;
 	t_env			*env_list;
 	t_token			*tokens;
 	t_node			*ast;

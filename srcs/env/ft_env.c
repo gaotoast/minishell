@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 22:38:00 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/29 03:01:03 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/29 03:53:23 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ t_env	*env_del_all(t_env **head)
 		free_env(*head);
 		*head = tmp;
 	}
+	ft_cwd(PWD_SET, NULL);
 	return (NULL);
 }
 

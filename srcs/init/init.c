@@ -68,7 +68,7 @@ int	init_pwd(void)
 		pwd = malloc(sizeof(char) * (PATH_MAX + 1));
 		if (!pwd)
 		{
-			perror("minishell: ");
+			ft_dprintf(STDERR_FILENO, "minishell: malloc: %s\n", strerror(errno));
 			return (1);
 		}
 		getcwd(pwd, PATH_MAX);
@@ -78,7 +78,7 @@ int	init_pwd(void)
 		pwd = ft_strdup(pwd);
 		if (!pwd)
 		{
-			perror("minishell: ");
+			ft_dprintf(STDERR_FILENO, "minishell: malloc: %s\n", strerror(errno));
 			return (1);
 		}
 	}
@@ -131,6 +131,33 @@ int	is_valid_shlvl(char *num)
 	return (1);
 }
 
+int	increment_shlvl(int shlvl)
+{
+	char	*str_shlvl;
+	char	*env_shlvl;
+
+	str_shlvl = ft_itoa(shlvl + 1);
+	env_shlvl = ft_strjoin("SHLVL=", str_shlvl);
+	if (!str_shlvl || !env_shlvl)
+	{
+		ft_dprintf(STDERR_FILENO, "minishell: malloc: %s\n", strerror(errno));
+		free(str_shlvl);
+		free(env_shlvl);
+		ft_env(ENV_DEL_ALL, NULL);
+		return (1);
+	}
+	if (ft_env(ENV_SET, env_shlvl) == NULL)
+	{
+		free(str_shlvl);
+		free(env_shlvl);
+		ft_env(ENV_DEL_ALL, NULL);
+		return (1);
+	}
+	free(str_shlvl);
+	free(env_shlvl);
+	return (0);
+}
+
 int	init_shlvl(void)
 {
 	char	*shlvl;
@@ -156,9 +183,8 @@ int	init_shlvl(void)
 		if (ft_env(ENV_SET, "SHLVL=0") == NULL)
 			return (1);
 	}
-	else
-		if (ft_env(ENV_SET, ft_strjoin("SHLVL=", ft_itoa(lvl + 1))) == NULL)
-			return (1);
+	else if (increment_shlvl(lvl))
+		return (1);
 	return (0);
 }
 
@@ -183,7 +209,11 @@ int	init(t_shell **shell, char **envp)
 		ft_env(ENV_DEL_ALL, NULL);
 		return (-1);
 	}
-	init_shlvl();
+	if (init_shlvl())
+	{
+		free(*shell);
+		return (-1);
+	}
 	(*shell)->ast = NULL;
 	return (0);
 }
