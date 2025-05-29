@@ -18,17 +18,13 @@ t_redir	*parse_redir(t_token **rest, int *ret)
 		redir->kind = REDIR_IN;
 	else
 	{
-		ft_dprintf(STDERR_FILENO,
-					"minishell: syntax error near unexpected token \
-			`%s\n'",
-					(*rest)->str);
 		free(redir);
-		*ret = 2;
+		*ret = 1;
 		return (NULL);
 	}
 	redir->temp_file = NULL;
 	*ret = consume_word(rest, &redir->str);
-	if (*ret == 1)
+	if (*ret != 0)
 	{
 		free(redir);
 		return (NULL);
@@ -165,7 +161,7 @@ int	parse(t_token *tokens, t_node **ast)
 	t_token	*rest;
 	int		ret;
 
-    ret = 0;
+	ret = 0;
 	if (tokens->type == TK_EOF)
 	{
 		(*ast) = NULL;
