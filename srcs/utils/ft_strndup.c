@@ -8,12 +8,9 @@ char	*ft_strndup(char *s, int len)
 
 	if (!s || len <= 0)
 		return (NULL);
-	new = (char *)malloc(sizeof(char) * (len + 1));
+	new = (char *)ft_malloc(sizeof(char) * (len + 1));
 	if (!new)
-	{
-		perror("minishell: malloc");
 		return (NULL);
-	}
 	i = 0;
 	while (s[i] && i < len)
 	{

@@ -44,7 +44,7 @@ static char	**contain_words(char **strs, char const *s, char c, int words)
 		len = 0;
 		while (s[len] && s[len] != c)
 			len++;
-		strs[i] = (char *)malloc(sizeof(char) * (len + 1));
+		strs[i] = (char *)ft_malloc(sizeof(char) * (len + 1));
 		if (!strs[i])
 		{
 			while (i--)
@@ -66,13 +66,12 @@ char	**ft_split(char const *s, char c)
 	char	**strs;
 
 	words = count_words(s, c);
-	strs = (char **)malloc(sizeof(char *) * (words + 1));
+	strs = (char **)ft_malloc(sizeof(char *) * (words + 1));
 	if (!strs)
-    {
-        perror("minishell: malloc");
 		return (NULL);
-    }
 	strs = contain_words(strs, s, c, words);
+	if (!strs)
+		return (NULL);
 	strs[words] = NULL;
 	return (strs);
 }

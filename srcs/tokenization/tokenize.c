@@ -5,12 +5,9 @@ t_token	*add_token(t_token *cur, t_token_type type, char *start, int len)
 {
 	t_token	*new;
 
-	new = (t_token *)malloc(sizeof(t_token));
+	new = (t_token *)ft_malloc(sizeof(t_token));
 	if (!new)
-	{
-		perror("minishell: malloc");
 		return (NULL);
-	}
 	new->str = (char *)ft_calloc(sizeof(char), len + 1);
 	if (!new->str)
 	{
