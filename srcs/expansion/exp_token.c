@@ -13,7 +13,7 @@ t_exp_tkn	*new_exp_token(char *str, bool is_expanded, bool is_quoted)
 	}
 	new->str = str;
 	new->is_expanded = is_expanded;
-    new->is_quoted = is_quoted;
+	new->is_quoted = is_quoted;
 	new->next = NULL;
 	return (new);
 }

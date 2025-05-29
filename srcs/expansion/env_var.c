@@ -1,7 +1,7 @@
 #include "minishell.h"
 
 // 環境変数名に含むことができる文字かどうか判定
-int	is_valid_var_char(char c)
+static int	is_valid_var_char(char c)
 {
 	if (ft_isalnum(c) || c == '_')
 		return (1);
@@ -9,7 +9,7 @@ int	is_valid_var_char(char c)
 }
 
 // 変数名部分を抜粋して引数のnameに設定（例：$HOME@# -> HOME）
-int	extract_var_name(char *str, char **name)
+static int	extract_var_name(char *str, char **name)
 {
 	int	len;
 
@@ -34,7 +34,7 @@ int	extract_var_name(char *str, char **name)
 	return (0);
 }
 
-char	*get_var_value(char *name)
+static char	*get_var_value(char *name)
 {
 	char	*value;
 	char	*env_value;

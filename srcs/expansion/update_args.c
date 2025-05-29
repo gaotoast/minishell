@@ -1,7 +1,7 @@
 #include "minishell.h"
 
 // コマンドの数を数える
-int	count_exp_tokens(t_exp_tkn *head)
+static int	count_exp_tokens(t_exp_tkn *head)
 {
 	int			count;
 	t_exp_tkn	*cur;
@@ -17,7 +17,7 @@ int	count_exp_tokens(t_exp_tkn *head)
 }
 
 // リストから新しい二次元配列に文字列をコピー
-int	copy_exp_to_array(char **argv, t_exp_tkn *head)
+static int	copy_exp_to_array(char **argv, t_exp_tkn *head)
 {
 	t_exp_tkn	*cur;
 	int			i;
@@ -40,7 +40,7 @@ int	copy_exp_to_array(char **argv, t_exp_tkn *head)
 }
 
 // リストから新しい二次元配列を構築
-char	**build_array_from_exp(t_exp_tkn *head, int count)
+static char	**build_array_from_exp(t_exp_tkn *head, int count)
 {
 	char	**argv;
 

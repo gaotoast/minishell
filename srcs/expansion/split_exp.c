@@ -1,7 +1,7 @@
 #include "minishell.h"
 
 // 単語を抜粋し、新しいexpトークンとしてリストに追加
-int	add_exp_token_from_substr(t_exp_tkn **head, char **p, int len,
+static int	add_exp_token_from_substr(t_exp_tkn **head, char **p, int len,
 		bool is_quoted)
 {
 	char		*str;
@@ -25,7 +25,7 @@ int	add_exp_token_from_substr(t_exp_tkn **head, char **p, int len,
 }
 
 // 空白文字（スペースまたはタブ文字）で単語分割
-t_exp_tkn	*split_by_blank(char *s, bool is_quoted)
+static t_exp_tkn	*split_by_blank(char *s, bool is_quoted)
 {
 	t_exp_tkn	*head;
 	char		*p;

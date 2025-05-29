@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	process_expand_cmds(t_exp_tkn **head, char **argv)
+static int	process_expand_cmds(t_exp_tkn **head, char **argv)
 {
 	int	i;
 
