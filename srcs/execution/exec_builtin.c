@@ -7,6 +7,7 @@ int	exec_builtin_cmd(t_node *node)
 	char	*cmd;
 	int		stat;
 
+	stat = 0;
 	cmd = node->argv[0];
 	if (ft_strncmp(cmd, "echo", 5) == 0)
 		stat = echo(node->argc, node->argv);
@@ -22,10 +23,7 @@ int	exec_builtin_cmd(t_node *node)
 		stat = env(node->argc, node->argv);
 	else if (ft_strncmp(cmd, "exit", 5) == 0)
 		stat = ft_exit(node->argc, node->argv);
-	if (stat == 1)
-		return (1);
-	sh_stat(ST_SET, stat);
-	return (stat);
+	return (sh_stat(ST_SET, stat));
 }
 
 // 標準入出力をデフォルト状態に戻す
@@ -68,5 +66,5 @@ int	process_builtin_direct(t_node *node)
 		return (1);
 	if (restore_std_fds(stashed_stdin, stashed_stdout) != 0)
 		return (1);
-    return (0);
+	return (0);
 }

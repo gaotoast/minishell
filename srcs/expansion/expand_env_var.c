@@ -23,7 +23,7 @@ int	extract_var_name(char *str, char **name)
 	len = 0;
 	while (str[len] && is_valid_var_char(str[len]))
 		len++;
-	if (len == 0)
+	if ((!ft_isalpha(str[0]) && str[0] != '_') || len == 0)
 	{
 		*name = NULL;
 		return (0);
@@ -55,8 +55,8 @@ char	*get_var_value(char *name)
 // 環境変数または$?を展開してexpトークンを作成
 t_exp_tkn	*expand_env_var(char **s)
 {
-	char		*name;
-	char		*value;
+	char	*name;
+	char	*value;
 
 	(*s)++;
 	if (extract_var_name(*s, &name) < 0)
