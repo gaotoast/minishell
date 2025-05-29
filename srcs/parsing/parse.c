@@ -18,17 +18,13 @@ t_redir	*parse_redir(t_token **rest, int *ret)
 		redir->kind = REDIR_IN;
 	else
 	{
-		ft_dprintf(STDERR_FILENO,
-					"minishell: syntax error near unexpected token \
-			`%s\n'",
-					(*rest)->str);
 		free(redir);
-		*ret = 2;
+		*ret = 1;
 		return (NULL);
 	}
 	redir->temp_file = NULL;
 	*ret = consume_word(rest, &redir->str);
-	if (*ret == 1)
+	if (*ret != 0)
 	{
 		free(redir);
 		return (NULL);
@@ -58,10 +54,9 @@ t_node	*parse_command(t_token **rest, int *ret)
 		if (peek_word(cur))
 		{
 			node->argc++;
-			argv_tmp = (char **)malloc(sizeof(char *) * (node->argc + 1));
+			argv_tmp = (char **)ft_malloc(sizeof(char *) * (node->argc + 1));
 			if (!argv_tmp)
 			{
-				perror("minishell: malloc");
 				free_ast(node);
 				*ret = 1;
 				return (NULL);
@@ -89,11 +84,10 @@ t_node	*parse_command(t_token **rest, int *ret)
 		else if (peek_redir_op(cur))
 		{
 			node->redir_count++;
-			redirs_tmp = (t_redir **)malloc(sizeof(t_redir *)
+			redirs_tmp = (t_redir **)ft_malloc(sizeof(t_redir *)
 					* (node->redir_count + 1));
 			if (!redirs_tmp)
 			{
-				perror("minishell: malloc");
 				free_ast(node);
 				*ret = 1;
 				return (NULL);
@@ -167,7 +161,7 @@ int	parse(t_token *tokens, t_node **ast)
 	t_token	*rest;
 	int		ret;
 
-    ret = 0;
+	ret = 0;
 	if (tokens->type == TK_EOF)
 	{
 		(*ast) = NULL;

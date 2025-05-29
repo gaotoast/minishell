@@ -17,12 +17,9 @@ char	*ft_strdup(const char *s)
 	char	*new;
 	int		i;
 
-	new = (char *)malloc(sizeof(char) * (ft_strlen(s) + 1));
+	new = (char *)ft_malloc(sizeof(char) * (ft_strlen(s) + 1));
 	if (!new)
-	{
-		perror("minishell: malloc");
 		return (NULL);
-	}
 	i = 0;
 	while (s[i])
 	{
