@@ -2,7 +2,6 @@
 # define MINISHELL_H
 
 # include "ft_printf.h"
-# include "get_next_line.h"
 # include "libft.h"
 # include <errno.h>
 # include <fcntl.h>
@@ -222,6 +221,7 @@ int					ft_isspace(char c);
 int					is_valid_env(char *name);
 int					event(void);
 int					ft_split_len(char **split);
+void	            *ft_malloc(size_t size);
 
 void	            interpret(t_shell *shell);
 void				exit_shell(t_shell *shell);

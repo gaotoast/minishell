@@ -25,7 +25,7 @@ char	*ft_union(char **split, char delim)
 		return (NULL);
 	while (split[i])
 		len += ft_strlen(split[i++]);
-	rtn = malloc(sizeof(char) * (len + i + 1));
+	rtn = (char *)ft_malloc(sizeof(char) * (len + i + 1));
 	if (!rtn)
 		return (NULL);
 	i = 0;

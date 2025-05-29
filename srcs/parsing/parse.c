@@ -58,10 +58,9 @@ t_node	*parse_command(t_token **rest, int *ret)
 		if (peek_word(cur))
 		{
 			node->argc++;
-			argv_tmp = (char **)malloc(sizeof(char *) * (node->argc + 1));
+			argv_tmp = (char **)ft_malloc(sizeof(char *) * (node->argc + 1));
 			if (!argv_tmp)
 			{
-				perror("minishell: malloc");
 				free_ast(node);
 				*ret = 1;
 				return (NULL);
@@ -89,11 +88,10 @@ t_node	*parse_command(t_token **rest, int *ret)
 		else if (peek_redir_op(cur))
 		{
 			node->redir_count++;
-			redirs_tmp = (t_redir **)malloc(sizeof(t_redir *)
+			redirs_tmp = (t_redir **)ft_malloc(sizeof(t_redir *)
 					* (node->redir_count + 1));
 			if (!redirs_tmp)
 			{
-				perror("minishell: malloc");
 				free_ast(node);
 				*ret = 1;
 				return (NULL);
