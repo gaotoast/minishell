@@ -123,6 +123,7 @@ typedef struct s_exp_tkn
 {
 	char				*str;
 	bool				is_expanded;
+    bool                is_quoted;
 	struct s_exp_tkn 	*next;
 }						t_exp_tkn;
 
@@ -186,9 +187,9 @@ int                 expand_cmds(t_node *node);
 int                 expand_redirs(t_node *node);
 int                 tokenize_with_expansion(t_exp_tkn **head, char *str, int env_flag);
 int					split_exp_tokens(t_exp_tkn **head);
-t_exp_tkn			*expand_env_var(char **s);
+t_exp_tkn	        *expand_env_var(char **s, bool is_quoted);
 int					exp_token_to_argv(t_exp_tkn *head, char ***argv);
-t_exp_tkn			*new_exp_token(char *str, bool is_expanded);
+t_exp_tkn	        *new_exp_token(char *str, bool is_expanded, bool is_quoted);
 void				append_exp_token(t_exp_tkn **head, t_exp_tkn *new);
 void				free_exp_tokens(t_exp_tkn *head);
 

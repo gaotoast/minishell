@@ -53,7 +53,7 @@ char	*get_var_value(char *name)
 }
 
 // 環境変数または$?を展開してexpトークンを作成
-t_exp_tkn	*expand_env_var(char **s)
+t_exp_tkn	*expand_env_var(char **s, bool is_quoted)
 {
 	char	*name;
 	char	*value;
@@ -66,12 +66,12 @@ t_exp_tkn	*expand_env_var(char **s)
 		value = ft_strdup("$");
 		if (!value)
 			return (NULL);
-		return (new_exp_token(value, false));
+		return (new_exp_token(value, false, is_quoted));
 	}
 	*s += ft_strlen(name);
 	value = get_var_value(name);
 	free(name);
 	if (!value)
 		return (NULL);
-	return (new_exp_token(value, true));
+	return (new_exp_token(value, true, is_quoted));
 }

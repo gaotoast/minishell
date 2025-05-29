@@ -2,7 +2,7 @@
 
 // 展開しない & クォートのついてない文字列を抜粋してexpトークンを作成
 // 合わせてポインタを進める
-t_exp_tkn	*extract_literal(char **s, int len)
+t_exp_tkn	*extract_literal(char **s, int len, bool is_quoted)
 {
 	char	*str;
 
@@ -13,7 +13,7 @@ t_exp_tkn	*extract_literal(char **s, int len)
 	if (!str)
 		return (NULL);
 	*s += len;
-	return (new_exp_token(str, false));
+	return (new_exp_token(str, false, is_quoted));
 }
 
 int	process_double_quote(t_exp_tkn **head, char **p, int env_flag)
@@ -24,7 +24,7 @@ int	process_double_quote(t_exp_tkn **head, char **p, int env_flag)
 	while (**p && **p != '"')
 	{
 		if (**p == '$' && env_flag)
-			new_tkn = expand_env_var(p);
+			new_tkn = expand_env_var(p, true);
 		else
 		{
 			len = 0;
@@ -34,7 +34,7 @@ int	process_double_quote(t_exp_tkn **head, char **p, int env_flag)
 					break ;
 				len++;
 			}
-			new_tkn = extract_literal(p, len);
+			new_tkn = extract_literal(p, len, true);
 		}
 		if (!new_tkn)
 			return (1);
@@ -50,7 +50,7 @@ int	handle_double_quote(t_exp_tkn **head, char **p, int env_flag)
 
 	if (**p == '"')
 	{
-		new_tkn = extract_literal(p, 0);
+		new_tkn = extract_literal(p, 0, true);
 		if (!new_tkn)
 			return (1);
 		append_exp_token(head, new_tkn);
@@ -68,13 +68,13 @@ int	handle_single_quote(t_exp_tkn **head, char **p)
 	t_exp_tkn	*new_tkn;
 
 	if (**p == '\'')
-		new_tkn = extract_literal(p, 0);
+		new_tkn = extract_literal(p, 0, true);
     else
     {
         len = 0;
         while ((*p)[len] && (*p)[len] != '\'')
             len++;
-        new_tkn = extract_literal(p, len);
+        new_tkn = extract_literal(p, len, true);
     }
 	if (!new_tkn)
 		return (1);
@@ -89,13 +89,13 @@ int	handle_no_quote(t_exp_tkn **head, char **p, int env_flag)
 	t_exp_tkn	*new_tkn;
 
 	if (**p == '$' && env_flag)
-		new_tkn = expand_env_var(p);
+		new_tkn = expand_env_var(p, false);
 	else
 	{
 		len = 0;
 		while ((*p)[len] && (!env_flag || (*p)[len] != '$'))
 			len++;
-		new_tkn = extract_literal(p, len);
+		new_tkn = extract_literal(p, len, false);
 	}
     if (!new_tkn)
         return (1);
