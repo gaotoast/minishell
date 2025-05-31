@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 00:20:46 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/24 18:28:03 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/31 20:07:26 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	check_argv(char **argv, int *endnew)
 int	echo(int argc, char **argv)
 {
 	int	endnew;
-	int		i;
+	int	i;
 
 	if (argc < 1)
 		return (EXIT_SUCCESS);
