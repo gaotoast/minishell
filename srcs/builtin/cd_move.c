@@ -6,36 +6,13 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:10:15 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/31 19:21:29 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/31 21:19:06 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	**get_longer_split(char **split, char *new, int len)
-{
-	int		i;
-	char	**rtn;
-
-	i = 0;
-	rtn = (char **)ft_malloc(sizeof(char *) * (len + 2));
-	if (!rtn)
-	{
-		free_2d_array(split);
-		return (NULL);
-	}
-	while (split[i])
-	{
-		rtn[i] = split[i];
-		++i;
-	}
-	rtn[i++] = new;
-	rtn[i] = NULL;
-	free(split);
-	return (rtn);
-}
-
-char	**make_abs_path(char **dest_split, char **inner_split, int inner_len)
+char	*make_abs_path(char **dest_split, char **inner_split, int inner_len)
 {
 	int	i;
 
@@ -61,7 +38,7 @@ char	**make_abs_path(char **dest_split, char **inner_split, int inner_len)
 		}
 		++i;
 	}
-	return (inner_split);
+	return (ft_union(inner_split, '/'));
 }
 
 char	*get_abs_path(char *dest)
@@ -87,8 +64,7 @@ char	*get_abs_path(char *dest)
 	inner_len = 0;
 	while (inner_split[inner_len])
 		++inner_len;
-	inner_split = make_abs_path(dest_split, inner_split, inner_len);
-	rtn = ft_union(inner_split, '/');
+	rtn = make_abs_path(dest_split, inner_split, inner_len);
 	free_2d_array(inner_split);
 	free(dest_split);
 	return (rtn);
@@ -113,14 +89,11 @@ int	check_cwd(char *path)
 	return (0);
 }
 
-char	*move_to_some(char *dest)
+char	*get_path(char *dest)
 {
 	char	*path;
 	char	*joined;
-	int		res;
 
-	if (check_cwd(dest))
-		return (NULL);
 	if (dest[0] == '/')
 		path = ft_strdup(dest);
 	else if (ft_strncmp("./", dest, 2) == 0)
@@ -132,12 +105,19 @@ char	*move_to_some(char *dest)
 		free(joined);
 	}
 	free(dest);
+	return (path);
+}
+
+char	*move_to_some(char *dest)
+{
+	char	*path;
+	int		res;
+
+	if (check_cwd(dest))
+		return (NULL);
+	path = get_path(dest);
 	if (!path)
-	{
-		ft_env(ENV_DEL_ALL, NULL);
-		sh_op(SH_DEL, NULL);
-		exit(1);
-	}
+		inner_exit(1);
 	if (access(path, X_OK) != 0)
 	{
 		ft_dprintf(STDERR_FILENO, "minishell: cd:"
