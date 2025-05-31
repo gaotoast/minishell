@@ -81,7 +81,7 @@ int	handle_single_heredoc(t_node *start, t_node *cur, int i, int n)
 		unlink_all_temp_partial(start, cur, i + 1);
 		return (1);
 	}
-    return (0);
+	return (0);
 }
 
 // すべてのヒアドキュメントの入力を読み取って一時ファイルを作成して書き込む
@@ -100,8 +100,8 @@ int	handle_all_heredocs(t_node *node)
 		{
 			if (cur->redirs[i]->kind == REDIR_HEREDOC)
 			{
-                if (handle_single_heredoc(node, cur, i, n) != 0)
-                    return (1);
+				if (handle_single_heredoc(node, cur, i, n) != 0)
+					return (1);
 			}
 			i++;
 			n++;

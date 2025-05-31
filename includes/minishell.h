@@ -198,6 +198,7 @@ int								split_exp_tokens(t_exp_tkn **head);
 t_exp_tkn						*extract_literal(char **s, int len,
 									bool is_quoted);
 int								is_valid_var_char(char c);
+char	                        *process_dollar(char **s, char *result);
 int								extract_var_name(char *str, char **name);
 char							*get_var_value(char *name);
 t_exp_tkn						*expand_env_var(char **s, bool is_quoted);
