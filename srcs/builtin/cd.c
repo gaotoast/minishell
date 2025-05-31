@@ -6,11 +6,28 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/31 22:28:01 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/31 22:55:07 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	check_access(char *dest)
+{
+	if (access(dest, F_OK))
+	{
+		ft_dprintf(STDERR_FILENO, "minishell: cd: %s: No such "
+			"file or directly\n", dest);
+		return (1);
+	}
+	if (access(dest, X_OK) != 0)
+	{
+		ft_dprintf(STDERR_FILENO, "minishell: cd:"
+			" %s: Permission denied\n", dest);
+		return (1);
+	}
+	return (0);
+}
 
 char	*move_to_env(char *val_name)
 {
@@ -23,12 +40,8 @@ char	*move_to_env(char *val_name)
 		ft_dprintf(STDERR_FILENO, "minishell: cd: %s not set\n", val_name);
 		return (NULL);
 	}
-	if (access(env->val, X_OK) != 0)
-	{
-		ft_dprintf(STDERR_FILENO, "minishell: cd:"
-			" %s: Permission denied\n", env->val);
+	if (check_access(env->val))
 		return (NULL);
-	}
 	res = chdir(env->val);
 	if (res != 0)
 	{
@@ -36,6 +49,19 @@ char	*move_to_env(char *val_name)
 		return (NULL);
 	}
 	return (ft_strdup(env->val));
+}
+
+void	set_pwds(char *envname, char *envval)
+{
+	char	*tmp;
+
+	tmp = ft_strjoin(envname, envval);
+	if (!tmp || ft_env(ENV_SET, tmp) == NULL)
+	{
+		free(tmp);
+		inner_exit(1);
+	}
+	free(tmp);
 }
 
 char	*update_envs(char *path)
@@ -53,26 +79,9 @@ char	*update_envs(char *path)
 	old_pwd = (t_env *)ft_env(ENV_GET_STRUCT, "OLDPWD");
 	pwd = (t_env *)ft_env(ENV_GET_STRUCT, "PWD");
 	if (pwd && old_pwd)
-	{
-		tmp = ft_strjoin("OLDPWD=", pwd->val);
-		if (!tmp || ft_env(ENV_SET, tmp) == NULL)
-		{
-			free(tmp);
-			inner_exit(1);
-			return (NULL);
-		}
-		free(tmp);
-	}
+		set_pwds("OLDPWD=", pwd->val);
 	if (pwd)
-	{
-		tmp = ft_strjoin("PWD=", path);
-		if (!tmp || ft_env(ENV_SET, tmp) == NULL)
-		{
-			free(tmp);
-			inner_exit(1);
-		}
-		free(tmp);
-	}
+		set_pwds("PWD=", path);
 	return (ft_cwd(PWD_SET, cp_path));
 }
 
