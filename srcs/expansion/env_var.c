@@ -17,7 +17,7 @@ static int	extract_var_name(char *str, char **name)
 	{
 		*name = ft_strdup("?");
 		if (!(*name))
-			return (-1);
+			return (1);
 		return (0);
 	}
 	len = 0;
@@ -30,10 +30,11 @@ static int	extract_var_name(char *str, char **name)
 	}
 	*name = ft_strndup(str, len);
 	if (!(*name))
-		return (-1);
+		return (1);
 	return (0);
 }
 
+// 環境変数の値を取得
 static char	*get_var_value(char *name)
 {
 	char	*value;
@@ -52,26 +53,72 @@ static char	*get_var_value(char *name)
 	return (value);
 }
 
-// 環境変数または$?を展開してexpトークンを作成
-t_exp_tkn	*expand_env_var(char **s, bool is_quoted)
+// $記号の処理
+static char	*process_dollar(char **s, char *result)
 {
 	char	*name;
+	char	*temp;
 	char	*value;
 
 	(*s)++;
-	if (extract_var_name(*s, &name) < 0)
+	if (extract_var_name(*s, &name) != 0)
+	{
+		free(result);
 		return (NULL);
+	}
 	if (!name)
 	{
-		value = ft_strdup("$");
-		if (!value)
-			return (NULL);
-		return (new_exp_token(value, false, is_quoted));
+		temp = ft_strjoin(result, "$");
+		free(result);
+		return (temp);
 	}
 	*s += ft_strlen(name);
 	value = get_var_value(name);
 	free(name);
 	if (!value)
+		return (result);
+	temp = ft_strjoin(result, value);
+	free(result);
+	free(value);
+	return (temp);
+}
+
+// $が連続している間展開して文字列を連結
+char	*expand_env_var_process(char **s)
+{
+	char	*result;
+
+	result = ft_strdup("");
+	if (!result)
 		return (NULL);
-	return (new_exp_token(value, true, is_quoted));
+	while (**s)
+	{
+		if (**s == '$')
+		{
+			result = process_dollar(s, result);
+			if (!result)
+				return (NULL);
+		}
+		else
+			break ;
+	}
+	return (result);
+}
+
+// ${変数名}または$?を展開してexpトークンを作成
+t_exp_tkn	*expand_env_var(char **s, bool is_quoted)
+{
+	char		*expanded;
+	t_exp_tkn	*token;
+
+	expanded = expand_env_var_process(s);
+	if (!expanded)
+		return (NULL);
+	token = new_exp_token(expanded, true, is_quoted);
+	if (!token)
+	{
+		free(expanded);
+		return (NULL);
+	}
+	return (token);
 }
