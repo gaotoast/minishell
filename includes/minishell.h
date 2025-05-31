@@ -182,14 +182,15 @@ int					consume_reserved(t_token **rest, char *op);
 
 // expansion
 int					expand(t_node *node);
-int					tokenize_with_expansion(t_exp_tkn **head, char *str);
+int                 expand_cmds(t_node *node);
+int                 expand_redirs(t_node *node);
+int                 tokenize_with_expansion(t_exp_tkn **head, char *str, int env_flag);
 int					split_exp_tokens(t_exp_tkn **head);
 t_exp_tkn			*expand_env_var(char **s);
 int					exp_token_to_argv(t_exp_tkn *head, char ***argv);
 t_exp_tkn			*new_exp_token(char *str, bool is_expanded);
 void				append_exp_token(t_exp_tkn **head, t_exp_tkn *new);
 void				free_exp_tokens(t_exp_tkn *head);
-int					count_argv(char **argv);
 
 // bulitin
 int					cd(int argc, char **argv);
