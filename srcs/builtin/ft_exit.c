@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 04:02:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/31 20:00:32 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/31 21:45:05 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,20 +103,14 @@ int	ft_exit(int argc, char **argv, int print)
 	if (print)
 		write(STDIN_FILENO, "exit\n", 5);
 	if (argc == 1)
-	{
-		ft_env(ENV_DEL_ALL, NULL);
-		sh_op(SH_DEL, NULL);
-		exit(sh_stat(ST_GET, 0));
-	}
+		inner_exit(sh_stat(ST_GET, 0));
 	rtn = get_exit_num(argv[1]);
 	if (rtn == -1)
 	{
 		write(STDERR_FILENO, "minishell: exit: ", 17);
 		write(STDERR_FILENO, argv[1], ft_strlen(argv[1]));
 		write(STDERR_FILENO, ": numeric argument required\n", 28);
-		ft_env(ENV_DEL_ALL, NULL);
-		sh_op(SH_DEL, NULL);
-		exit(2);
+		inner_exit(2)
 	}
 	else if (argc > 2)
 	{
@@ -124,10 +118,6 @@ int	ft_exit(int argc, char **argv, int print)
 		return (EXIT_FAILURE);
 	}
 	else
-	{
-		ft_env(ENV_DEL_ALL, NULL);
-		sh_op(SH_DEL, NULL);
-		exit(rtn);
-	}
+		inner_exit(rtn);
 	return (EXIT_FAILURE);
 }

@@ -231,11 +231,10 @@ int					is_valid_env(char *name);
 int					event(void);
 int					ft_split_len(char **split);
 void	            *ft_malloc(size_t size);
-
 void	            interpret(t_shell *shell);
 void				exit_shell(int print);
 void				finish_loop(t_shell *shell);
-
+void				inner_exit(int status);
 
 // free
 void				free_2d_array(char **array);

@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:10:15 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/31 19:21:29 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/31 21:54:32 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,9 +134,7 @@ char	*move_to_some(char *dest)
 	free(dest);
 	if (!path)
 	{
-		ft_env(ENV_DEL_ALL, NULL);
-		sh_op(SH_DEL, NULL);
-		exit(1);
+		inner_exit(1);
 	}
 	if (access(path, X_OK) != 0)
 	{
