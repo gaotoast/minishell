@@ -6,24 +6,24 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/31 22:55:07 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 03:02:24 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	check_access(char *dest)
+int	check_access(char *dest, char *path)
 {
-	if (access(dest, F_OK))
+	if (access(path, F_OK))
 	{
 		ft_dprintf(STDERR_FILENO, "minishell: cd: %s: No such "
 			"file or directly\n", dest);
 		return (1);
 	}
-	if (access(dest, X_OK) != 0)
+	if (access(path, X_OK) != 0)
 	{
 		ft_dprintf(STDERR_FILENO, "minishell: cd:"
-			" %s: Permission denied\n", dest);
+			" %s: Permission denied\n", path);
 		return (1);
 	}
 	return (0);
@@ -40,7 +40,7 @@ char	*move_to_env(char *val_name)
 		ft_dprintf(STDERR_FILENO, "minishell: cd: %s not set\n", val_name);
 		return (NULL);
 	}
-	if (check_access(env->val))
+	if (check_access(env->val, env->val))
 		return (NULL);
 	res = chdir(env->val);
 	if (res != 0)
@@ -69,7 +69,6 @@ char	*update_envs(char *path)
 	t_env	*old_pwd;
 	t_env	*pwd;
 	char	*cp_path;
-	char	*tmp;
 
 	if (!path)
 		return (NULL);
@@ -100,7 +99,11 @@ int	cd(int argc, char **argv)
 		path = move_to_env("OLDPWD");
 	else
 		path = move_to_some(argv[1]);
-	update_envs(path);
+	if (update_envs(path) == NULL)
+	{
+		free(path);
+		return (1);
+	}
 	free(path);
 	return (EXIT_SUCCESS);
 }

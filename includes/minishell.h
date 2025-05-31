@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/01 03:06:23 by yumiyao           #+#    #+#             */
+/*   Updated: 2025/06/01 03:06:55 by yumiyao          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -18,7 +30,7 @@
 // debug用
 # include <stdbool.h>
 
-extern volatile sig_atomic_t    g_sig_received;
+extern volatile sig_atomic_t	g_sig_received;
 
 // TODO: 頭に"/tmp"をつける
 # define HEREDOC_TMP "heredoc_tmp_"
@@ -212,7 +224,7 @@ char				*move_to_some(char *dest);
 char				*move_to_env(char *val_name);
 int					print_envs(void);
 void				inner_exit(int status);
-int					check_access(char *dest);
+int					check_access(char *dest, char *path);
 
 // signal
 void				set_main_sigint(void);
@@ -222,6 +234,15 @@ void				set_exec_sigquit(void);
 
 // env
 void				*ft_env(t_env_op op, char *str);
+t_env				*search_val(t_env *head, char *name,
+						int offset, t_val_type type);
+char				*rm_quotes(char *val);
+t_env				*ft_add_env(t_env **head, char *str, int offset);
+t_env				*ft_update_env(t_env **head, char *str, int offset);
+t_env				*env_del_all(t_env **head);
+t_env				*env_del(t_env **head, char *name);
+void				*get_env_all(t_env **head, t_env_op op);
+void				*get_env(t_env *head, char *name, t_env_op op);
 
 // utils
 int					sh_stat(t_st_op op, int val);
@@ -238,7 +259,7 @@ void				exit_shell(int print);
 void				finish_loop(t_shell *shell);
 char				**get_longer_split(char **split, char *new, int len);
 long long int		ft_atol(char *num, long long int minus, int digit);
-
+char				*ft_strjoin_delim(char *s1, char delim, char *s2);
 
 // free
 void				free_2d_array(char **array);

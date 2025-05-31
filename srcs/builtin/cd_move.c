@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:10:15 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/31 22:50:24 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 03:01:05 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,6 @@ char	*get_path(char *dest)
 		path = get_abs_path(joined);
 		free(joined);
 	}
-	free(dest);
 	return (path);
 }
 
@@ -118,12 +117,12 @@ char	*move_to_some(char *dest)
 	path = get_path(dest);
 	if (!path)
 		inner_exit(1);
-	if (check_access(dest))
+	if (check_access(dest, path))
 	{
 		free(path);
 		return (NULL);
 	}
-	res = chdir(dest);
+	res = chdir(path);
 	if (res != 0)
 	{
 		ft_dprintf(STDERR_FILENO, "cd: %s\n", strerror(errno));

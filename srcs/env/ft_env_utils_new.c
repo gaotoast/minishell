@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 23:58:50 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 00:01:23 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 03:03:17 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ char	*cp_without_quoutes(char *val, int len)
 		return (NULL);
 	i = 0;
 	j = 0;
+	quote = '\0';
 	while (val[i])
 	{
 		if ((quote && val[i] != quote) || !is_quote(&val[i]))
@@ -70,7 +71,7 @@ char	*rm_quotes(char *val)
 			quote = '\0';
 		++i;
 	}
-	rtn = cp_without_quoutes(val,len);
+	rtn = cp_without_quoutes(val, len);
 	free(val);
 	return (rtn);
 }
