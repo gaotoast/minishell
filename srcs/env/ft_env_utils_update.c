@@ -6,17 +6,12 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 23:53:57 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 03:03:44 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 03:31:36 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*
-既存の変数を更新する。
-存在しない場合新規作成する。
-offsetはname+=valの場合にindexをずらすための値である。
-*/
 t_env	*ft_update_env(t_env **head, char *str, int offset)
 {
 	t_env	*target;

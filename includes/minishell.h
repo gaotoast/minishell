@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 03:06:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 03:06:55 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 03:40:07 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
-// debug用
+// debug
 # include <stdbool.h>
 
 extern volatile sig_atomic_t	g_sig_received;
@@ -35,7 +35,7 @@ extern volatile sig_atomic_t	g_sig_received;
 // TODO: 頭に"/tmp"をつける
 # define HEREDOC_TMP "heredoc_tmp_"
 
-// exitステータス操作
+// exit status operation
 typedef enum e_st_op
 {
 	ST_GET,
@@ -76,7 +76,7 @@ typedef struct s_env
 	struct s_env	*next;
 }					t_env;
 
-// 字句解析
+// tokenize
 typedef enum e_token_type
 {
 	TK_RESERVED,
@@ -91,7 +91,7 @@ typedef struct s_token
 	struct s_token	*next;
 }					t_token;
 
-// 構文解析
+// parsing
 typedef enum e_node_kind
 {
 	ND_PIPE,
@@ -116,10 +116,8 @@ typedef struct s_redir
 typedef struct s_node
 {
 	t_node_kind		kind;
-	// コマンドとオプション、引数
 	int				argc;
 	char			**argv;
-	// リダイレクト
 	int				redir_count;
 	t_redir			**redirs;
 	struct s_node	*lhs;
@@ -129,7 +127,7 @@ typedef struct s_node
 	int				pipefd[2];
 }					t_node;
 
-// 展開
+// expand
 typedef struct s_exp_tkn
 {
 	char				*str;
@@ -144,7 +142,7 @@ typedef enum e_op_shell
 	SH_DEL
 }					t_op_shell;
 
-// minishell全体
+// minishell
 typedef struct s_shell
 {
 	char			*input;

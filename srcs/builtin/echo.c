@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 00:20:46 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/31 20:07:26 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 03:30:04 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ int	check_argv(char **argv, int *endnew)
 	return (op);
 }
 
-/* TODO : libftの使用*/
 int	echo(int argc, char **argv)
 {
 	int	endnew;

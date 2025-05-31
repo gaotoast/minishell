@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 23:58:50 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 03:03:17 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 03:31:28 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,13 +76,6 @@ char	*rm_quotes(char *val)
 	return (rtn);
 }
 
-/*
-新しいenv構造体をつくる
-str はAAA+=XXXを許容する
-+,=以降はなくても構わない
-=がない場合VAL_SHとして、ある場合VAL_EXとして構造体が作成される
-offsetは+が存在する場合のindexのずらす値である
-*/
 t_env	*new_env(char *str, int offset)
 {
 	t_env	*rtn;
@@ -110,7 +103,6 @@ t_env	*new_env(char *str, int offset)
 	return (check_new_env(eq, rtn));
 }
 
-// 新しいt_envを返す
 t_env	*ft_add_env(t_env **head, char *str, int offset)
 {
 	t_env	*tmp;

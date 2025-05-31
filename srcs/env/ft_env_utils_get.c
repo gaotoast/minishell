@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 23:45:44 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/31 23:58:00 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 03:31:15 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int	list_len(t_env *head, t_env_op op)
 	return (len);
 }
 
-// 環境変数(VAL_EX)であるt_envのうち、nameに一致するものを返す
 void	*get_env(t_env *head, char *name, t_env_op op)
 {
 	t_env	*target;
@@ -42,7 +41,6 @@ void	*get_env(t_env *head, char *name, t_env_op op)
 	return (target);
 }
 
-//変数全て or VAL_EXのみをまとめて返す
 void	*get_env_all(t_env **head, t_env_op op)
 {
 	int		len;
