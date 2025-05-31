@@ -207,7 +207,7 @@ int					export(int argc, char **argv);
 int					pwd(int argc, char **argv);
 int					unset(int argc, char **argv);
 int					env(int argc, char **argv);
-int					ft_exit(int argc, char **argv);
+int					ft_exit(int argc, char **argv, int print);
 char				*move_to_some(char *dest);
 char				*move_to_env(char *val_name);
 int					print_envs(void);
@@ -233,7 +233,7 @@ int					ft_split_len(char **split);
 void	            *ft_malloc(size_t size);
 
 void	            interpret(t_shell *shell);
-void				exit_shell();
+void				exit_shell(int print);
 void				finish_loop(t_shell *shell);
 
 

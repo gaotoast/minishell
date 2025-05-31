@@ -24,6 +24,6 @@ int	main(int argc, char **argv, char **envp)
 		interpret(shell);
 		finish_loop(shell);
 	}
-	exit_shell(shell);
+	exit_shell(1);
 	return (0);
 }

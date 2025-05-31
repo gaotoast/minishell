@@ -1,19 +1,17 @@
 #include "minishell.h"
 
-void	exit_shell(void)
+void	exit_shell(int print)
 {
 	rl_clear_history();
-	ft_env(ENV_DEL_ALL, NULL);
-	sh_op(SH_DEL, NULL);
-	ft_exit(1, NULL);
+	ft_exit(1, NULL, print);
 }
 
 int	handle_stage_ret(int ret)
 {
 	if (ret == 1)
 	{
-        sh_stat(ST_SET, 1);
-		exit_shell();
+		sh_stat(ST_SET, 1);
+		exit_shell(0);
 		return (1);
 	}
 	else if (ret != 0)

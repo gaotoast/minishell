@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 04:02:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/29 04:57:50 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/31 20:00:32 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,11 +96,12 @@ long long int	get_exit_num(char *num)
 	return (rtn);
 }
 
-int	ft_exit(int argc, char **argv)
+int	ft_exit(int argc, char **argv, int print)
 {
 	int	rtn;
 
-	write(STDIN_FILENO, "exit\n", 5);
+	if (print)
+		write(STDIN_FILENO, "exit\n", 5);
 	if (argc == 1)
 	{
 		ft_env(ENV_DEL_ALL, NULL);
