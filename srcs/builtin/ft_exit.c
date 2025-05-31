@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 04:02:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/31 21:45:05 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/31 22:06:52 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ int	ft_exit(int argc, char **argv, int print)
 		write(STDERR_FILENO, "minishell: exit: ", 17);
 		write(STDERR_FILENO, argv[1], ft_strlen(argv[1]));
 		write(STDERR_FILENO, ": numeric argument required\n", 28);
-		inner_exit(2)
+		inner_exit(2);
 	}
 	else if (argc > 2)
 	{
