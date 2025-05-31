@@ -133,7 +133,6 @@ int	increment_shlvl(int shlvl)
 	env_shlvl = ft_strjoin("SHLVL=", str_shlvl);
 	if (!str_shlvl || !env_shlvl)
 	{
-		ft_dprintf(STDERR_FILENO, "minishell: malloc: %s\n", strerror(errno));
 		free(str_shlvl);
 		free(env_shlvl);
 		ft_env(ENV_DEL_ALL, NULL);
@@ -155,7 +154,6 @@ int	init_shlvl(void)
 {
 	char	*shlvl;
 	int		lvl;
-	char	*lvl_str;
 
 	shlvl = ft_env(ENV_GET_VAL, "SHLVL");
 	if (!shlvl || is_valid_shlvl(shlvl))

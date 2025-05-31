@@ -233,7 +233,7 @@ int					ft_split_len(char **split);
 void	            *ft_malloc(size_t size);
 
 void	            interpret(t_shell *shell);
-void				exit_shell(t_shell *shell);
+void				exit_shell();
 void				finish_loop(t_shell *shell);
 
 
@@ -254,7 +254,7 @@ void				print_ast(t_node *node, int depth);
 void				debug_parser(t_node *ast);
 void				debug_expand(t_node *ast);
 void				debug_exec_list(t_node *node);
-void	print_exp_token_list(t_exp_tkn *head);
-void	print_2d_array(char **array);
+void				print_exp_token_list(t_exp_tkn *head);
+void				print_2d_array(char **array);
 
 #endif

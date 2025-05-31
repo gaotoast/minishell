@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 22:38:00 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/31 18:55:44 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/31 19:22:18 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,9 @@ char	*rm_quotes(char *val)
 			quote = '\0';
 		++i;
 	}
-	rtn = malloc(sizeof(char) * j + 1);
+	rtn = (char *)ft_malloc(sizeof(char) * j + 1);
 	if (!rtn)
 	{
-		ft_dprintf(STDERR_FILENO, "minishell: malloc: %s", strerror(errno));
 		free(val);
 		return (NULL);
 	}
@@ -104,10 +103,7 @@ t_env	*new_env(char *str, int offset)
 
 	rtn = (t_env *)ft_malloc(sizeof(t_env));
 	if (!rtn)
-	{
-		ft_dprintf(STDOUT_FILENO, "minishell: malloc: %s\n", strerror(errno));
 		return (NULL);
-	}
 	eq = ft_strchr(str, '=');
 	if (!eq)
 	{
