@@ -5,13 +5,12 @@ CFLAGS = -Wall -Wextra -Werror
 RM = rm -f
 
 LIBFT_DIR = ./libft
-GNL_DIR = ./get_next_line
 PRINTF_DIR = ./ft_printf
 
 SRCS = $(wildcard $(LIBFT_DIR)/*.c) \
-		$(GNL_DIR)/get_next_line.c \
-		$(GNL_DIR)/get_next_line_utils.c \
-		$(wildcard $(PRINTF_DIR)/*.c)
+		$(wildcard $(PRINTF_DIR)/*.c)	\
+		../srcs/utils/ft_malloc.c
+
 OBJS = $(SRCS:.c=.o)
 INCLUDES = ./includes
 

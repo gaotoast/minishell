@@ -16,12 +16,9 @@ char	**get_envp_copy(char **envp)
 	env_count = 0;
 	while (envp[env_count])
 		env_count++;
-	cp = (char **)malloc(sizeof(char *) * (env_count + 1));
+	cp = (char **)ft_malloc(sizeof(char *) * (env_count + 1));
 	if (!cp)
-	{
-		perror("minishell");
 		return (NULL);
-	}
 	i = 0;
 	while (i < env_count)
 	{
@@ -65,12 +62,9 @@ int	init_pwd(void)
 	pwd = ft_env(ENV_GET_VAL, "PWD");
 	if (!pwd)
 	{
-		pwd = malloc(sizeof(char) * (PATH_MAX + 1));
+		pwd = (char *)ft_malloc(sizeof(char) * (PATH_MAX + 1));
 		if (!pwd)
-		{
-			perror("minishell: ");
 			return (1);
-		}
 		getcwd(pwd, PATH_MAX);
 	}
 	else
@@ -78,7 +72,6 @@ int	init_pwd(void)
 		pwd = ft_strdup(pwd);
 		if (!pwd)
 		{
-			perror("minishell: ");
 			return (1);
 		}
 	}
@@ -135,6 +128,7 @@ void	init_shlvl(void)
 {
 	char	*shlvl;
 	int		lvl;
+	char	*lvl_str;
 
 	shlvl = ft_env(ENV_GET_VAL, "SHLVL");
 	if (!shlvl || is_valid_shlvl(shlvl))
@@ -145,26 +139,32 @@ void	init_shlvl(void)
 	lvl = pure_atoi(shlvl);
 	if (lvl > 998)
 	{
-		ft_dprintf(STDERR_FILENO, "minishell: warning: shell level (%d) "
-			"too high, resetting to 1\n", lvl + 1);
+		ft_dprintf(STDERR_FILENO,
+					"minishell: warning: shell level (%d) "
+					"too high, resetting to 1\n",
+					lvl + 1);
 		ft_env(ENV_SET, "SHLVL=1");
 	}
 	else if (lvl < 0)
 		ft_env(ENV_SET, "SHLVL=0");
 	else
-		ft_env(ENV_SET, ft_strjoin("SHLVL=", ft_itoa(lvl + 1)));
+	{
+		lvl_str = ft_itoa(lvl + 1);
+		// TODO: ft_itoaのエラーハンドリング？
+		ft_env(ENV_SET, ft_strjoin("SHLVL=", lvl_str));
+		free(lvl_str);
+	}
 }
 
 int	init(t_shell **shell, char **envp)
 {
-	(*shell) = (t_shell *)malloc(sizeof(t_shell));
+	(*shell) = (t_shell *)ft_malloc(sizeof(t_shell));
 	if (!(*shell))
-	{
-		perror("minishell");
 		return (-1);
-	}
 	sh_stat(ST_SET, 0);
+	(*shell)->input = NULL;
 	(*shell)->tokens = NULL;
+	(*shell)->ast = NULL;
 	if (init_env(envp))
 	{
 		free(*shell);
@@ -177,6 +177,5 @@ int	init(t_shell **shell, char **envp)
 		return (-1);
 	}
 	init_shlvl();
-	(*shell)->ast = NULL;
 	return (0);
 }

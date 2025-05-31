@@ -1,19 +1,17 @@
 #include "minishell.h"
 
-// TODO: pipe()とdup2()のエラーハンドリング
-
 // pipe()でパイプを作る
-void	prepare_pipe(t_node *node)
+int	prepare_pipe(t_node *node)
 {
 	if (node->next_cmd)
 	{
 		if (pipe(node->pipefd) < 0)
 		{
-			perror("minishell");
-			// TODO: free()
-			exit(1);
+			perror("minishell: pipe");
+			return (-1);
 		}
 	}
+	return (0);
 }
 
 // 子プロセスのファイルディスクリプタ処理
@@ -22,13 +20,21 @@ void	prepare_pipe_child(t_node *node, int count)
 	// 最初のコマンド以外：前のパイプの読み取り側をSTDINに
 	if (count > 0)
 	{
-		dup2(node->in_fd, STDIN_FILENO);
+		if (dup2(node->in_fd, STDIN_FILENO) == -1)
+		{
+			perror("minishell: dup2");
+			exit(1);
+		}
 		close(node->in_fd);
 	}
 	// 最後のコマンド以外：パイプの書き込み側をSTDOUTに & パイプの読み取り側（使わない）を閉じる
 	if (node->next_cmd)
 	{
-		dup2(node->pipefd[1], STDOUT_FILENO);
+		if (dup2(node->pipefd[1], STDOUT_FILENO) == -1)
+		{
+			perror("minishell: dup2");
+			exit(1);
+		}
 		close(node->pipefd[1]);
 		close(node->pipefd[0]);
 	}

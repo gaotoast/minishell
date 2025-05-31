@@ -12,16 +12,13 @@ char	*search_path(char *cmd_name, char **path_list, char *path_tail,
 	{
 		path = ft_strjoin(path_list[i], path_tail);
 		if (!path)
-		{
-			perror("minishell");
 			return (NULL);
-		}
 		if (access(path, F_OK) == 0)
 			return (path);
 		free(path);
 		i++;
 	}
-	ft_dprintf(STDERR_FILENO, "minishell: %s: command not found\n", cmd_name);
+	ft_dprintf(STDERR_FILENO, "%s: command not found\n", cmd_name);
 	(*status) = 127;
 	return (NULL);
 }
@@ -35,14 +32,10 @@ char	*resolve_cmd_path(char *cmd, char *path_env, int *status)
 
 	path_tail = ft_strjoin("/", cmd);
 	if (!path_tail)
-	{
-		perror("minishell");
 		return (NULL);
-	}
 	path_list = ft_split(path_env, ':');
 	if (!path_list)
 	{
-		perror("minishell");
 		free(path_tail);
 		return (NULL);
 	}

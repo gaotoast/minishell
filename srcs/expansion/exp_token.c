@@ -5,10 +5,9 @@ t_exp_tkn	*new_exp_token(char *str, bool is_expanded)
 {
 	t_exp_tkn	*new;
 
-	new = (t_exp_tkn *)malloc(sizeof(t_exp_tkn));
+	new = (t_exp_tkn *)ft_malloc(sizeof(t_exp_tkn));
 	if (!new)
 	{
-		perror("minishell: malloc");
 		free(str);
 		return (NULL);
 	}

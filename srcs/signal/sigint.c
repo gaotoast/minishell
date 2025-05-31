@@ -18,7 +18,7 @@ void	set_exec_sigint(void)
 	sa.sa_flags = 0;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
 	{
-		perror("minishell");
+		perror("minishell: sigaction");
 		exit(1);
 	}
 }
@@ -33,7 +33,7 @@ void	set_main_sigint(void)
 	sa.sa_flags = 0;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
 	{
-		perror("minishell");
+		perror("minishell: sigaction");
 		exit(1);
 	}
 }

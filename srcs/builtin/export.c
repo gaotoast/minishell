@@ -32,10 +32,8 @@ int	is_valid_env(char *str)
 
 int	get_eq_idx(char *str, int *plus)
 {
-	int		i;
 	char	*eq;
 
-	i = 0;
 	*plus = 0;
 	if (!str || !is_valid_env(str))
 	{
