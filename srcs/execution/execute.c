@@ -4,8 +4,6 @@ int	is_empty_cmds(char **argv)
 {
 	int	i;
 
-	if (!argv || !argv[0])
-		return (1);
 	i = 0;
 	while (argv[i])
 	{
@@ -32,7 +30,8 @@ void	child_exec(t_node *node)
 	if (is_empty_cmds(node->argv))
 	{
 		free(cp_env);
-		exit(0);
+		ft_dprintf(STDERR_FILENO, "%s: command not found\n", node->argv[0]);
+		exit(127);
 	}
 	if (is_builtin(node->argv[0]))
 	{
@@ -51,11 +50,12 @@ pid_t	run_pipeline(t_node *node, int count)
 
 	if (!node)
 		return (-1);
-	prepare_pipe(node);
+	if (prepare_pipe(node) != 0)
+		return (-1);
 	pid = fork();
 	if (pid < 0)
 	{
-		perror("minishell");
+		perror("minishell: fork");
 		return (-1);
 	}
 	if (pid == 0)
@@ -71,29 +71,32 @@ pid_t	run_pipeline(t_node *node, int count)
 
 // 実行部メイン処理
 // ASTのコマンドノードをリストとしてつなげる -> ヒアドキュメントの入力を処理 -> ビルトイン単体かその他かで分岐して実行
-void	execute(t_node *root)
+int	execute(t_node *root)
 {
 	pid_t	last_pid;
 	t_node	*first_cmd;
 	t_node	*last_cmd;
 
 	if (!root)
-		return ;
+		return (0);
 	first_cmd = NULL;
 	last_cmd = NULL;
 	link_exec_nodes(root, root->rhs, &first_cmd, &last_cmd);
 	if (handle_all_heredocs(first_cmd) != 0)
 	{
 		unlink_all_temp(first_cmd->redir_count, first_cmd->redirs);
-		sh_stat(ST_SET, 1);
-		return ;
+		return (1);
 	}
 	// ビルトインコマンド単体の場合
 	if (root->kind == ND_CMD && root->argv && is_builtin(root->argv[0]))
 	{
-		process_builtin_direct(root);
-		return ;
+		if (process_builtin_direct(root) != 0)
+			return (1);
+		return (0);
 	}
 	last_pid = run_pipeline(first_cmd, 0);
+	if (last_pid < 0)
+		return (1);
 	sh_stat(ST_SET, wait_children(last_pid));
+	return (0);
 }

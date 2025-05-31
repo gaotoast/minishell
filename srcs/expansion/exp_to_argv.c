@@ -44,12 +44,9 @@ char	**build_argv_from_exp(t_exp_tkn *head, int count)
 {
 	char	**argv;
 
-	argv = (char **)malloc(sizeof(char *) * (count + 1));
+	argv = (char **)ft_malloc(sizeof(char *) * (count + 1));
 	if (!argv)
-	{
-		perror("minishell: malloc");
 		return (NULL);
-	}
 	if (copy_exp_to_argv(argv, head) != 0)
 		return (NULL);
 	return (argv);

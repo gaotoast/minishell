@@ -2,7 +2,6 @@
 # define MINISHELL_H
 
 # include "ft_printf.h"
-# include "get_next_line.h"
 # include "libft.h"
 # include <errno.h>
 # include <fcntl.h>
@@ -21,7 +20,7 @@
 
 extern volatile sig_atomic_t    g_sig_received;
 
-// TODO: 頭に"./tmp"をつける
+// TODO: 頭に"/tmp"をつける
 # define HEREDOC_TMP "heredoc_tmp_"
 
 // exitステータス操作
@@ -84,8 +83,8 @@ typedef struct s_token
 // 構文解析
 typedef enum e_node_kind
 {
-	ND_PIPE, // "|"単体
-	ND_CMD,  // その他のコマンドとリダイレクト記号のまとまり
+	ND_PIPE,
+	ND_CMD,
 }					t_node_kind;
 
 typedef enum s_redir_kind
@@ -137,6 +136,7 @@ typedef enum e_op_shell
 // minishell全体
 typedef struct s_shell
 {
+	char			*input;
 	t_env			*env_list;
 	t_token			*tokens;
 	t_node			*ast;
@@ -152,15 +152,15 @@ void				exec_if_relative_path(char **cmds, char **envp);
 void				exec_if_absolute_path(char **cmds, char **envp);
 void				exec_cmd(char **cmds, char **envp);
 int					exec_builtin_cmd(t_node *node);
-void				process_builtin_direct(t_node *node);
+int	                process_builtin_direct(t_node *node);
 void				link_exec_nodes(t_node *node, t_node *rhs, t_node **first,
 						t_node **last);
-void				execute(t_node *root);
+int	                execute(t_node *root);
 char				*search_path(char *cmd_name, char **path_list,
 						char *path_tail, int *status);
 char				*resolve_cmd_path(char *cmd, char *path_env, int *status);
 int					is_builtin(char *cmd);
-void				prepare_pipe(t_node *node);
+int                 prepare_pipe(t_node *node);
 void				prepare_pipe_child(t_node *node, int count);
 void				prepare_pipe_parent(t_node *node, int count);
 int					wait_children(pid_t last_pid);
@@ -171,7 +171,7 @@ int					apply_redirs(int redir_count, t_redir **redirs);
 void				unlink_all_temp(int redir_count, t_redir **redirs);
 
 // tokenization
-void				tokenize(char *line, t_token **tokens);
+int                 tokenize(char *line, t_token **tokens);
 int					is_single_metachar(char *p);
 int					is_two_metachar(char *p);
 int					is_single_metachar(char *p);
@@ -180,7 +180,7 @@ int					is_quote(char *p);
 int					is_blank(char c);
 
 // parsing
-void				parse(t_token *tokens, t_node **ast);
+int	                parse(t_token *tokens, t_node **ast);
 t_node				*new_pipe_node(t_node *lhs, t_node *rhs);
 t_node				*new_command_node(void);
 int					peek_word(t_token *token);
@@ -190,14 +190,15 @@ int					consume_reserved(t_token **rest, char *op);
 
 // expansion
 int					expand(t_node *node);
-int					tokenize_with_expansion(t_exp_tkn **head, char *str);
+int                 expand_cmds(t_node *node);
+int                 expand_redirs(t_node *node);
+int                 tokenize_with_expansion(t_exp_tkn **head, char *str, int env_flag);
 int					split_exp_tokens(t_exp_tkn **head);
 t_exp_tkn			*expand_env_var(char **s);
 int					exp_token_to_argv(t_exp_tkn *head, char ***argv);
 t_exp_tkn			*new_exp_token(char *str, bool is_expanded);
 void				append_exp_token(t_exp_tkn **head, t_exp_tkn *new);
 void				free_exp_tokens(t_exp_tkn *head);
-int					count_argv(char **argv);
 
 // bulitin
 int					cd(int argc, char **argv);
@@ -213,7 +214,6 @@ int					print_envs(void);
 
 // signal
 void				set_main_sigint(void);
-void				set_heredoc_sigint(void);
 void				set_exec_sigint(void);
 void				set_main_sigquit(void);
 void				set_exec_sigquit(void);
@@ -230,6 +230,11 @@ int					ft_isspace(char c);
 int					is_valid_env(char *name);
 int					event(void);
 int					ft_split_len(char **split);
+void	            *ft_malloc(size_t size);
+
+void	            interpret(t_shell *shell);
+void				exit_shell(t_shell *shell);
+void				finish_loop(t_shell *shell);
 
 
 // free

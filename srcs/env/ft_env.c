@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 22:38:00 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/29 03:53:23 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/31 18:55:44 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,9 @@ char	*ft_strjoin_delim(char *s1, char delim, char *s2)
 
 	len1 = ft_strlen(s1);
 	len2 = ft_strlen(s2);
-	rtn = (char *)malloc(sizeof(char) * (len1 + len2 + 2));
+	rtn = (char *)ft_malloc(sizeof(char) * (len1 + len2 + 2));
 	if (!rtn)
-	{
-		ft_dprintf(STDERR_FILENO, "minishell: malloc: %s\n", strerror(errno));
 		return (NULL);
-	}
 	ft_strlcpy(rtn, s1, len1 + 1);
 	rtn[len1] = delim;
 	rtn[len1 + 1] = '\0';
@@ -105,7 +102,7 @@ t_env	*new_env(char *str, int offset)
 	t_env	*rtn;
 	char	*eq;
 
-	rtn = (t_env *)malloc(sizeof(t_env));
+	rtn = (t_env *)ft_malloc(sizeof(t_env));
 	if (!rtn)
 	{
 		ft_dprintf(STDOUT_FILENO, "minishell: malloc: %s\n", strerror(errno));
@@ -171,8 +168,7 @@ t_env	*search_val(t_env *head, char *name, int offset, t_val_type type)
 	tmp = head;
 	while (tmp)
 	{
-		if (((type == VAL_EX && tmp->type == VAL_EX)
-				|| type == VAL_SH)
+		if (((type == VAL_EX && tmp->type == VAL_EX) || type == VAL_SH)
 			&& ft_strncmp(tmp->name, name, name_len) == 0)
 			return (tmp);
 		tmp = tmp->next;
@@ -219,10 +215,9 @@ void	*get_env_all(t_env **head, t_env_op op)
 	int		i;
 
 	len = list_len(*head, op);
-	rtn = (char **)malloc(sizeof(char *) * (len + 1));
+	rtn = (char **)ft_malloc(sizeof(char *) * (len + 1));
 	if (!rtn)
 	{
-		ft_dprintf(STDERR_FILENO, "minishell: malloc: %s\n", strerror(errno));
 		env_del_all(head);
 		return (NULL);
 	}

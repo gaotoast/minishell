@@ -6,6 +6,7 @@ int	wait_children(pid_t last_pid)
 	int		w_status;
 	int		status;
 
+	status = 0;
 	while (1)
 	{
 		wait_ret = wait(&w_status);

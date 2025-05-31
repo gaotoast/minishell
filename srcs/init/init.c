@@ -16,12 +16,9 @@ char	**get_envp_copy(char **envp)
 	env_count = 0;
 	while (envp[env_count])
 		env_count++;
-	cp = (char **)malloc(sizeof(char *) * (env_count + 1));
+	cp = (char **)ft_malloc(sizeof(char *) * (env_count + 1));
 	if (!cp)
-	{
-		perror("minishell");
 		return (NULL);
-	}
 	i = 0;
 	while (i < env_count)
 	{
@@ -65,12 +62,9 @@ int	init_pwd(void)
 	pwd = ft_env(ENV_GET_VAL, "PWD");
 	if (!pwd)
 	{
-		pwd = malloc(sizeof(char) * (PATH_MAX + 1));
+		pwd = (char *)ft_malloc(sizeof(char) * (PATH_MAX + 1));
 		if (!pwd)
-		{
-			ft_dprintf(STDERR_FILENO, "minishell: malloc: %s\n", strerror(errno));
 			return (1);
-		}
 		getcwd(pwd, PATH_MAX);
 	}
 	else
@@ -78,7 +72,6 @@ int	init_pwd(void)
 		pwd = ft_strdup(pwd);
 		if (!pwd)
 		{
-			ft_dprintf(STDERR_FILENO, "minishell: malloc: %s\n", strerror(errno));
 			return (1);
 		}
 	}
@@ -162,6 +155,7 @@ int	init_shlvl(void)
 {
 	char	*shlvl;
 	int		lvl;
+	char	*lvl_str;
 
 	shlvl = ft_env(ENV_GET_VAL, "SHLVL");
 	if (!shlvl || is_valid_shlvl(shlvl))
@@ -192,12 +186,9 @@ int	init(char **envp)
 {
 	t_shell	*shell;
 
-	shell = (t_shell *)malloc(sizeof(t_shell));
+	shell = (t_shell *)ft_malloc(sizeof(t_shell));
 	if (!shell)
-	{
-		perror("minishell");
 		return (-1);
-	}
 	sh_op(SH_SET, shell);
 	sh_stat(ST_SET, 0);
 	shell->tokens = NULL;

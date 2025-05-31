@@ -42,7 +42,7 @@ char	*ft_itoa(int n)
 	if (num < 0)
 		sign = 1;
 	digits = count_digits(num);
-	str = (char *)malloc(sizeof(char) * (digits + 1));
+	str = (char *)ft_malloc(sizeof(char) * (digits + 1));
 	if (!str)
 		return (NULL);
 	str[digits] = '\0';

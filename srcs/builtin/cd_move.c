@@ -18,7 +18,7 @@ char	**get_longer_split(char **split, char *new, int len)
 	char	**rtn;
 
 	i = 0;
-	rtn = malloc(sizeof(char *) * (len + 2));
+	rtn = (char **)ft_malloc(sizeof(char *) * (len + 2));
 	if (!rtn)
 	{
 		ft_dprintf(STDERR_FILENO, "minishell: malloc %s\n", strerror(errno));
