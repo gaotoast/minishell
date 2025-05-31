@@ -40,7 +40,6 @@ int	main(int argc, char **argv, char **envp)
 		shell->ast = NULL;
 	}
 	ft_env(ENV_DEL_ALL, NULL);
-	free_shell(&shell);
 	ft_exit(1, NULL);
 }
 

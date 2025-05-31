@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/29 00:16:19 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/29 05:54:45 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	*move_to_env(char *val_name)
 		ft_dprintf(STDERR_FILENO, "minishell: cd: %s\n", strerror(errno));
 		return (NULL);
 	}
-	return (env->val);
+	return (ft_strdup(env->val));
 }
 
 char	*update_envs(char *path)
@@ -44,6 +44,8 @@ char	*update_envs(char *path)
 	t_env	*pwd;
 	char	*cp_path;
 
+	if (!path)
+		return (NULL);
 	cp_path = ft_strdup(path);
 	if (!cp_path)
 		return (NULL);
@@ -72,12 +74,14 @@ int	cd(int argc, char **argv)
 	else if (ft_strncmp("-", argv[1], 2) == 0)
 		path = move_to_env("OLDPWD");
 	else
-		path = move_to_some(argv[1]);
-	if (!path)
-		return (EXIT_FAILURE);
-	else if (update_envs(path) == NULL)
+		path = move_to_some(ft_strdup(argv[1]));
+	if (update_envs(path) == NULL)
 	{
-		return (EXIT_FAILURE);
+		free(path);
+		ft_env(ENV_DEL_ALL, NULL);
+		sh_op(SH_DEL, NULL);
+		exit(1);
 	}
+	free(path);
 	return (EXIT_SUCCESS);
 }

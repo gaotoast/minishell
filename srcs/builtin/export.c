@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 02:47:53 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/29 01:04:40 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/29 05:08:59 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,8 @@ int	export(int argc, char **argv)
 		rtn = set_env(argv[i]);
 		if (rtn == 2)
 		{
+			ft_env(ENV_DEL_ALL, NULL);
+			sh_op(SH_DEL, NULL);
 			exit(EXIT_FAILURE);
 		}
 		if (rtn == 1)

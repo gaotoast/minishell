@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:10:15 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/27 05:24:52 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/29 23:40:52 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,8 @@ int	check_cwd(char *path)
 	char	buf[PATH_MAX];
 	char	*rtn;
 
+	if (!path)
+		return (1);
 	if (path[0] != '.')
 		return (0);
 	rtn = getcwd(buf, PATH_MAX);
@@ -115,30 +117,40 @@ int	check_cwd(char *path)
 char	*move_to_some(char *dest)
 {
 	char	*path;
+	char	*joined;
 	int		res;
 
 	if (check_cwd(dest))
 		return (NULL);
 	if (dest[0] == '/')
-		path = dest;
+		path = ft_strdup(dest);
 	else if (ft_strncmp("./", dest, 2) == 0)
 		path = get_abs_path(dest);
 	else
-		path = get_abs_path(ft_strjoin("./", dest));
+	{
+		joined = ft_strjoin("./", dest);
+		path = get_abs_path(joined);
+		free(joined);
+	}
+	free(dest);
+	if (!path)
+	{
+		ft_env(ENV_DEL_ALL, NULL);
+		sh_op(SH_DEL, NULL);
+		exit(1);
+	}
 	if (access(path, X_OK) != 0)
 	{
 		ft_dprintf(STDERR_FILENO, "minishell: cd:"
-			" %s: Permission denied\n", path);
-		if (dest[0] != '/' && ft_strncmp("-", dest, 2) != 0)
-			free(path);
+			" %s: Permission denied\n", dest);
+		free(path);
 		return (NULL);
 	}
 	res = chdir(path);
 	if (res != 0)
 	{
 		ft_dprintf(STDERR_FILENO, "cd: %s\n", strerror(errno));
-		if (dest[0] != '/' && ft_strncmp("-", dest, 2) != 0)
-			free(path);
+		free(path);
 		return (NULL);
 	}
 	return (path);

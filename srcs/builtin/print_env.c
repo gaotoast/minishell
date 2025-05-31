@@ -72,6 +72,7 @@ int	print_envs(void)
 	if (!envp)
 	{
 		ft_env(ENV_DEL_ALL, NULL);
+		sh_op(SH_DEL, NULL);
 		exit(1);
 	}
 	sort_envs(envp);
