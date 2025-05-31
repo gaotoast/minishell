@@ -202,10 +202,7 @@ int	init(char **envp)
 		return (-1);
 	}
 	if (init_shlvl())
-	{
-		free(shell);
-		return (-1);
-	}
+		inner_exit(1);
 	shell->ast = NULL;
 	return (0);
 }

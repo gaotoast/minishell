@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 22:38:00 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/31 19:22:18 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/31 21:34:17 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,7 +214,6 @@ void	*get_env_all(t_env **head, t_env_op op)
 	rtn = (char **)ft_malloc(sizeof(char *) * (len + 1));
 	if (!rtn)
 	{
-		env_del_all(head);
 		return (NULL);
 	}
 	tmp = *head;
@@ -258,10 +257,7 @@ t_env	*ft_update_env(t_env **head, char *str, int offset)
 	target->val = tmp;
 	tmp = ft_strjoin_delim(target->name, '=', target->val);
 	if (!tmp)
-	{
-		env_del_all(head);
 		return (NULL);
-	}
 	free(target->full);
 	target->full = tmp;
 	return (*head);

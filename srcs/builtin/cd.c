@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/29 05:54:45 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/31 21:51:56 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ char	*update_envs(char *path)
 	t_env	*old_pwd;
 	t_env	*pwd;
 	char	*cp_path;
+	char	*tmp;
 
 	if (!path)
 		return (NULL);
@@ -52,11 +53,19 @@ char	*update_envs(char *path)
 	old_pwd = (t_env *)ft_env(ENV_GET_STRUCT, "OLDPWD");
 	pwd = (t_env *)ft_env(ENV_GET_STRUCT, "PWD");
 	if (pwd && old_pwd)
-		if (ft_env(ENV_SET, ft_strjoin("OLDPWD=", pwd->val)) == NULL)
+	{
+		tmp = ft_strjoin("OLDPWD=", pwd->val);
+		if (!tmp || ft_env(ENV_SET, tmp) == NULL)
 			return (NULL);
+		free(tmp);
+	}
 	if (pwd)
-		if (ft_env(ENV_SET, ft_strjoin("PWD=", path)) == NULL)
+	{
+		tmp = ft_strjoin("PWD=", path);
+		if (!tmp || ft_env(ENV_SET, tmp) == NULL)
 			return (NULL);
+		free(tmp);
+	}
 	return (ft_cwd(PWD_SET, cp_path));
 }
 
@@ -78,9 +87,7 @@ int	cd(int argc, char **argv)
 	if (update_envs(path) == NULL)
 	{
 		free(path);
-		ft_env(ENV_DEL_ALL, NULL);
-		sh_op(SH_DEL, NULL);
-		exit(1);
+		inner_exit(1);
 	}
 	free(path);
 	return (EXIT_SUCCESS);
