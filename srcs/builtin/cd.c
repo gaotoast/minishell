@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/31 21:51:56 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/31 22:28:01 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,21 @@ char	*update_envs(char *path)
 	{
 		tmp = ft_strjoin("OLDPWD=", pwd->val);
 		if (!tmp || ft_env(ENV_SET, tmp) == NULL)
+		{
+			free(tmp);
+			inner_exit(1);
 			return (NULL);
+		}
 		free(tmp);
 	}
 	if (pwd)
 	{
 		tmp = ft_strjoin("PWD=", path);
 		if (!tmp || ft_env(ENV_SET, tmp) == NULL)
-			return (NULL);
+		{
+			free(tmp);
+			inner_exit(1);
+		}
 		free(tmp);
 	}
 	return (ft_cwd(PWD_SET, cp_path));
@@ -83,12 +90,8 @@ int	cd(int argc, char **argv)
 	else if (ft_strncmp("-", argv[1], 2) == 0)
 		path = move_to_env("OLDPWD");
 	else
-		path = move_to_some(ft_strdup(argv[1]));
-	if (update_envs(path) == NULL)
-	{
-		free(path);
-		inner_exit(1);
-	}
+		path = move_to_some(argv[1]);
+	update_envs(path);
 	free(path);
 	return (EXIT_SUCCESS);
 }

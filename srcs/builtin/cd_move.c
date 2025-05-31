@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:10:15 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/31 22:01:50 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/31 22:40:51 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char	*get_abs_path(char *dest)
 		++inner_len;
 	rtn = make_abs_path(dest_split, inner_split, inner_len);
 	free_2d_array(inner_split);
-	free(dest_split);
+	free_2d_array(dest_split);
 	return (rtn);
 }
 
@@ -118,6 +118,13 @@ char	*move_to_some(char *dest)
 	path = get_path(dest);
 	if (!path)
 		inner_exit(1);
+	if (access(path, F_OK))
+	{
+		ft_dprintf(STDERR_FILENO, "minishell: cd: %s: No such "
+			"file or directly\n", dest);
+		free(path);
+		return (NULL);
+	}
 	if (access(path, X_OK) != 0)
 	{
 		ft_dprintf(STDERR_FILENO, "minishell: cd:"
