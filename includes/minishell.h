@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 03:06:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 13:50:13 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 13:52:40 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,7 +224,7 @@ void				free_exp_tokens(t_exp_tkn *head);
 
 // bulitin
 int					cd(int argc, char **argv);
-int					echo(int argc, char **argv);
+int					echo(int argc, t_exp_tkn *argv_lst);
 int					export(int argc, char **argv);
 int					pwd(int argc, char **argv);
 int					unset(int argc, char **argv);
