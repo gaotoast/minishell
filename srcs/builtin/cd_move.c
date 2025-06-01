@@ -6,13 +6,13 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:10:15 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 03:01:05 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 12:47:09 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*make_abs_path(char **dest_split, char **inner_split, int inner_len)
+char	*make_abs_path(char **dest_split, char ***inner_split, int inner_len)
 {
 	int	i;
 
@@ -22,14 +22,14 @@ char	*make_abs_path(char **dest_split, char **inner_split, int inner_len)
 		if (ft_strncmp(dest_split[i], "..", 3) == 0 && inner_len > 0)
 		{
 			--inner_len;
-			free(inner_split[inner_len]);
-			inner_split[inner_len] = NULL;
+			free((*inner_split)[inner_len]);
+			(*inner_split)[inner_len] = NULL;
 		}
 		else if (ft_strncmp(dest_split[i], ".", 2) != 0)
 		{
-			inner_split = get_longer_split(inner_split,
+			*inner_split = get_longer_split(*inner_split,
 					dest_split[i], inner_len);
-			if (!inner_split)
+			if (!(*inner_split))
 			{
 				free_2d_array(dest_split);
 				return (NULL);
@@ -38,7 +38,7 @@ char	*make_abs_path(char **dest_split, char **inner_split, int inner_len)
 		}
 		++i;
 	}
-	return (ft_union(inner_split, '/'));
+	return (ft_union(*inner_split, '/'));
 }
 
 char	*get_abs_path(char *dest)
@@ -64,7 +64,7 @@ char	*get_abs_path(char *dest)
 	inner_len = 0;
 	while (inner_split[inner_len])
 		++inner_len;
-	rtn = make_abs_path(dest_split, inner_split, inner_len);
+	rtn = make_abs_path(dest_split, &inner_split, inner_len);
 	free_2d_array(inner_split);
 	free_2d_array(dest_split);
 	return (rtn);

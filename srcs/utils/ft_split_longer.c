@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 21:18:52 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/31 21:19:10 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 12:53:48 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,9 @@ char	**get_longer_split(char **split, char *new, int len)
 
 	i = 0;
 	rtn = (char **)ft_malloc(sizeof(char *) * (len + 2));
-	if (!rtn)
+	if (!rtn || !new)
 	{
+		free(rtn);
 		free_2d_array(split);
 		return (NULL);
 	}
@@ -29,8 +30,13 @@ char	**get_longer_split(char **split, char *new, int len)
 		rtn[i] = split[i];
 		++i;
 	}
-	rtn[i++] = new;
-	rtn[i] = NULL;
+	rtn[i] = ft_strdup(new);
+	if (!rtn[i])
+	{
+		free_2d_array(split);
+		return (NULL);
+	}
+	rtn[i + 1] = NULL;
 	free(split);
 	return (rtn);
 }
