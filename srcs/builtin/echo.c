@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 00:20:46 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 14:08:58 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 15:33:40 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_exp_tkn	*check_argv(t_exp_tkn *argv_lst, int *endnew)
 	t_exp_tkn	*print_head;
 
 	*endnew = 1;
-	tmp = argv_lst;
+	tmp = argv_lst->next;
 	print_head = tmp;
 	while (tmp)
 	{
@@ -48,20 +48,26 @@ t_exp_tkn	*check_argv(t_exp_tkn *argv_lst, int *endnew)
 	return (print_head);
 }
 
+void	print_token(t_exp_tkn *token)
+{
+	if (!token->str[0] && token->is_expanded && !token->is_quoted)
+		return ;
+	ft_dprintf(STDOUT_FILENO, "%s", token->str);
+	if (token->next)
+		ft_dprintf(STDOUT_FILENO, " ");
+}
+
 int	echo(int argc, t_exp_tkn *argv_lst)
 {
 	int			endnew;
 	t_exp_tkn	*tmp;
-	int			i;
 
-	if (argc < 1)
+	if (argc < 1 || !argv_lst)
 		return (EXIT_SUCCESS);
 	tmp = check_argv(argv_lst, &endnew);
-	while (i < argc)
+	while (tmp)
 	{
-		ft_dprintf(STDOUT_FILENO, "%s", tmp->str);
-		if (tmp->next)
-			ft_dprintf(STDOUT_FILENO, " ");
+		print_token(tmp);
 		tmp = tmp->next;
 	}
 	if (endnew)
