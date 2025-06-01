@@ -6,33 +6,13 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:10:15 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/25 00:59:28 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 12:47:09 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	**get_longer_split(char **split, char *new, int len)
-{
-	int		i;
-	char	**rtn;
-
-	i = 0;
-	rtn = (char **)ft_malloc(sizeof(char *) * (len + 2));
-	if (!rtn)
-		return (NULL);
-	while (split[i])
-	{
-		rtn[i] = split[i];
-		++i;
-	}
-	rtn[i++] = new;
-	rtn[i] = NULL;
-	free(split);
-	return (rtn);
-}
-
-char	**make_abs_path(char **dest_split, char **inner_split, int inner_len)
+char	*make_abs_path(char **dest_split, char ***inner_split, int inner_len)
 {
 	int	i;
 
@@ -42,20 +22,23 @@ char	**make_abs_path(char **dest_split, char **inner_split, int inner_len)
 		if (ft_strncmp(dest_split[i], "..", 3) == 0 && inner_len > 0)
 		{
 			--inner_len;
-			free(inner_split[inner_len]);
-			inner_split[inner_len] = NULL;
+			free((*inner_split)[inner_len]);
+			(*inner_split)[inner_len] = NULL;
 		}
 		else if (ft_strncmp(dest_split[i], ".", 2) != 0)
 		{
-			inner_split = get_longer_split(inner_split,
+			*inner_split = get_longer_split(*inner_split,
 					dest_split[i], inner_len);
-			if (!inner_split)
+			if (!(*inner_split))
+			{
+				free_2d_array(dest_split);
 				return (NULL);
+			}
 			++inner_len;
 		}
 		++i;
 	}
-	return (inner_split);
+	return (ft_union(*inner_split, '/'));
 }
 
 char	*get_abs_path(char *dest)
@@ -66,8 +49,9 @@ char	*get_abs_path(char *dest)
 	char	*rtn;
 	int		inner_len;
 
-	//TODO: devとmergeしたときに最初に42_INNER_PWDに値を代入する
 	inner_pwd = ft_cwd(PWD_GET, NULL);
+	if (!inner_pwd || !dest)
+		return (NULL);
 	inner_split = ft_split(inner_pwd, '/');
 	if (!inner_split)
 		return (NULL);
@@ -80,11 +64,47 @@ char	*get_abs_path(char *dest)
 	inner_len = 0;
 	while (inner_split[inner_len])
 		++inner_len;
-	inner_split = make_abs_path(dest_split, inner_split, inner_len);
-	rtn = ft_union(inner_split, '/');
+	rtn = make_abs_path(dest_split, &inner_split, inner_len);
 	free_2d_array(inner_split);
-	free(dest_split);
+	free_2d_array(dest_split);
 	return (rtn);
+}
+
+int	check_cwd(char *path)
+{
+	char	buf[PATH_MAX];
+	char	*rtn;
+
+	if (!path)
+		return (1);
+	if (path[0] != '.')
+		return (0);
+	rtn = getcwd(buf, PATH_MAX);
+	if (!rtn)
+	{
+		ft_dprintf(STDERR_FILENO, "cd: error retrieving "
+			"current directory: getcwd: %s\n", strerror(errno));
+		return (1);
+	}
+	return (0);
+}
+
+char	*get_path(char *dest)
+{
+	char	*path;
+	char	*joined;
+
+	if (dest[0] == '/')
+		path = ft_strdup(dest);
+	else if (ft_strncmp("./", dest, 2) == 0)
+		path = get_abs_path(dest);
+	else
+	{
+		joined = ft_strjoin("./", dest);
+		path = get_abs_path(joined);
+		free(joined);
+	}
+	return (path);
 }
 
 char	*move_to_some(char *dest)
@@ -92,20 +112,21 @@ char	*move_to_some(char *dest)
 	char	*path;
 	int		res;
 
-	if (dest[0] == '/')
-		path = dest;
-	else if (ft_strncmp("-", dest, 2) == 0)
-		path = move_to_env("OLDPWD");
-	else if (ft_strncmp("./", dest, 2) == 0)
-		path = get_abs_path(dest);
-	else
-		path = get_abs_path(ft_strjoin("./", dest));
+	if (check_cwd(dest))
+		return (NULL);
+	path = get_path(dest);
+	if (!path)
+		inner_exit(1);
+	if (check_access(dest, path))
+	{
+		free(path);
+		return (NULL);
+	}
 	res = chdir(path);
 	if (res != 0)
 	{
-		perror("minishell: ");
-		if (dest[0] != '/' && ft_strncmp("-", dest, 2) != 0)
-			free(path);
+		ft_dprintf(STDERR_FILENO, "cd: %s\n", strerror(errno));
+		free(path);
 		return (NULL);
 	}
 	return (path);

@@ -23,7 +23,7 @@ int	exec_builtin_cmd(t_node *node)
 	else if (ft_strncmp(cmd, "env", 4) == 0)
 		stat = env(node->argc, node->argv);
 	else if (ft_strncmp(cmd, "exit", 5) == 0)
-		stat = ft_exit(node->argc, node->argv);
+		stat = ft_exit(node->argc, node->argv, 1);
 	return (sh_stat(ST_SET, stat));
 }
 
@@ -32,12 +32,12 @@ int	restore_std_fds(int stashed_stdin, int stashed_stdout)
 {
 	if (dup2(stashed_stdin, STDIN_FILENO) == -1)
 	{
-		perror("minishell: dup2");
+		ft_dprintf(STDERR_FILENO, "minishell: dup2: %s\n", strerror(errno));
 		return (1);
 	}
 	if (dup2(stashed_stdout, STDOUT_FILENO) == -1)
 	{
-		perror("minishell: dup2");
+		ft_dprintf(STDERR_FILENO, "minishell: dup2: %s\n", strerror(errno));
 		return (1);
 	}
 	close(stashed_stdin);
@@ -55,7 +55,7 @@ int	process_builtin_direct(t_node *node)
 	stashed_stdout = dup(STDOUT_FILENO);
 	if (stashed_stdin == -1 || stashed_stdout == -1)
 	{
-		perror("minishell: dup");
+		ft_dprintf(STDERR_FILENO, "minishell: dup: %s\n", strerror(errno));
 		return (1);
 	}
 	if (apply_redirs(node->redir_count, node->redirs) != 0)
@@ -63,8 +63,7 @@ int	process_builtin_direct(t_node *node)
 		restore_std_fds(stashed_stdin, stashed_stdout);
 		return (1);
 	}
-	if (exec_builtin_cmd(node) == 1)
-		return (1);
+	exec_builtin_cmd(node);
 	if (restore_std_fds(stashed_stdin, stashed_stdout) != 0)
 		return (1);
 	return (0);

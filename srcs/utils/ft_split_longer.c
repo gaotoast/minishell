@@ -1,31 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   ft_split_longer.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/08 20:18:14 by stakada           #+#    #+#             */
-/*   Updated: 2025/05/29 05:54:45 by yumiyao          ###   ########.fr       */
+/*   Created: 2025/05/31 21:18:52 by yumiyao           #+#    #+#             */
+/*   Updated: 2025/06/01 12:53:48 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-char	*ft_strdup(const char *s)
+char	**get_longer_split(char **split, char *new, int len)
 {
-	char	*new;
 	int		i;
+	char	**rtn;
 
-	new = (char *)ft_malloc(sizeof(char) * (ft_strlen(s) + 1));
-	if (!new)
-		return (NULL);
 	i = 0;
-	while (s[i])
+	rtn = (char **)ft_malloc(sizeof(char *) * (len + 2));
+	if (!rtn || !new)
 	{
-		new[i] = s[i];
-		i++;
+		free(rtn);
+		free_2d_array(split);
+		return (NULL);
 	}
-	new[i] = '\0';
-	return (new);
+	while (split[i])
+	{
+		rtn[i] = split[i];
+		++i;
+	}
+	rtn[i] = ft_strdup(new);
+	if (!rtn[i])
+	{
+		free_2d_array(split);
+		return (NULL);
+	}
+	rtn[i + 1] = NULL;
+	free(split);
+	return (rtn);
 }
