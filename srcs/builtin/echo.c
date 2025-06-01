@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 00:20:46 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 13:54:03 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 14:08:58 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,39 +28,41 @@ int	is_n_option(char *opt)
 	return (1);
 }
 
-int	check_argv(t_exp_tkn *argv_lst, int *endnew)
+t_exp_tkn	*check_argv(t_exp_tkn *argv_lst, int *endnew)
 {
-	int	i;
-	int	op;
+	t_exp_tkn	*tmp;
+	t_exp_tkn	*print_head;
 
-	i = 1;
-	op = 1;
 	*endnew = 1;
-	while (argv[i])
+	tmp = argv_lst;
+	print_head = tmp;
+	while (tmp)
 	{
-		if (is_n_option(argv[i]))
+		if (is_n_option(tmp->str))
 		{
-			op = i + 1;
+			print_head = tmp->next;
 			*endnew = 0;
 		}
-		++i;
+		tmp = tmp->next;
 	}
-	return (op);
+	return (print_head);
 }
 
 int	echo(int argc, t_exp_tkn *argv_lst)
 {
-	int	endnew;
-	int	i;
+	int			endnew;
+	t_exp_tkn	*tmp;
+	int			i;
 
 	if (argc < 1)
 		return (EXIT_SUCCESS);
-	i = check_argv(argv_lst, &endnew);
+	tmp = check_argv(argv_lst, &endnew);
 	while (i < argc)
 	{
-		ft_dprintf(STDOUT_FILENO, "%s", argv[i++]);
-		if (i < argc)
+		ft_dprintf(STDOUT_FILENO, "%s", tmp->str);
+		if (tmp->next)
 			ft_dprintf(STDOUT_FILENO, " ");
+		tmp = tmp->next;
 	}
 	if (endnew)
 		ft_dprintf(STDOUT_FILENO, "\n");

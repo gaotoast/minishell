@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 03:06:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 13:52:40 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 13:59:37 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,14 +136,6 @@ typedef struct s_node
 	int				in_fd;
 	int				pipefd[2];
 }					t_node;
-
-// expand
-typedef struct s_exp_tkn
-{
-	char				*str;
-	bool				is_expanded;
-	struct s_exp_tkn	*next;
-}					t_exp_tkn;
 
 typedef enum e_op_shell
 {
