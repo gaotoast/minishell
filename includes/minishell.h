@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 03:06:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 13:59:37 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 18:00:28 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,11 +201,11 @@ int					consume_reserved(t_token **rest, char *op);
 
 // expansion
 int					expand(t_node *node);
-int                 expand_cmds(t_node *node);
-int                 expand_redirs(t_node *node);
-int                 tokenize_with_expansion(t_exp_tkn **head, char *str, int
-						env_flag);
-int	                merge_expansion_tokens(t_exp_tkn **head);
+int					expand_cmds(t_node *node);
+int					expand_redirs(t_node *node);
+int					tokenize_with_expansion(t_exp_tkn **head, char *str,
+						int env_flag);
+int					merge_expansion_tokens(t_exp_tkn **head);
 int					split_exp_tokens(t_exp_tkn **head);
 t_exp_tkn	        *extract_literal(char **s, int len, bool is_quoted);
 t_exp_tkn	        *expand_env_var(char **s, bool is_quoted);
