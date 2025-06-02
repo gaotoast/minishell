@@ -178,7 +178,8 @@ int								is_builtin(char *cmd);
 int								prepare_pipe(t_node *node);
 void							prepare_pipe_child(t_node *node, int count);
 void							prepare_pipe_parent(t_node *node, int count);
-int	                            wait_children(pid_t last_pid, t_node *first_cmd);
+int								wait_children(pid_t last_pid,
+									t_node *first_cmd);
 
 // redirection
 int								handle_all_heredocs(t_node *node);
