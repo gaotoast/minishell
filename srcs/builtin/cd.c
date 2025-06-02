@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 12:42:03 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/02 20:41:50 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	check_access(char *dest, char *path)
 	if (access(path, X_OK) != 0)
 	{
 		ft_dprintf(STDERR_FILENO, "minishell: cd:"
-			" %s: Permission denied\n", path);
+			" %s: Permission denied\n", dest);
 		return (1);
 	}
 	return (0);
