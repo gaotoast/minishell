@@ -128,6 +128,21 @@ typedef struct s_node
 	int				pipefd[2];
 }					t_node;
 
+// 展開
+typedef struct s_exp_tkn
+{
+	char				*str;
+	bool				is_expanded;
+	struct s_exp_tkn 	*next;
+}						t_exp_tkn;
+
+typedef enum e_op_shell
+{
+	SH_SET,
+	SH_GET,
+	SH_DEL
+}						t_op_shell;
+
 // minishell全体
 typedef struct s_shell
 {
@@ -138,8 +153,9 @@ typedef struct s_shell
 }					t_shell;
 
 // init
-int					init(t_shell **shell, char **envp);
+int					init(char **envp);
 void	            init_signals(void);
+t_shell				*sh_op(t_op_shell op, t_shell *shell);
 
 // execution
 void				exec_if_relative_path(char **cmds, char **envp);
@@ -203,10 +219,10 @@ int					export(int argc, char **argv);
 int					pwd(int argc, char **argv);
 int					unset(int argc, char **argv);
 int					env(int argc, char **argv);
-int					ft_exit(int argc, char **argv);
+int					ft_exit(int argc, char **argv, int print);
 char				*move_to_some(char *dest);
 char				*move_to_env(char *val_name);
-int					print_envs(char **envp);
+int					print_envs(void);
 
 // signal
 void				set_main_sigint(void);
@@ -227,18 +243,17 @@ int					is_valid_env(char *name);
 int					event(void);
 int					ft_split_len(char **split);
 void	            *ft_malloc(size_t size);
-
 void	            interpret(t_shell *shell);
-void				exit_shell(t_shell *shell);
+void				exit_shell(int print);
 void				finish_loop(t_shell *shell);
-
+void				inner_exit(int status);
 
 // free
 void				free_2d_array(char **array);
 void				free_tokens(t_token *token);
 void				free_redirs(t_redir **redirs);
 void				free_ast(t_node *ast);
-void				free_shell(t_shell *shell);
+void				free_shell(t_shell **shell);
 void				free_env(t_env *env);
 
 // debug
@@ -250,7 +265,7 @@ void				print_ast(t_node *node, int depth);
 void				debug_parser(t_node *ast);
 void				debug_expand(t_node *ast);
 void				debug_exec_list(t_node *node);
-void	print_exp_token_list(t_exp_tkn *head);
-void	print_2d_array(char **array);
+void				print_exp_token_list(t_exp_tkn *head);
+void				print_2d_array(char **array);
 
 #endif
