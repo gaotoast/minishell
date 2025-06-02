@@ -63,8 +63,7 @@ int	process_builtin_direct(t_node *node)
 		restore_std_fds(stashed_stdin, stashed_stdout);
 		return (1);
 	}
-	if (exec_builtin_cmd(node) == 1)
-		return (1);
+	exec_builtin_cmd(node);
 	if (restore_std_fds(stashed_stdin, stashed_stdout) != 0)
 		return (1);
 	return (0);
