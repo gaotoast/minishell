@@ -10,8 +10,7 @@ int	exec_builtin_cmd(t_node *node)
 	stat = 0;
 	cmd = node->argv[0];
 	if (ft_strncmp(cmd, "echo", 5) == 0)
-		stat = echo(node->argc, node->argv);
-    // stat = echo(node->argc, node->argv_lst); // こちらを使ってください
+		stat = echo(node->argc, node->argv_lst);
 	else if (ft_strncmp(cmd, "cd", 3) == 0)
 		stat = cd(node->argc, node->argv);
 	else if (ft_strncmp(cmd, "pwd", 4) == 0)

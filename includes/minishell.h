@@ -137,14 +137,6 @@ typedef struct s_node
 	int				pipefd[2];
 }					t_node;
 
-// expand
-typedef struct s_exp_tkn
-{
-	char				*str;
-	bool				is_expanded;
-	struct s_exp_tkn	*next;
-}					t_exp_tkn;
-
 typedef enum e_op_shell
 {
 	SH_SET,
@@ -224,7 +216,7 @@ void				free_exp_tokens(t_exp_tkn *head);
 
 // bulitin
 int					cd(int argc, char **argv);
-int					echo(int argc, char **argv);
+int					echo(int argc, t_exp_tkn *argv_lst);
 int					export(int argc, char **argv);
 int					pwd(int argc, char **argv);
 int					unset(int argc, char **argv);
