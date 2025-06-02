@@ -57,8 +57,8 @@ int	write_heredoc_input(char *temp_file, t_redir *redir)
 	temp_fd = open(temp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (temp_fd < 0)
 	{
-		perror("minishell: open");
-		return (1);
+		ft_dprintf(STDERR_FILENO, "minishell: open: %s\n", strerror(errno));
+		return (-1);
 	}
 	if (handle_input_loop(line, temp_fd, redir) != 0)
 	{

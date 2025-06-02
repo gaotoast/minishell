@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   ft_strjoin_delim.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/08 20:18:14 by stakada           #+#    #+#             */
-/*   Updated: 2025/05/29 05:54:45 by yumiyao          ###   ########.fr       */
+/*   Created: 2025/05/31 23:52:14 by yumiyao           #+#    #+#             */
+/*   Updated: 2025/05/31 23:52:41 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-char	*ft_strdup(const char *s)
+char	*ft_strjoin_delim(char *s1, char delim, char *s2)
 {
-	char	*new;
-	int		i;
+	char	*rtn;
+	int		len1;
+	int		len2;
 
-	new = (char *)ft_malloc(sizeof(char) * (ft_strlen(s) + 1));
-	if (!new)
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	rtn = (char *)ft_malloc(sizeof(char) * (len1 + len2 + 2));
+	if (!rtn)
 		return (NULL);
-	i = 0;
-	while (s[i])
-	{
-		new[i] = s[i];
-		i++;
-	}
-	new[i] = '\0';
-	return (new);
+	ft_strlcpy(rtn, s1, len1 + 1);
+	rtn[len1] = delim;
+	rtn[len1 + 1] = '\0';
+	ft_strlcat(rtn, s2, len2 + len1 + 2);
+	return (rtn);
 }

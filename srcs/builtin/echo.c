@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 00:20:46 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/24 18:28:03 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/01 15:33:40 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,43 +28,50 @@ int	is_n_option(char *opt)
 	return (1);
 }
 
-int	check_argv(char **argv, int *endnew)
+t_exp_tkn	*check_argv(t_exp_tkn *argv_lst, int *endnew)
 {
-	int	i;
-	int	op;
+	t_exp_tkn	*tmp;
+	t_exp_tkn	*print_head;
 
-	i = 1;
-	op = 1;
 	*endnew = 1;
-	while (argv[i])
+	tmp = argv_lst->next;
+	print_head = tmp;
+	while (tmp)
 	{
-		if (is_n_option(argv[i]))
+		if (is_n_option(tmp->str))
 		{
-			op = i + 1;
+			print_head = tmp->next;
 			*endnew = 0;
 		}
-		++i;
+		tmp = tmp->next;
 	}
-	return (op);
+	return (print_head);
 }
 
-/* TODO : libftの使用*/
-int	echo(int argc, char **argv)
+void	print_token(t_exp_tkn *token)
 {
-	int	endnew;
-	int		i;
+	if (!token->str[0] && token->is_expanded && !token->is_quoted)
+		return ;
+	ft_dprintf(STDOUT_FILENO, "%s", token->str);
+	if (token->next)
+		ft_dprintf(STDOUT_FILENO, " ");
+}
 
-	if (argc < 1)
+int	echo(int argc, t_exp_tkn *argv_lst)
+{
+	int			endnew;
+	t_exp_tkn	*tmp;
+
+	if (argc < 1 || !argv_lst)
 		return (EXIT_SUCCESS);
-	i = check_argv(argv, &endnew);
-	while (i < argc)
+	tmp = check_argv(argv_lst, &endnew);
+	while (tmp)
 	{
-		printf("%s", argv[i++]);
-		if (i < argc)
-			printf(" ");
+		print_token(tmp);
+		tmp = tmp->next;
 	}
 	if (endnew)
-		printf("\n");
+		ft_dprintf(STDOUT_FILENO, "\n");
 	return (EXIT_SUCCESS);
 }
 

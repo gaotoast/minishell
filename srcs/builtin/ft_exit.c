@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 04:02:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/22 13:59:21 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/05/31 22:41:09 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,23 +50,6 @@ int	get_digit(char *num, int minus)
 	return (digit);
 }
 
-long long int	ft_atol(char *num, long long int minus, int digit)
-{
-	long long int	rtn;
-	int				i;
-
-	rtn = 0;
-	i = 0;
-	while (i < digit)
-	{
-		rtn *= 10;
-		rtn += num[i] - '0';
-		++i;
-	}
-	rtn *= minus;
-	return (rtn);
-}
-
 long long int	get_exit_num(char *num)
 {
 	int				i;
@@ -96,20 +79,20 @@ long long int	get_exit_num(char *num)
 	return (rtn);
 }
 
-int	ft_exit(int argc, char **argv)
+int	ft_exit(int argc, char **argv, int print)
 {
 	int	rtn;
 
-	write(STDIN_FILENO, "exit\n", 5);
+	if (print)
+		write(STDIN_FILENO, "exit\n", 5);
 	if (argc == 1)
-		exit(sh_stat(ST_GET, 0));
+		inner_exit(sh_stat(ST_GET, 0));
 	rtn = get_exit_num(argv[1]);
 	if (rtn == -1)
 	{
-		write(STDERR_FILENO, "minishell: exit: ", 17);
-		write(STDERR_FILENO, argv[1], ft_strlen(argv[1]));
-		write(STDERR_FILENO, ": numeric argument required\n", 28);
-		exit(2);
+		ft_dprintf(STDERR_FILENO, "minishell: exit:"
+			" %s: numeric argument required\n", argv[1]);
+		inner_exit(2);
 	}
 	else if (argc > 2)
 	{
@@ -117,6 +100,6 @@ int	ft_exit(int argc, char **argv)
 		return (EXIT_FAILURE);
 	}
 	else
-		exit(rtn);
+		inner_exit(rtn);
 	return (EXIT_FAILURE);
 }

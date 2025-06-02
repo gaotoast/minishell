@@ -1,31 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   ft_atol.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/08 20:18:14 by stakada           #+#    #+#             */
-/*   Updated: 2025/05/29 05:54:45 by yumiyao          ###   ########.fr       */
+/*   Created: 2025/05/31 20:58:51 by yumiyao           #+#    #+#             */
+/*   Updated: 2025/05/31 20:59:13 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-char	*ft_strdup(const char *s)
+long long int	ft_atol(char *num, long long int minus, int digit)
 {
-	char	*new;
-	int		i;
+	long long int	rtn;
+	int				i;
 
-	new = (char *)ft_malloc(sizeof(char) * (ft_strlen(s) + 1));
-	if (!new)
-		return (NULL);
+	rtn = 0;
 	i = 0;
-	while (s[i])
+	while (i < digit)
 	{
-		new[i] = s[i];
-		i++;
+		rtn *= 10;
+		rtn += num[i] - '0';
+		++i;
 	}
-	new[i] = '\0';
-	return (new);
+	rtn *= minus;
+	return (rtn);
 }
