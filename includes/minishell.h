@@ -207,13 +207,15 @@ int					consume_reserved(t_token **rest, char *op);
 int					expand(t_node *node);
 int					expand_cmds(t_node *node);
 int					expand_redirs(t_node *node);
+int	                expand_heredoc_line(char **line);
 int					tokenize_with_expansion(t_exp_tkn **head, char *str,
 						int env_flag);
 int					merge_expansion_tokens(t_exp_tkn **head);
 int					split_exp_tokens(t_exp_tkn **head);
 t_exp_tkn	        *extract_literal(char **s, int len, bool is_quoted);
 t_exp_tkn	        *expand_env_var(char **s, bool is_quoted);
-int	update_args_from_exp(t_exp_tkn *head, t_node *node);
+char                *process_dollar(char **s, char *result);
+int                 update_args_from_exp(t_exp_tkn *head, t_node *node);
 t_exp_tkn	        *new_exp_token(char *str, bool is_expanded, bool is_quoted);
 void				append_exp_token(t_exp_tkn **head, t_exp_tkn *new);
 void				free_exp_tokens(t_exp_tkn *head);
