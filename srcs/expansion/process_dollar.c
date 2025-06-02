@@ -13,6 +13,7 @@ int	extract_var_name(char *str, char **name)
 {
 	int	len;
 
+	*name = NULL;
 	if (*str == '?')
 	{
 		*name = ft_strdup("?");
@@ -57,7 +58,7 @@ char	*get_var_value(char *name)
 char	*process_dollar(char **s, char *result)
 {
 	char	*name;
-	char	*temp;
+	char	*ret;
 	char	*value;
 
 	(*s)++;
@@ -68,17 +69,17 @@ char	*process_dollar(char **s, char *result)
 	}
 	if (!name)
 	{
-		temp = ft_strjoin(result, "$");
+		ret = ft_strjoin(result, "$");
 		free(result);
-		return (temp);
+		return (ret);
 	}
 	*s += ft_strlen(name);
 	value = get_var_value(name);
 	free(name);
 	if (!value)
-		return (result);
-	temp = ft_strjoin(result, value);
+		return (NULL);
+	ret = ft_strjoin(result, value);
 	free(result);
 	free(value);
-	return (temp);
+	return (ret);
 }

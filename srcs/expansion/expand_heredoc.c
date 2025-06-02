@@ -4,16 +4,18 @@
 static char	*append_char(char *result, char c)
 {
 	char	*temp;
+	int		len;
 
-	temp = (char *)ft_malloc(ft_strlen(result) + 2);
+	len = ft_strlen(result);
+	temp = (char *)ft_malloc(len + 2);
 	if (!temp)
 	{
 		free(result);
 		return (NULL);
 	}
-	ft_strlcpy(temp, result, ft_strlen(result) + 1);
-	temp[ft_strlen(result)] = c;
-	temp[ft_strlen(result) + 1] = '\0';
+	ft_strlcpy(temp, result, len + 1);
+	temp[len] = c;
+	temp[len + 1] = '\0';
 	free(result);
 	return (temp);
 }
