@@ -76,24 +76,25 @@ int	execute(t_node *root)
 	pid_t	last_pid;
 	t_node	*first_cmd;
 	t_node	*last_cmd;
+	int		ret;
 
+	ret = 0;
 	if (!root)
 		return (0);
 	first_cmd = NULL;
 	last_cmd = NULL;
 	link_exec_nodes(root, root->rhs, &first_cmd, &last_cmd);
 	if (handle_all_heredocs(first_cmd) != 0)
-		return (1);
+		return (-1);
 	// ビルトインコマンド単体の場合
 	if (root->kind == ND_CMD && root->argv && is_builtin(root->argv[0]))
 	{
-		if (process_builtin_direct(root) != 0)
-			return (1);
-		return (0);
+		ret = process_builtin_direct(root);
+		return (ret);
 	}
 	last_pid = run_pipeline(first_cmd, 0);
 	if (last_pid < 0)
-		return (1);
+		return (-1);
 	sh_stat(ST_SET, wait_children(last_pid, first_cmd));
 	return (0);
 }
