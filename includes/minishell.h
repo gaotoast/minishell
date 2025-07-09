@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 03:06:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 18:00:28 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/06/24 03:56:19 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,6 +225,9 @@ t_exp_tkn						*new_exp_token(char *str, bool is_expanded,
 void							append_exp_token(t_exp_tkn **head,
 									t_exp_tkn *new);
 void							free_exp_tokens(t_exp_tkn *head);
+int	expand_unsplit(t_exp_tkn **head, char *str, int env_flag);
+char	*get_var_value(char *name);
+int	extract_var_name(char *str, char **name);
 
 // bulitin
 int								cd(int argc, char **argv);

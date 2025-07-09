@@ -35,9 +35,11 @@ void	interpret(t_shell *shell)
 	ret = parse(shell->tokens, &shell->ast);
 	if (handle_stage_ret(ret) != 0)
 		return ;
+	// debug_parser(shell->ast);
 	ret = expand(shell->ast);
 	if (handle_stage_ret(ret) != 0)
 		return ;
+	// debug_expand(shell->ast);
 	ret = execute(shell->ast);
 	if (handle_stage_ret(ret) != 0)
 		return ;
