@@ -45,7 +45,7 @@ int	tokenize(char *line, t_token **tokens)
 			if (!cur)
 			{
 				free_tokens(head.next);
-				return (1);
+				return (-1);
 			}
 			p += 2;
 		}
@@ -56,7 +56,7 @@ int	tokenize(char *line, t_token **tokens)
 			if (!cur)
 			{
 				free_tokens(head.next);
-				return (1);
+				return (-1);
 			}
 			p++;
 		}
@@ -91,7 +91,7 @@ int	tokenize(char *line, t_token **tokens)
 			if (!cur)
 			{
 				free_tokens(head.next);
-				return (1);
+				return (-1);
 			}
 		}
 	}
@@ -99,7 +99,7 @@ int	tokenize(char *line, t_token **tokens)
 	if (!add_token(cur, TK_EOF, p, 0))
 	{
 		free_tokens(head.next);
-		return (1);
+		return (-1);
 	}
 	(*tokens) = head.next;
 	return (0);
