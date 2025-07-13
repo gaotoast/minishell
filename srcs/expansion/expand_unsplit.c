@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 04:26:02 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/11 09:11:45 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/14 00:57:14 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ int	expand_unsplit(t_exp_tkn **head, char *str, int env_flag)
 			return (1);
 	}
 	new = new_exp_token(info.rtn, true, info.is_quoted);
+	if (!new)
+		return (1);
 	append_exp_token(head, new);
 	return (0);
 }
