@@ -12,7 +12,7 @@ void	set_exec_sigquit(void)
 	{
 		ft_dprintf(STDERR_FILENO, "minishell: "
 			"sigaction: %s\n", strerror(errno));
-		exit(1);
+		inner_exit(1);
 	}
 }
 
@@ -28,6 +28,6 @@ void	set_main_sigquit(void)
 	{
 		ft_dprintf(STDERR_FILENO, "minishell: "
 			"sigaction: %s\n", strerror(errno));
-		exit(1);
+		inner_exit(1);
 	}
 }

@@ -11,7 +11,10 @@ int	main(int argc, char **argv, char **envp)
 	rl_event_hook = event;
 	g_sig_received = 0;
 	if (init(envp) < 0)
+	{
+		rl_clear_history();
 		exit(1);
+	}
 	shell = sh_op(SH_GET, NULL);
 	while (1)
 	{
@@ -24,6 +27,6 @@ int	main(int argc, char **argv, char **envp)
 		interpret(shell);
 		finish_loop(shell);
 	}
-	exit_shell(1);
+	ft_exit(1, NULL, 1);
 	return (0);
 }
