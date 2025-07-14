@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 03:06:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/11 09:06:51 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/13 12:40:21 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,7 +283,6 @@ int								event(void);
 int								ft_split_len(char **split);
 void							*ft_malloc(size_t size);
 void							interpret(t_shell *shell);
-void							exit_shell(int print);
 void							finish_loop(t_shell *shell);
 char							**get_longer_split(char **split, char *new,
 									int len);

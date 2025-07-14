@@ -20,7 +20,7 @@ void	set_exec_sigint(void)
 	{
 		ft_dprintf(STDERR_FILENO, "minishell: "
 			"sigaction: %s\n", strerror(errno));
-		exit(1);
+		inner_exit(1);
 	}
 }
 
@@ -36,6 +36,6 @@ void	set_main_sigint(void)
 	{
 		ft_dprintf(STDERR_FILENO, "minishell: "
 			"sigaction: %s\n", strerror(errno));
-		exit(1);
+		inner_exit(1);
 	}
 }
