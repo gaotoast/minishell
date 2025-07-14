@@ -70,6 +70,16 @@ typedef enum e_val_type
 	VAL_EX
 }								t_val_type;
 
+typedef struct s_expand
+{
+	char						state;
+	int							i;
+	char						*str;
+	char						*rtn; 
+	bool						is_quoted;
+	int							env_flag;
+}								t_expand;
+
 typedef struct s_env
 {
 	t_val_type					type;
@@ -210,13 +220,8 @@ int								expand(t_node *node);
 int								expand_cmds(t_node *node);
 int								expand_redirs(t_node *node);
 int								expand_heredoc_line(char **line);
-int								tokenize_with_expansion(t_exp_tkn **head,
-									char *str, int env_flag);
 int								merge_expansion_tokens(t_exp_tkn **head);
 int								split_exp_tokens(t_exp_tkn **head);
-t_exp_tkn						*extract_literal(char **s, int len,
-									bool is_quoted);
-t_exp_tkn						*expand_env_var(char **s, bool is_quoted);
 char							*process_dollar(char **s, char *result);
 int								update_args_from_exp(t_exp_tkn *head,
 									t_node *node);
@@ -225,6 +230,13 @@ t_exp_tkn						*new_exp_token(char *str, bool is_expanded,
 void							append_exp_token(t_exp_tkn **head,
 									t_exp_tkn *new);
 void							free_exp_tokens(t_exp_tkn *head);
+int								expand_unsplit(t_exp_tkn **head, char *str,
+									int env_flag);
+char							*get_var_value(char *name);
+int								extract_var_name(char *str, char **name);
+int								state_null(t_expand *info, char *str);
+int								state_backquote(t_expand *info, char *str);
+int								state_doublequote(t_expand *info, char *str);
 
 // bulitin
 int								cd(int argc, char **argv);
