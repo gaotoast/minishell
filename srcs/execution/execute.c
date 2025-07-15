@@ -25,6 +25,7 @@ void	child_exec(t_node *node)
 	if (apply_redirs(node->redir_count, node->redirs) != 0)
 	{
 		free(cp_env);
+		unlink_all_temp(node);
 		inner_exit(1);
 	}
 	if (is_empty_cmds(node->argv))
