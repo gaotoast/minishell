@@ -47,7 +47,7 @@ int	restore_std_fds(int stashed_stdin, int stashed_stdout)
 		}
 		close(stashed_stdin);
 	}
-	if (stashed_stdin != -1)
+	if (stashed_stdout != -1)
 	{
 		if (dup2(stashed_stdout, STDOUT_FILENO) == -1)
 		{
