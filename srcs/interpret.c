@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:14:25 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/15 14:14:27 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/15 16:22:05 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,10 @@ void	interpret(t_shell *shell)
 
 	ret = 0;
 	ret = tokenize(shell->input, &shell->tokens);
-	if (handle_stage_ret(ret) != 0)
-		return ;
 	free(shell->input);
 	shell->input = NULL;
+	if (handle_stage_ret(ret) != 0)
+		return ;
 	ret = parse(shell->tokens, &shell->ast);
 	if (handle_stage_ret(ret) != 0)
 		return ;
