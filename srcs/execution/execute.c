@@ -14,6 +14,14 @@ int	is_empty_cmds(char **argv)
 	return (1);
 }
 
+// リソース解放後、子プロセスをexit
+void	child_exit(char **env, t_node *node, int exit_stat)
+{
+	free(env);
+	unlink_all_temp(node);
+	inner_exit(exit_stat);
+}
+
 // 子プロセス内での実行
 void	child_exec(t_node *node)
 {
@@ -23,22 +31,16 @@ void	child_exec(t_node *node)
 	if (!cp_env)
 		inner_exit(1);
 	if (apply_redirs(node->redir_count, node->redirs) != 0)
-	{
-		free(cp_env);
-		unlink_all_temp(node);
-		inner_exit(1);
-	}
+		child_exit(cp_env, node, 1);
 	if (is_empty_cmds(node->argv))
 	{
-		free(cp_env);
 		ft_dprintf(STDERR_FILENO, "%s: command not found\n", node->argv[0]);
-		inner_exit(127);
+		child_exit(cp_env, node, 127);
 	}
 	if (is_builtin(node->argv[0]))
 	{
 		exec_builtin_cmd(node);
-		free(cp_env);
-		inner_exit(sh_stat(ST_GET, 0));
+		child_exit(cp_env, node, sh_stat(ST_GET, 0));
 	}
 	else
 		exec_cmd(node->argv, cp_env);
