@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   new_node.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 15:08:15 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 15:08:38 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// 新しいパイプノードを作成して左右のノードを接続
 t_node	*new_pipe_node(t_node *lhs, t_node *rhs)
 {
 	t_node	*node;
@@ -14,7 +25,7 @@ t_node	*new_pipe_node(t_node *lhs, t_node *rhs)
 	}
 	node->kind = ND_PIPE;
 	node->argv = NULL;
-    node->argv_lst = NULL;
+	node->argv_lst = NULL;
 	node->argc = 0;
 	node->redirs = NULL;
 	node->redir_count = 0;
@@ -27,7 +38,6 @@ t_node	*new_pipe_node(t_node *lhs, t_node *rhs)
 	return (node);
 }
 
-// 新しいコマンドノードを作成
 t_node	*new_command_node(void)
 {
 	t_node	*node;
@@ -37,7 +47,7 @@ t_node	*new_command_node(void)
 		return (NULL);
 	node->kind = ND_CMD;
 	node->argv = NULL;
-    node->argv_lst = NULL;
+	node->argv_lst = NULL;
 	node->argc = 0;
 	node->redirs = NULL;
 	node->redir_count = 0;

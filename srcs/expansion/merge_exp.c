@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   merge_exp.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 14:25:32 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 14:25:34 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	should_merge_tokens(t_exp_tkn *cur, t_exp_tkn *next)
@@ -8,7 +20,6 @@ static int	should_merge_tokens(t_exp_tkn *cur, t_exp_tkn *next)
 	return (0);
 }
 
-// 変数展開された文字列が連続していればくっつける
 int	merge_expansion_tokens(t_exp_tkn **head)
 {
 	t_exp_tkn	*cur;

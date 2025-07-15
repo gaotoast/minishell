@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unsplit_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 09:07:50 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/11 09:14:52 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/15 14:27:23 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,15 +73,13 @@ int	state_null(t_expand *info, char *str)
 	else if (str[info->i] == '$' && info->env_flag)
 	{
 		++(info->i);
-		//$以降の処理
 		info->rtn = process_inner_dollar(&str[info->i], info->rtn, &(info->i));
 	}
-	else
-		if (!connect_char(&(info->rtn), str[(info->i)++]))
-		{
-			free(info->rtn);
-			return (1);
-		}
+	else if (!connect_char(&(info->rtn), str[(info->i)++]))
+	{
+		free(info->rtn);
+		return (1);
+	}
 	return (0);
 }
 
@@ -92,12 +90,11 @@ int	state_backquote(t_expand *info, char *str)
 		info->state = '\0';
 		++(info->i);
 	}
-	else
-		if (!connect_char(&(info->rtn), str[(info->i)++]))
-		{
-			free(info->rtn);
-			return (1);
-		}
+	else if (!connect_char(&(info->rtn), str[(info->i)++]))
+	{
+		free(info->rtn);
+		return (1);
+	}
 	return (0);
 }
 
@@ -111,14 +108,12 @@ int	state_doublequote(t_expand *info, char *str)
 	else if (str[info->i] == '$' && info->env_flag)
 	{
 		++(info->i);
-		//$以降の処理
 		info->rtn = process_inner_dollar(&str[info->i], info->rtn, &(info->i));
 	}
-	else
-		if (!connect_char(&(info->rtn), str[(info->i)++]))
-		{
-			free(info->rtn);
-			return (1);
-		}
+	else if (!connect_char(&(info->rtn), str[(info->i)++]))
+	{
+		free(info->rtn);
+		return (1);
+	}
 	return (0);
 }

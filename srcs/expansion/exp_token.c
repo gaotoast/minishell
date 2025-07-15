@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exp_token.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 14:27:59 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 14:28:05 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// 新しいexpトークンを作成
 t_exp_tkn	*new_exp_token(char *str, bool is_expanded, bool is_quoted)
 {
 	t_exp_tkn	*new;
@@ -18,7 +29,6 @@ t_exp_tkn	*new_exp_token(char *str, bool is_expanded, bool is_quoted)
 	return (new);
 }
 
-// リストにexpトークンを追加
 void	append_exp_token(t_exp_tkn **head, t_exp_tkn *new)
 {
 	t_exp_tkn	*cur;
@@ -34,7 +44,6 @@ void	append_exp_token(t_exp_tkn **head, t_exp_tkn *new)
 	cur->next = new;
 }
 
-// リストを解放
 void	free_exp_tokens(t_exp_tkn *head)
 {
 	t_exp_tkn	*cur;

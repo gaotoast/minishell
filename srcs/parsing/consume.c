@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   consume.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 15:07:41 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 15:07:47 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// トークンがTK_WORDかどうか確認して文字列を返し次のトークンに進める
 int	consume_word(t_token **rest, char **redir_str)
 {
 	t_token	*cur;
@@ -16,16 +27,15 @@ int	consume_word(t_token **rest, char **redir_str)
 				"minishell: syntax error near unexpected token `%s'\n",
 				cur->str);
 		(*redir_str) = NULL;
-        return (2);
+		return (2);
 	}
 	(*redir_str) = ft_strdup(cur->str);
 	if (!(*redir_str))
-        return (1);
+		return (1);
 	*rest = cur->next;
-    return (0);
+	return (0);
 }
 
-// トークンがTK_RESERVEDかつ指定された記号に一致するか確認して次のトークンに進める
 int	consume_reserved(t_token **rest, char *op)
 {
 	t_token	*cur;

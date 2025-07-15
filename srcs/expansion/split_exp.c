@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   split_exp.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 14:26:53 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 14:26:58 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// 単語を抜粋し、新しいexpトークンとしてリストに追加
 static int	add_exp_token_from_substr(t_exp_tkn **head, char **p, int len,
 		bool is_quoted)
 {
@@ -24,7 +35,6 @@ static int	add_exp_token_from_substr(t_exp_tkn **head, char **p, int len,
 	return (0);
 }
 
-// 空白文字（スペースまたはタブ文字）で単語分割
 static t_exp_tkn	*split_by_blank(char *s, bool is_quoted)
 {
 	t_exp_tkn	*head;
@@ -73,7 +83,6 @@ int	process_split_exp_tokens(t_exp_tkn **head, t_exp_tkn *cur, t_exp_tkn **prev)
 	return (0);
 }
 
-// 変数展開の結果を単語分割
 int	split_exp_tokens(t_exp_tkn **head)
 {
 	t_exp_tkn	*cur;
@@ -83,8 +92,8 @@ int	split_exp_tokens(t_exp_tkn **head)
 	prev = NULL;
 	while (cur)
 	{
-		if (cur->is_expanded && !cur->is_quoted && (ft_strchr(cur->str, ' ') || ft_strchr(cur->str,
-					'\t')))
+		if (cur->is_expanded && !cur->is_quoted && (ft_strchr(cur->str, ' ')
+				|| ft_strchr(cur->str, '\t')))
 		{
 			if (process_split_exp_tokens(head, cur, &prev) != 0)
 				return (-1);

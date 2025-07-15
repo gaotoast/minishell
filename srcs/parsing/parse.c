@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 15:06:48 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 15:07:34 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// トークンを解析してリダイレクトノードを生成
+// TODO: 分割
 t_redir	*parse_redir(t_token **rest, int *ret)
 {
 	t_redir	*redir;
@@ -32,7 +44,7 @@ t_redir	*parse_redir(t_token **rest, int *ret)
 	return (redir);
 }
 
-// トークンを解析してコマンドノード（パイプ以外の部分をまとめたノード）を生成
+// TODO: 分割
 t_node	*parse_command(t_token **rest, int *ret)
 {
 	t_token	*cur;
@@ -48,7 +60,6 @@ t_node	*parse_command(t_token **rest, int *ret)
 		*ret = -1;
 		return (NULL);
 	}
-	// TK_WORDがある間、argvに追加
 	while (cur)
 	{
 		if (peek_word(cur))
@@ -80,7 +91,6 @@ t_node	*parse_command(t_token **rest, int *ret)
 			node->argv = argv_tmp;
 			cur = cur->next;
 		}
-		// リダイレクト演算子がある間、リダイレクト記号と次のTK_WORD（ファイル名かheredocのデリミタ）をredirsに追加
 		else if (peek_redir_op(cur))
 		{
 			node->redir_count++;
@@ -112,7 +122,6 @@ t_node	*parse_command(t_token **rest, int *ret)
 		else
 			break ;
 	}
-	// コマンドが空でリダイレクトもない場合はエラー
 	if (node->argc == 0 && node->redir_count == 0)
 	{
 		ft_dprintf(STDERR_FILENO,
@@ -125,26 +134,22 @@ t_node	*parse_command(t_token **rest, int *ret)
 	return (node);
 }
 
-// / トークンを解析してASTを生成
 t_node	*parse_line(t_token **rest, int *ret)
 {
 	t_node	*node;
 	t_node	*rhs;
 
-	// 最初のパイプまでを解析
 	node = parse_command(rest, ret);
 	if (!node)
 		return (NULL);
 	while (consume_reserved(rest, "|"))
 	{
-		// 右側のコマンドを（次のパイプまで）解析
 		rhs = parse_command(rest, ret);
 		if (!rhs)
 		{
 			free_ast(node);
 			return (NULL);
 		}
-		// パイプノードを作成し、それを根として左右のノードを接続
 		node = new_pipe_node(node, rhs);
 		if (!node)
 		{
@@ -155,7 +160,6 @@ t_node	*parse_line(t_token **rest, int *ret)
 	return (node);
 }
 
-// 構文解析
 int	parse(t_token *tokens, t_node **ast)
 {
 	t_token	*rest;

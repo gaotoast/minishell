@@ -1,27 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenize.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 15:01:54 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 15:02:47 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// トークンを追加（新しいトークンへのポインタを返すことでcurrentを一つ進める）
-t_token	*add_token(t_token *cur, t_token_type type, char *start, int len)
-{
-	t_token	*new;
-
-	new = (t_token *)ft_malloc(sizeof(t_token));
-	if (!new)
-		return (NULL);
-	new->str = (char *)ft_calloc(sizeof(char), len + 1);
-	if (!new->str)
-	{
-		free(new);
-		return (NULL);
-	}
-	ft_memcpy(new->str, (void *)start, len);
-	new->type = type;
-	new->next = NULL;
-	cur->next = new;
-	return (new);
-}
-
-// 入力をトークンに分割
+// TODO: 分割
 int	tokenize(char *line, t_token **tokens)
 {
 	t_token	head;
@@ -35,10 +26,8 @@ int	tokenize(char *line, t_token **tokens)
 	p = line;
 	while (*p)
 	{
-		// 空白文字をスキップ
 		if (is_blank(*p))
 			p++;
-		// 2文字のメタ文字をトークン化
 		else if (is_two_metachar(p))
 		{
 			cur = add_token(cur, TK_RESERVED, p, 2);
@@ -49,7 +38,6 @@ int	tokenize(char *line, t_token **tokens)
 			}
 			p += 2;
 		}
-		// 1文字のメタ文字をトークン化
 		else if (is_single_metachar(p))
 		{
 			cur = add_token(cur, TK_RESERVED, p, 1);
@@ -60,8 +48,6 @@ int	tokenize(char *line, t_token **tokens)
 			}
 			p++;
 		}
-		// 単語をトークン化
-		// クォートの中ではメタ文字と空白文字を無視する
 		else
 		{
 			start = p;
@@ -95,7 +81,6 @@ int	tokenize(char *line, t_token **tokens)
 			}
 		}
 	}
-	// EOFトークンを追加
 	if (!add_token(cur, TK_EOF, p, 0))
 	{
 		free_tokens(head.next);

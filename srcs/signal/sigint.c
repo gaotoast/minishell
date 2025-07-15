@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sigint.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 15:09:29 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 15:09:30 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// SIGINTのシグナルハンドラ
 void	handle_sigint(int signum)
 {
 	g_sig_received = signum;
@@ -8,7 +19,6 @@ void	handle_sigint(int signum)
 	rl_done = 1;
 }
 
-// execve用のSIGINT設定
 void	set_exec_sigint(void)
 {
 	struct sigaction	sa;
@@ -24,7 +34,6 @@ void	set_exec_sigint(void)
 	}
 }
 
-// メインプロセスのSIGINT設定
 void	set_main_sigint(void)
 {
 	struct sigaction	sa;

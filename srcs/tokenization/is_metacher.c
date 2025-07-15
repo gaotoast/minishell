@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   is_metacher.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 14:35:43 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 14:35:47 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// パイプとリダイレクトの記号を判定
 int	is_single_metachar(char *p)
 {
 	if (*p == '|' || *p == '<' || *p == '>')
@@ -8,7 +19,6 @@ int	is_single_metachar(char *p)
 	return (0);
 }
 
-// heredocとappendの記号を判定
 int	is_two_metachar(char *p)
 {
 	if (ft_strncmp(p, "<<", 2) == 0 || ft_strncmp(p, ">>", 2) == 0)

@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sigquit.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 15:09:38 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 15:09:39 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// execve用のSIGQUIT設定
 void	set_exec_sigquit(void)
 {
 	struct sigaction	sa;
@@ -16,7 +27,6 @@ void	set_exec_sigquit(void)
 	}
 }
 
-// メインプロセスのSIGQUIT設定
 void	set_main_sigquit(void)
 {
 	struct sigaction	sa;
