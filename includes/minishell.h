@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 03:06:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/15 17:27:05 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/15 22:42:46 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,7 @@ extern volatile sig_atomic_t	g_sig_received;
 
 # define HEREDOC_TMP "/tmp/heredoc_tmp_"
 # define HEREDOC_EOF_MSG \
-	"minishell: warning: here-document delimited by \
-    end-of-file (wanted `%s')\n"
+	"minishell: warning: here-document delimited by end-of-file (wanted `%s')\n"
 
 // exit status operation
 typedef enum e_st_op
