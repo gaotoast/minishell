@@ -31,7 +31,7 @@ static int	split_expanded_redir_env(t_exp_tkn **head, char *str)
 
 static int	process_expand_redirs(t_exp_tkn **new, t_redir *redir, int env_flag)
 {
-	if (tokenize_with_expansion(new, redir->str, env_flag) != 0)
+	if (expand_unsplit(new, redir->str, env_flag) != 0)
 	{
 		free_exp_tokens(*new);
 		return (1);

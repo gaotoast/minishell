@@ -83,7 +83,7 @@ int	split_exp_tokens(t_exp_tkn **head)
 	prev = NULL;
 	while (cur)
 	{
-		if (cur->is_expanded && (ft_strchr(cur->str, ' ') || ft_strchr(cur->str,
+		if (cur->is_expanded && !cur->is_quoted && (ft_strchr(cur->str, ' ') || ft_strchr(cur->str,
 					'\t')))
 		{
 			if (process_split_exp_tokens(head, cur, &prev) != 0)

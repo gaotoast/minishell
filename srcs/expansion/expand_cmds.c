@@ -8,7 +8,7 @@ static int	process_expand_cmds(t_exp_tkn **head, char **argv)
 	while (argv[i])
 	{
 		// 変数展開とクォート除去
-		if (tokenize_with_expansion(head, argv[i], 1) != 0)
+		if (expand_unsplit(head, argv[i], 1) != 0)
 		{
 			free_exp_tokens(*head);
 			return (1);
