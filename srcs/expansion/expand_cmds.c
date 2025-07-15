@@ -11,7 +11,7 @@ static int	process_expand_cmds(t_exp_tkn **head, char **argv)
 		if (expand_unsplit(head, argv[i], 1) != 0)
 		{
 			free_exp_tokens(*head);
-			return (1);
+			return (-1);
 		}
 		i++;
 	}
@@ -25,14 +25,14 @@ int	expand_cmds(t_node *node)
 
 	head = NULL;
 	if (process_expand_cmds(&head, node->argv) != 0)
-		return (1);
+		return (-1);
 	// 変数展開の結果を単語分割
 	if (split_exp_tokens(&head) != 0)
 	{
 		free_exp_tokens(head);
-		return (1);
+		return (-1);
 	}
 	if (update_args_from_exp(head, node) != 0)
-		return (1);
+		return (-1);
 	return (0);
 }
