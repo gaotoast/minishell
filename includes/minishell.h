@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 03:06:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/15 16:28:25 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/15 17:27:05 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,6 +216,11 @@ int								is_blank(char c);
 
 // parsing
 int								parse(t_token *tokens, t_node **ast);
+t_node							*parse_command(t_token **rest, int *ret);
+int								append_arg(t_node *node, char *str, int *ret);
+int								append_redir(t_node *node, t_token **cur,
+									int *ret);
+t_redir							*parse_redir(t_token **rest, int *ret);
 t_node							*new_pipe_node(t_node *lhs, t_node *rhs);
 t_node							*new_command_node(void);
 int								peek_word(t_token *token);
