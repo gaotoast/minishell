@@ -6,79 +6,43 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 15:01:54 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/15 15:02:47 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/15 16:28:02 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// TODO: 分割
+static t_token	*get_next_token(t_token *cur, char **p, int *ret)
+{
+	if (is_blank(**p))
+		(*p)++;
+	else if (is_two_metachar(*p))
+		cur = handle_two_metachar(cur, p, ret);
+	else if (is_single_metachar(*p))
+		cur = handle_single_metachar(cur, p, ret);
+	else
+		cur = handle_word_token(cur, p, ret);
+	return (cur);
+}
+
 int	tokenize(char *line, t_token **tokens)
 {
 	t_token	head;
 	t_token	*cur;
 	char	*p;
-	char	*start;
-	char	quote;
+	int		ret;
 
 	head.next = NULL;
 	cur = &head;
 	p = line;
+	ret = 0;
 	while (*p)
 	{
-		if (is_blank(*p))
-			p++;
-		else if (is_two_metachar(p))
+		cur = get_next_token(cur, &p, &ret);
+		if (ret != 0)
 		{
-			cur = add_token(cur, TK_RESERVED, p, 2);
-			if (!cur)
-			{
-				free_tokens(head.next);
-				return (-1);
-			}
-			p += 2;
-		}
-		else if (is_single_metachar(p))
-		{
-			cur = add_token(cur, TK_RESERVED, p, 1);
-			if (!cur)
-			{
-				free_tokens(head.next);
-				return (-1);
-			}
-			p++;
-		}
-		else
-		{
-			start = p;
-			while (*p && !is_blank(*p) && !is_two_metachar(p)
-				&& !is_single_metachar(p))
-			{
-				if (is_quote(p))
-				{
-					quote = *p;
-					p++;
-					while (*p && *p != quote)
-						p++;
-					if (*p == quote)
-						p++;
-					else
-					{
-						write(STDERR_FILENO,
-							"minishell: syntax error: unclosed quote\n", 41);
-						free_tokens(head.next);
-						return (2);
-					}
-				}
-				else
-					p++;
-			}
-			cur = add_token(cur, TK_WORD, start, p - start);
-			if (!cur)
-			{
-				free_tokens(head.next);
-				return (-1);
-			}
+			free_tokens(head.next);
+			return (ret);
 		}
 	}
 	if (!add_token(cur, TK_EOF, p, 0))

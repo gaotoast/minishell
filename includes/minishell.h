@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 03:06:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/15 14:39:11 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/15 16:28:25 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,6 +203,12 @@ void							unlink_all_temp(t_node *first);
 int								tokenize(char *line, t_token **tokens);
 t_token							*add_token(t_token *cur, t_token_type type,
 									char *start, int len);
+t_token							*handle_two_metachar(t_token *cur, char **p,
+									int *ret);
+t_token							*handle_single_metachar(t_token *cur, char **p,
+									int *ret);
+t_token							*handle_word_token(t_token *cur, char **p,
+									int *ret);
 int								is_single_metachar(char *p);
 int								is_two_metachar(char *p);
 int								is_quote(char *p);
