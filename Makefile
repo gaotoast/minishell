@@ -11,7 +11,7 @@ LIB = $(LIB_DIR)/lib.a -lreadline
 SRCS = ./srcs/main.c ./srcs/interpret.c ./srcs/finish_loop.c \
 	./srcs/builtin/cd_move.c ./srcs/builtin/cd.c ./srcs/builtin/echo.c ./srcs/builtin/env.c ./srcs/builtin/export.c ./srcs/builtin/ft_exit.c ./srcs/builtin/inner_exit.c ./srcs/builtin/print_env.c ./srcs/builtin/pwd.c ./srcs/builtin/unset.c \
 	./srcs/execution/exec_builtin.c ./srcs/execution/exec_cmd.c ./srcs/execution/execute.c ./srcs/execution/find_path.c ./srcs/execution/is_builtin.c ./srcs/execution/link_exec_nodes.c ./srcs/execution/prepare.c ./srcs/execution/wait.c \
-	./srcs/tokenization/add_token.c ./srcs/tokenization/handle_metachar.c ./srcs/tokenization/handle_word.c ./srcs/tokenization/is_blank.c srcs/tokenization/is_metacher.c ./srcs/tokenization/is_quote.c ./srcs/tokenization/tokenize.c \
+	./srcs/tokenization/add_token.c ./srcs/tokenization/handle_metachar.c ./srcs/tokenization/handle_word.c ./srcs/tokenization/is_blank.c ./srcs/tokenization/is_metacher.c ./srcs/tokenization/is_quote.c ./srcs/tokenization/tokenize.c \
 	./srcs/parsing/append_arg.c ./srcs/parsing/append_redir.c ./srcs/parsing/consume.c ./srcs/parsing/new_node.c ./srcs/parsing/parse_cmd.c ./srcs/parsing/parse_redir.c ./srcs/parsing/parse.c ./srcs/parsing/peek.c \
 	./srcs/init/init.c ./srcs/init/init_utils.c \
 	./srcs/expansion/exp_token.c ./srcs/expansion/expand_cmds.c ./srcs/expansion/expand_heredoc.c ./srcs/expansion/expand_redirs.c ./srcs/expansion/expand_unsplit.c ./srcs/expansion/expand.c ./srcs/expansion/merge_exp.c ./srcs/expansion/process_dollar.c ./srcs/expansion/split_exp.c ./srcs/expansion/unsplit_utils.c ./srcs/expansion/update_args.c \
