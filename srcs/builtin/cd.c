@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/16 17:54:45 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/16 18:57:43 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	check_access(char *dest, char *path)
 
 	if (access(path, F_OK))
 		ft_dprintf(STDERR_FILENO, "minishell: cd: %s: No such "
-			"file or directly\n", dest);
+			"file or directory\n", dest);
 	else if (stat(path, &statbuf) != 0)
 		ft_dprintf(STDERR_FILENO, "minishell: cd: %s\n", strerror(errno));
 	else if ((((statbuf.st_mode)) & 0170000) != 0040000)
