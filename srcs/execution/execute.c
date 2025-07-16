@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:24:46 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/15 14:24:47 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/16 13:29:52 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ int	is_empty_cmds(char **argv)
 	int	i;
 
 	i = 0;
+	if (!argv)
+		return (1);
 	while (argv[i])
 	{
 		if (argv[i][0] != '\0')
@@ -44,8 +46,13 @@ void	child_exec(t_node *node)
 		child_exit(cp_env, node, 1);
 	if (is_empty_cmds(node->argv))
 	{
-		ft_dprintf(STDERR_FILENO, "%s: command not found\n", node->argv[0]);
-		child_exit(cp_env, node, 127);
+		if (node->argv)
+		{
+			ft_dprintf(STDERR_FILENO, "%s: command not found\n", node->argv[0]);
+			child_exit(cp_env, node, 127);
+		}
+		else
+			child_exit(cp_env, node, 0);
 	}
 	if (is_builtin(node->argv[0]))
 	{
