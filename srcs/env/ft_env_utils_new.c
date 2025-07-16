@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 23:58:50 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 03:31:28 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/16 18:48:46 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ char	*cp_without_quoutes(char *val, int len)
 	quote = '\0';
 	while (val[i])
 	{
-		if ((quote && val[i] != quote) || !is_quote(&val[i]))
+		if (val[i] != quote)
 			rtn[j++] = val[i];
-		else if (!quote)
+		else if (!quote && is_quote(&val[i]))
 			quote = val[i];
 		else if (quote)
 			quote = '\0';
@@ -63,9 +63,9 @@ char	*rm_quotes(char *val)
 		return (NULL);
 	while (val[i])
 	{
-		if ((quote && val[i] != quote) || !is_quote(&val[i]))
+		if (val[i] != quote)
 			++len;
-		else if (!quote)
+		else if (!quote && is_quote(&val[i]))
 			quote = val[i];
 		else if (quote)
 			quote = '\0';
