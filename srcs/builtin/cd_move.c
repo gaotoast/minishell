@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:10:15 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 12:47:09 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/16 17:00:14 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	check_cwd(char *path)
 	rtn = getcwd(buf, PATH_MAX);
 	if (!rtn)
 	{
-		ft_dprintf(STDERR_FILENO, "cd: error retrieving "
+		ft_dprintf(STDERR_FILENO, "minshell: cd: error retrieving "
 			"current directory: getcwd: %s\n", strerror(errno));
 		return (1);
 	}
@@ -125,7 +125,7 @@ char	*move_to_some(char *dest)
 	res = chdir(path);
 	if (res != 0)
 	{
-		ft_dprintf(STDERR_FILENO, "cd: %s\n", strerror(errno));
+		ft_dprintf(STDERR_FILENO, "minishell: cd: %s\n", strerror(errno));
 		free(path);
 		return (NULL);
 	}
