@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 16:32:55 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/15 17:26:52 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/16 14:06:51 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static t_node	*check_syntax(t_node *node, int *ret)
 {
-	if (node->argc == 0 && node->redir_count == 0)
+	if (*ret == 0 && node->argc == 0 && node->redir_count == 0)
 	{
 		ft_dprintf(STDERR_FILENO,
 			"minishell: syntax error near unexpected token `|'\n");
