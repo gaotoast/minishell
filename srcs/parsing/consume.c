@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 15:07:41 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/15 15:07:47 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/16 13:46:06 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	consume_word(t_token **rest, char **redir_str)
 	}
 	(*redir_str) = ft_strdup(cur->str);
 	if (!(*redir_str))
-		return (1);
+		return (-1);
 	*rest = cur->next;
 	return (0);
 }
