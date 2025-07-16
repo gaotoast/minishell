@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 22:38:00 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 02:22:44 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/15 19:56:47 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ t_env	*search_val(t_env *head, char *name, int offset, t_val_type type)
 	while (tmp)
 	{
 		if (((type == VAL_EX && tmp->type == VAL_EX) || type == VAL_SH)
-			&& ft_strncmp(tmp->name, name, name_len) == 0)
+			&& ft_strncmp(tmp->name, name, name_len) == 0
+			&& (tmp->name[name_len] == '=' || tmp->name[name_len] == '\0'))
 			return (tmp);
 		tmp = tmp->next;
 	}

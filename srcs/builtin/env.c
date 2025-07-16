@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 00:47:01 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/13 11:59:41 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/15 19:46:30 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	get_env_option(int argc, char **argv)
 void	print_env_err(int option_type, char **argv)
 {
 	ft_dprintf(STDERR_FILENO, "env: ");
-	if (option_type == 1)
+	if (option_type == 1 || option_type == 5)
 		ft_dprintf(STDERR_FILENO, "too many arguments\n");
 	else if (option_type == 2)
 		ft_dprintf(STDERR_FILENO, "unrecognized option '%s'\n", argv[1]);

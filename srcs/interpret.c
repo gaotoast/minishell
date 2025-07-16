@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:14:25 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/15 16:22:05 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/15 19:38:59 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	handle_stage_ret(int ret)
 		ft_exit(1, NULL, 0);
 		return (1);
 	}
-	else
+	else if (ret != 0)
 	{
 		sh_stat(ST_SET, ret);
 		return (ret);
