@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:29:37 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/27 04:13:57 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/16 13:07:58 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	is_pwd_error(int argc, char **argv)
 {
 	if (argc == 1)
 		return (0);
-	if (argv[1][0] != '-' || strncmp(argv[1], "--", 3) == 0)
+	if (argv[1][0] != '-' || ft_strncmp(argv[1], "--", 3) == 0)
 		return (0);
 	if (argv[1][1] == '\0')
 		return (0);

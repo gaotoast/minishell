@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_union.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:02:36 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/22 14:03:00 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/16 13:07:31 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	*ft_union(char **split, char delim)
 	while (split[i])
 	{
 		rtn[len++] = delim;
-		tmp_len = strlen(split[i]);
+		tmp_len = ft_strlen(split[i]);
 		ft_strlcpy(&(rtn[len]), split[i++], tmp_len + 1);
 		len += tmp_len;
 	}
