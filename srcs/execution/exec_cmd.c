@@ -3,61 +3,57 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:23:51 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/15 14:24:14 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/16 16:46:24 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static void	error_and_exit(char *cmd, int exit_code, char **envp)
+{
+	ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmd, strerror(errno));
+	free(envp);
+	inner_exit(exit_code);
+}
+
+static void	check_executable_or_exit(char *cmd, char **envp)
+{
+	struct stat	statbuf;
+
+	if (access(cmd, F_OK) != 0)
+		error_and_exit(cmd, 127, envp);
+	if (stat(cmd, &statbuf) != 0)
+		error_and_exit(cmd, 126, envp);
+	if ((((statbuf.st_mode)) & 0170000) != 0100000 || access(cmd, X_OK) != 0)
+	{
+		if ((((statbuf.st_mode)) & 0170000) == 0040000)
+			ft_dprintf(STDERR_FILENO, "minishell: %s: Is a directory\n", cmd);
+		else
+			ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmd,
+				strerror(errno));
+		free(envp);
+		inner_exit(126);
+	}
+}
+
 void	exec_if_relative_path(char **cmds, char **envp)
 {
-	if (ft_strncmp(cmds[0], "./", 2) == 0 || ft_strncmp(cmds[0], "../", 3) == 0)
-	{
-		if (access(cmds[0], F_OK) == 0)
-		{
-			if (access(cmds[0], X_OK) == 0)
-			{
-				execve(cmds[0], cmds, envp);
-				ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmds[0],
-					strerror(errno));
-				free(envp);
-				inner_exit(1);
-			}
-			ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmds[0],
-				strerror(errno));
-			free(envp);
-			inner_exit(126);
-		}
-		ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmds[0],
-			strerror(errno));
-		free(envp);
-		inner_exit(127);
-	}
+	if (!(ft_strncmp(cmds[0], "./", 2) == 0 || ft_strncmp(cmds[0], "../",
+				3) == 0))
+		return ;
+	check_executable_or_exit(cmds[0], envp);
+	execve(cmds[0], cmds, envp);
+	error_and_exit(cmds[0], 1, envp);
 }
 
 void	exec_if_absolute_path(char **cmds, char **envp)
 {
-	if (access(cmds[0], F_OK) == 0)
-	{
-		if (access(cmds[0], X_OK) == 0)
-		{
-			execve(cmds[0], cmds, envp);
-			ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmds[0],
-				strerror(errno));
-			free(envp);
-			inner_exit(1);
-		}
-		ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmds[0],
-			strerror(errno));
-		free(envp);
-		inner_exit(126);
-	}
-	ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmds[0], strerror(errno));
-	free(envp);
-	inner_exit(127);
+	check_executable_or_exit(cmds[0], envp);
+	execve(cmds[0], cmds, envp);
+	error_and_exit(cmds[0], 1, envp);
 }
 
 void	exec_cmd(char **cmds, char **envp)
