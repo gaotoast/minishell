@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 23:53:57 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/16 14:51:14 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/16 15:50:43 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ static int	check_val(t_env *target, char *str, int offset, char **tmp)
 	if (!val)
 		return (1);
 	if (offset && target->type == VAL_EX)
-		*tmp = rm_quotes(ft_strjoin(target->val, val));
+		*tmp = rm_quotes(ft_strjoin(target->val, val + 1));
 	else
 	{
 		target->type = VAL_EX;
-		*tmp = rm_quotes(ft_strdup(val));
+		*tmp = rm_quotes(ft_strdup(val + 1));
 	}
 	return (0);
 }
