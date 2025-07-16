@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_unsplit.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 04:26:02 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/15 14:10:12 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/16 14:13:05 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	expand_unsplit(t_exp_tkn **head, char *str, int env_flag)
 	{
 		if (info.state == '\0' && state_null(&info, str))
 			return (-1);
-		else if (info.state == '\'' && state_backquote(&info, str))
+		else if (info.state == '\'' && state_singlequote(&info, str))
 			return (-1);
 		else if (info.state == '"' && state_doublequote(&info, str))
 			return (-1);

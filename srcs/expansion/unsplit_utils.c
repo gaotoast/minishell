@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 09:07:50 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/16 12:12:41 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/16 14:13:05 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ int	state_null(t_expand *info, char *str)
 {
 	if (str[info->i] == '\'')
 	{
+		info->is_quoted = true;
 		info->state = '\'';
 		++(info->i);
 	}
@@ -85,7 +86,7 @@ int	state_null(t_expand *info, char *str)
 	return (0);
 }
 
-int	state_backquote(t_expand *info, char *str)
+int	state_singlequote(t_expand *info, char *str)
 {
 	if (str[info->i] == '\'')
 	{
