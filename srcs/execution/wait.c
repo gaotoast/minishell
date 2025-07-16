@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wait.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:16:31 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/16 16:35:00 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/16 16:50:36 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int	process_exit_status(int w_status)
 
 	if (((((w_status) & 0x7f) + 1) >> 1) > 0)
 	{
-		status = 128 + (w_status) & 0x7f;
+		status = 128 + ((w_status) & 0x7f);
 		if (status == 128 + SIGINT)
 		{
 			g_sig_received = SIGINT;
