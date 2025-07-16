@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_unsplit.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 04:26:02 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/14 00:57:14 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/15 14:10:12 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,15 @@ int	expand_unsplit(t_exp_tkn **head, char *str, int env_flag)
 	while (str[info.i])
 	{
 		if (info.state == '\0' && state_null(&info, str))
-			return (1);
+			return (-1);
 		else if (info.state == '\'' && state_backquote(&info, str))
-			return (1);
+			return (-1);
 		else if (info.state == '"' && state_doublequote(&info, str))
-			return (1);
+			return (-1);
 	}
 	new = new_exp_token(info.rtn, true, info.is_quoted);
 	if (!new)
-		return (1);
+		return (-1);
 	append_exp_token(head, new);
 	return (0);
 }

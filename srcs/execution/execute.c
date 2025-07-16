@@ -14,6 +14,14 @@ int	is_empty_cmds(char **argv)
 	return (1);
 }
 
+// リソース解放後、子プロセスをexit
+void	child_exit(char **env, t_node *node, int exit_stat)
+{
+	free(env);
+	unlink_all_temp(node);
+	inner_exit(exit_stat);
+}
+
 // 子プロセス内での実行
 void	child_exec(t_node *node)
 {
@@ -23,21 +31,16 @@ void	child_exec(t_node *node)
 	if (!cp_env)
 		inner_exit(1);
 	if (apply_redirs(node->redir_count, node->redirs) != 0)
-	{
-		free(cp_env);
-		inner_exit(1);
-	}
+		child_exit(cp_env, node, 1);
 	if (is_empty_cmds(node->argv))
 	{
-		free(cp_env);
 		ft_dprintf(STDERR_FILENO, "%s: command not found\n", node->argv[0]);
-		inner_exit(127);
+		child_exit(cp_env, node, 127);
 	}
 	if (is_builtin(node->argv[0]))
 	{
 		exec_builtin_cmd(node);
-		free(cp_env);
-		inner_exit(sh_stat(ST_GET, 0));
+		child_exit(cp_env, node, sh_stat(ST_GET, 0));
 	}
 	else
 		exec_cmd(node->argv, cp_env);
@@ -76,24 +79,25 @@ int	execute(t_node *root)
 	pid_t	last_pid;
 	t_node	*first_cmd;
 	t_node	*last_cmd;
+	int		ret;
 
+	ret = 0;
 	if (!root)
 		return (0);
 	first_cmd = NULL;
 	last_cmd = NULL;
 	link_exec_nodes(root, root->rhs, &first_cmd, &last_cmd);
 	if (handle_all_heredocs(first_cmd) != 0)
-		return (1);
+		return (-1);
 	// ビルトインコマンド単体の場合
 	if (root->kind == ND_CMD && root->argv && is_builtin(root->argv[0]))
 	{
-		if (process_builtin_direct(root) != 0)
-			return (1);
-		return (0);
+		ret = process_builtin_direct(root);
+		return (ret);
 	}
 	last_pid = run_pipeline(first_cmd, 0);
 	if (last_pid < 0)
-		return (1);
+		return (-1);
 	sh_stat(ST_SET, wait_children(last_pid, first_cmd));
 	return (0);
 }

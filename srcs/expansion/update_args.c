@@ -30,7 +30,7 @@ static int	copy_exp_to_array(char **argv, t_exp_tkn *head)
 		if (!argv[i])
 		{
 			free_2d_array(argv);
-			return (1);
+			return (-1);
 		}
 		i++;
 		cur = cur->next;
@@ -64,6 +64,6 @@ int	update_args_from_exp(t_exp_tkn *head, t_node *node)
 	}
 	node->argv = build_array_from_exp(node->argv_lst, node->argc);
 	if (!node->argv)
-		return (1);
+		return (-1);
 	return (0);
 }

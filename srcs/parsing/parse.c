@@ -19,7 +19,7 @@ t_redir	*parse_redir(t_token **rest, int *ret)
 	else
 	{
 		free(redir);
-		*ret = 1;
+		*ret = -1;
 		return (NULL);
 	}
 	redir->temp_file = NULL;
@@ -45,7 +45,7 @@ t_node	*parse_command(t_token **rest, int *ret)
 	node = new_command_node();
 	if (!node)
 	{
-		*ret = 1;
+		*ret = -1;
 		return (NULL);
 	}
 	// TK_WORDがある間、argvに追加
@@ -58,7 +58,7 @@ t_node	*parse_command(t_token **rest, int *ret)
 			if (!argv_tmp)
 			{
 				free_ast(node);
-				*ret = 1;
+				*ret = -1;
 				return (NULL);
 			}
 			i = 0;
@@ -72,7 +72,7 @@ t_node	*parse_command(t_token **rest, int *ret)
 			{
 				free_ast(node);
 				free(argv_tmp);
-				*ret = 1;
+				*ret = -1;
 				return (NULL);
 			}
 			argv_tmp[node->argc] = NULL;
@@ -89,7 +89,7 @@ t_node	*parse_command(t_token **rest, int *ret)
 			if (!redirs_tmp)
 			{
 				free_ast(node);
-				*ret = 1;
+				*ret = -1;
 				return (NULL);
 			}
 			i = 0;
@@ -148,7 +148,7 @@ t_node	*parse_line(t_token **rest, int *ret)
 		node = new_pipe_node(node, rhs);
 		if (!node)
 		{
-			*ret = 1;
+			*ret = -1;
 			return (NULL);
 		}
 	}

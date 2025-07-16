@@ -2,13 +2,13 @@
 
 int	handle_stage_ret(int ret)
 {
-	if (ret == 1)
+	if (ret < 0)
 	{
 		sh_stat(ST_SET, 1);
 		ft_exit(1, NULL, 0);
 		return (1);
 	}
-	else if (ret != 0)
+	else
 	{
 		sh_stat(ST_SET, ret);
 		return (ret);

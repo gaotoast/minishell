@@ -12,13 +12,13 @@ static int	add_exp_token_from_substr(t_exp_tkn **head, char **p, int len,
 	else
 		str = ft_strdup("");
 	if (!str)
-		return (1);
+		return (-1);
 	*p += len;
 	new = new_exp_token(str, true, is_quoted);
 	if (!new)
 	{
 		free(str);
-		return (1);
+		return (-1);
 	}
 	append_exp_token(head, new);
 	return (0);
@@ -58,7 +58,7 @@ int	process_split_exp_tokens(t_exp_tkn **head, t_exp_tkn *cur, t_exp_tkn **prev)
 
 	split_head = split_by_blank(cur->str, cur->is_quoted);
 	if (!split_head)
-		return (1);
+		return (-1);
 	split_tail = split_head;
 	while (split_tail->next)
 		split_tail = split_tail->next;
@@ -87,7 +87,7 @@ int	split_exp_tokens(t_exp_tkn **head)
 					'\t')))
 		{
 			if (process_split_exp_tokens(head, cur, &prev) != 0)
-				return (1);
+				return (-1);
 			cur = prev->next;
 		}
 		else

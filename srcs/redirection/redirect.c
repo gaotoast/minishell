@@ -9,13 +9,13 @@ int	apply_heredoc_redir(t_redir *redir)
 	if (heredoc_fd < 0)
 	{
 		ft_dprintf(STDERR_FILENO, "minishell: open: %s\n", strerror(errno));
-		return (1);
+		return (-1);
 	}
 	if (dup2(heredoc_fd, STDIN_FILENO) == -1)
 	{
 		close(heredoc_fd);
 		ft_dprintf(STDERR_FILENO, "minishell: dup2: %s\n", strerror(errno));
-		return (1);
+		return (-1);
 	}
 	close(heredoc_fd);
 	return (0);
@@ -37,7 +37,7 @@ int	apply_io_redir(t_redir *redir, int flags, int std_fd)
 	{
 		close(fd);
 		ft_dprintf(STDERR_FILENO, "minishell: dup2: %s\n", strerror(errno));
-		return (1);
+		return (-1);
 	}
 	close(fd);
 	return (0);
@@ -62,12 +62,15 @@ int	process_redir(t_redir *redir)
 int	apply_redirs(int redir_count, t_redir **redirs)
 {
 	int	i;
+	int ret;
 
 	i = 0;
+	ret = 0;
 	while (i < redir_count)
 	{
-		if (process_redir(redirs[i]) != 0)
-			return (1);
+		ret = process_redir(redirs[i]);
+		if (ret != 0)
+			return (ret);
 		i++;
 	}
 	return (0);
