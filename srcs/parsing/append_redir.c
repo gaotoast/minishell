@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 17:26:37 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/15 17:26:58 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/16 13:47:42 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ static t_redir	**get_new_redirs(t_node *node, t_token **cur, int *ret)
 	if (!redirs[node->redir_count - 1])
 	{
 		free(redirs);
-		*ret = -1;
 		return (NULL);
 	}
 	redirs[node->redir_count] = NULL;
