@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:23:51 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/16 16:41:46 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/16 16:46:24 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ static void	check_executable_or_exit(char *cmd, char **envp)
 		error_and_exit(cmd, 127, envp);
 	if (stat(cmd, &statbuf) != 0)
 		error_and_exit(cmd, 126, envp);
-	if (!(((statbuf.st_mode)) & 0170000) == (0100000)|| access(cmd, X_OK) != 0)
+	if ((((statbuf.st_mode)) & 0170000) != 0100000 || access(cmd, X_OK) != 0)
 	{
-		if ((((statbuf.st_mode)) & 0170000) == (0040000))
+		if ((((statbuf.st_mode)) & 0170000) == 0040000)
 			ft_dprintf(STDERR_FILENO, "minishell: %s: Is a directory\n", cmd);
 		else
 			ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmd,
