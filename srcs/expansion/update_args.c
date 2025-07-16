@@ -6,11 +6,40 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:25:48 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/15 14:25:50 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/16 15:34:51 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static void	remove_empty_val_token(t_exp_tkn **head)
+{
+	t_exp_tkn	*cur;
+	t_exp_tkn	*prev;
+	t_exp_tkn	*temp;
+
+	prev = NULL;
+	cur = *head;
+	while (cur)
+	{
+		if (cur->is_expanded && !cur->is_quoted && cur->str && !cur->str[0])
+		{
+			temp = cur->next;
+			if (prev)
+				prev->next = temp;
+			else
+				*head = temp;
+			free(cur->str);
+			free(cur);
+			cur = temp;
+		}
+		else
+		{
+			prev = cur;
+			cur = cur->next;
+		}
+	}
+}
 
 static int	count_exp_tokens(t_exp_tkn *head)
 {
@@ -63,6 +92,7 @@ static char	**build_array_from_exp(t_exp_tkn *head, int count)
 
 int	update_args_from_exp(t_exp_tkn *head, t_node *node)
 {
+	remove_empty_val_token(&head);
 	node->argc = count_exp_tokens(head);
 	node->argv_lst = head;
 	free_2d_array(node->argv);
