@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   update_args.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 14:25:48 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 14:25:50 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// コマンドの数を数える
 static int	count_exp_tokens(t_exp_tkn *head)
 {
 	int			count;
@@ -16,7 +27,6 @@ static int	count_exp_tokens(t_exp_tkn *head)
 	return (count);
 }
 
-// リストから新しい二次元配列に文字列をコピー
 static int	copy_exp_to_array(char **argv, t_exp_tkn *head)
 {
 	t_exp_tkn	*cur;
@@ -39,7 +49,6 @@ static int	copy_exp_to_array(char **argv, t_exp_tkn *head)
 	return (0);
 }
 
-// リストから新しい二次元配列を構築
 static char	**build_array_from_exp(t_exp_tkn *head, int count)
 {
 	char	**argv;

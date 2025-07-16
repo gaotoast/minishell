@@ -1,7 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_builtin.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 14:23:59 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 14:24:21 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// ビルトインコマンドを実行
-// 関数の戻り値をexitステータスにする
 int	exec_builtin_cmd(t_node *node)
 {
 	char	*cmd;
@@ -26,7 +36,6 @@ int	exec_builtin_cmd(t_node *node)
 	return (sh_stat(ST_SET, stat));
 }
 
-// 標準入出力をデフォルト状態に戻す
 int	restore_std_fds(int stashed_stdin, int stashed_stdout)
 {
 	if (dup2(stashed_stdin, STDIN_FILENO) == -1)
@@ -44,7 +53,6 @@ int	restore_std_fds(int stashed_stdin, int stashed_stdout)
 	return (0);
 }
 
-// 標準入出力を退避（複製）→リダイレクト適用→ビルトインコマンドを実行→標準入出力を戻す
 int	process_builtin_direct(t_node *node)
 {
 	int	stashed_stdin;

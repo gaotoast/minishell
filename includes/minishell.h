@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 03:06:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/13 12:40:21 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/15 17:27:05 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,19 +21,17 @@
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
+# include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
-// debug
-# include <stdbool.h>
 
 extern volatile sig_atomic_t	g_sig_received;
 
-// TODO: 頭に"/tmp"をつける
-# define HEREDOC_TMP "heredoc_tmp_"
+# define HEREDOC_TMP "/tmp/heredoc_tmp_"
 # define HEREDOC_EOF_MSG \
 	"minishell: warning: here-document delimited by \
     end-of-file (wanted `%s')\n"
@@ -75,7 +73,7 @@ typedef struct s_expand
 	char						state;
 	int							i;
 	char						*str;
-	char						*rtn; 
+	char						*rtn;
 	bool						is_quoted;
 	int							env_flag;
 }								t_expand;
@@ -104,7 +102,7 @@ typedef struct s_token
 	struct s_token				*next;
 }								t_token;
 
-// parsing
+// parse
 typedef enum e_node_kind
 {
 	ND_PIPE,
@@ -126,7 +124,7 @@ typedef struct s_redir
 	char						*temp_file;
 }								t_redir;
 
-// 展開
+// expand
 typedef struct s_exp_tkn
 {
 	char						*str;
@@ -135,6 +133,7 @@ typedef struct s_exp_tkn
 	struct s_exp_tkn			*next;
 }								t_exp_tkn;
 
+// execute
 typedef struct s_node
 {
 	t_node_kind					kind;
@@ -170,6 +169,9 @@ typedef struct s_shell
 int								init(char **envp);
 void							init_signals(void);
 t_shell							*sh_op(t_op_shell op, t_shell *shell);
+int								pure_atoi(char *num);
+int								is_valid_shlvl(char *num);
+int								handle_shlvl_range(int lvl);
 
 // execution
 void							exec_if_relative_path(char **cmds, char **envp);
@@ -199,8 +201,14 @@ void							unlink_all_temp(t_node *first);
 
 // tokenization
 int								tokenize(char *line, t_token **tokens);
-int								is_single_metachar(char *p);
-int								is_two_metachar(char *p);
+t_token							*add_token(t_token *cur, t_token_type type,
+									char *start, int len);
+t_token							*handle_two_metachar(t_token *cur, char **p,
+									int *ret);
+t_token							*handle_single_metachar(t_token *cur, char **p,
+									int *ret);
+t_token							*handle_word_token(t_token *cur, char **p,
+									int *ret);
 int								is_single_metachar(char *p);
 int								is_two_metachar(char *p);
 int								is_quote(char *p);
@@ -208,6 +216,11 @@ int								is_blank(char c);
 
 // parsing
 int								parse(t_token *tokens, t_node **ast);
+t_node							*parse_command(t_token **rest, int *ret);
+int								append_arg(t_node *node, char *str, int *ret);
+int								append_redir(t_node *node, t_token **cur,
+									int *ret);
+t_redir							*parse_redir(t_token **rest, int *ret);
 t_node							*new_pipe_node(t_node *lhs, t_node *rhs);
 t_node							*new_command_node(void);
 int								peek_word(t_token *token);
@@ -298,17 +311,5 @@ void							free_redirs(t_redir **redirs);
 void							free_ast(t_node *ast);
 void							free_shell(t_shell **shell);
 void							free_env(t_env *env);
-
-// debug
-void							print_tokens(t_token *token);
-void							debug_tokenizer(t_token *tokens);
-void							print_indent(int depth, bool is_last);
-void							print_redir(t_redir *redir, int depth);
-void							print_ast(t_node *node, int depth);
-void							debug_parser(t_node *ast);
-void							debug_expand(t_node *ast);
-void							debug_exec_list(t_node *node);
-void							print_exp_token_list(t_exp_tkn *head);
-void							print_2d_array(char **array);
 
 #endif

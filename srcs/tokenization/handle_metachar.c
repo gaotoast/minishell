@@ -1,30 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atol.c                                          :+:      :+:    :+:   */
+/*   handle_metachar.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/31 20:58:51 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/15 15:06:04 by stakada          ###   ########.fr       */
+/*   Created: 2025/07/15 16:26:21 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 16:26:54 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-long long int	ft_atol(char *num, long long int minus, int digit)
+t_token	*handle_two_metachar(t_token *cur, char **p, int *ret)
 {
-	long long int	rtn;
-	int				i;
-
-	rtn = 0;
-	i = 0;
-	while (i < digit)
+	cur = add_token(cur, TK_RESERVED, *p, 2);
+	if (!cur)
 	{
-		rtn *= 10;
-		rtn += num[i] - '0';
-		++i;
+		*ret = -1;
+		return (NULL);
 	}
-	rtn *= minus;
-	return (rtn);
+	*p += 2;
+	return (cur);
+}
+
+t_token	*handle_single_metachar(t_token *cur, char **p, int *ret)
+{
+	cur = add_token(cur, TK_RESERVED, *p, 1);
+	if (!cur)
+	{
+		*ret = -1;
+		return (NULL);
+	}
+	(*p)++;
+	return (cur);
 }

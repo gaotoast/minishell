@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   find_path.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 14:25:00 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 14:25:02 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// 環境変数PATHの値を一つずつ確認
 char	*search_path(char *cmd_name, char **path_list, char *path_tail,
 		int *status)
 {
@@ -23,7 +34,6 @@ char	*search_path(char *cmd_name, char **path_list, char *path_tail,
 	return (NULL);
 }
 
-// 環境変数PATHからコマンドのパスを探す
 char	*resolve_cmd_path(char *cmd, char *path_env, int *status)
 {
 	char	*path_tail;

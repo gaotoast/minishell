@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_cmd.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 14:23:51 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 14:24:14 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// 相対パスなら実行
 void	exec_if_relative_path(char **cmds, char **envp)
 {
 	if (ft_strncmp(cmds[0], "./", 2) == 0 || ft_strncmp(cmds[0], "../", 3) == 0)
@@ -27,7 +38,6 @@ void	exec_if_relative_path(char **cmds, char **envp)
 	}
 }
 
-// 絶対パスなら実行
 void	exec_if_absolute_path(char **cmds, char **envp)
 {
 	if (access(cmds[0], F_OK) == 0)
@@ -50,7 +60,6 @@ void	exec_if_absolute_path(char **cmds, char **envp)
 	inner_exit(127);
 }
 
-// コマンド実行
 void	exec_cmd(char **cmds, char **envp)
 {
 	char	*path_env;

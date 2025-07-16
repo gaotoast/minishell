@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   link_exec_nodes.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 14:15:01 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 14:15:17 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// 木構造に含まれるND_CMDを実行順にポインタでつなげる
-void	link_exec_nodes(t_node *node, t_node *rhs, t_node **first, t_node **last)
+void	link_exec_nodes(t_node *node, t_node *rhs, t_node **first,
+		t_node **last)
 {
 	if (node->kind == ND_CMD)
 	{

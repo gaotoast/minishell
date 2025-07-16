@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 14:24:46 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 14:24:47 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	is_empty_cmds(char **argv)
@@ -14,7 +26,6 @@ int	is_empty_cmds(char **argv)
 	return (1);
 }
 
-// リソース解放後、子プロセスをexit
 void	child_exit(char **env, t_node *node, int exit_stat)
 {
 	free(env);
@@ -22,7 +33,6 @@ void	child_exit(char **env, t_node *node, int exit_stat)
 	inner_exit(exit_stat);
 }
 
-// 子プロセス内での実行
 void	child_exec(t_node *node)
 {
 	char	**cp_env;
@@ -46,7 +56,6 @@ void	child_exec(t_node *node)
 		exec_cmd(node->argv, cp_env);
 }
 
-// パイプラインの実行
 pid_t	run_pipeline(t_node *node, int count)
 {
 	pid_t	pid;
@@ -72,8 +81,6 @@ pid_t	run_pipeline(t_node *node, int count)
 	return (pid);
 }
 
-// 実行部メイン処理
-// ASTのコマンドノードをリストとしてつなげる -> ヒアドキュメントの入力を処理 -> ビルトイン単体かその他かで分岐して実行
 int	execute(t_node *root)
 {
 	pid_t	last_pid;
@@ -89,7 +96,6 @@ int	execute(t_node *root)
 	link_exec_nodes(root, root->rhs, &first_cmd, &last_cmd);
 	if (handle_all_heredocs(first_cmd) != 0)
 		return (-1);
-	// ビルトインコマンド単体の場合
 	if (root->kind == ND_CMD && root->argv && is_builtin(root->argv[0]))
 	{
 		ret = process_builtin_direct(root);

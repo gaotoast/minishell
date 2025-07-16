@@ -1,101 +1,50 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenize.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 15:01:54 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 16:28:02 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// トークンを追加（新しいトークンへのポインタを返すことでcurrentを一つ進める）
-t_token	*add_token(t_token *cur, t_token_type type, char *start, int len)
+static t_token	*get_next_token(t_token *cur, char **p, int *ret)
 {
-	t_token	*new;
-
-	new = (t_token *)ft_malloc(sizeof(t_token));
-	if (!new)
-		return (NULL);
-	new->str = (char *)ft_calloc(sizeof(char), len + 1);
-	if (!new->str)
-	{
-		free(new);
-		return (NULL);
-	}
-	ft_memcpy(new->str, (void *)start, len);
-	new->type = type;
-	new->next = NULL;
-	cur->next = new;
-	return (new);
+	if (is_blank(**p))
+		(*p)++;
+	else if (is_two_metachar(*p))
+		cur = handle_two_metachar(cur, p, ret);
+	else if (is_single_metachar(*p))
+		cur = handle_single_metachar(cur, p, ret);
+	else
+		cur = handle_word_token(cur, p, ret);
+	return (cur);
 }
 
-// 入力をトークンに分割
 int	tokenize(char *line, t_token **tokens)
 {
 	t_token	head;
 	t_token	*cur;
 	char	*p;
-	char	*start;
-	char	quote;
+	int		ret;
 
 	head.next = NULL;
 	cur = &head;
 	p = line;
+	ret = 0;
 	while (*p)
 	{
-		// 空白文字をスキップ
-		if (is_blank(*p))
-			p++;
-		// 2文字のメタ文字をトークン化
-		else if (is_two_metachar(p))
+		cur = get_next_token(cur, &p, &ret);
+		if (ret != 0)
 		{
-			cur = add_token(cur, TK_RESERVED, p, 2);
-			if (!cur)
-			{
-				free_tokens(head.next);
-				return (-1);
-			}
-			p += 2;
-		}
-		// 1文字のメタ文字をトークン化
-		else if (is_single_metachar(p))
-		{
-			cur = add_token(cur, TK_RESERVED, p, 1);
-			if (!cur)
-			{
-				free_tokens(head.next);
-				return (-1);
-			}
-			p++;
-		}
-		// 単語をトークン化
-		// クォートの中ではメタ文字と空白文字を無視する
-		else
-		{
-			start = p;
-			while (*p && !is_blank(*p) && !is_two_metachar(p)
-				&& !is_single_metachar(p))
-			{
-				if (is_quote(p))
-				{
-					quote = *p;
-					p++;
-					while (*p && *p != quote)
-						p++;
-					if (*p == quote)
-						p++;
-					else
-					{
-						write(STDERR_FILENO,
-							"minishell: syntax error: unclosed quote\n", 41);
-						free_tokens(head.next);
-						return (2);
-					}
-				}
-				else
-					p++;
-			}
-			cur = add_token(cur, TK_WORD, start, p - start);
-			if (!cur)
-			{
-				free_tokens(head.next);
-				return (-1);
-			}
+			free_tokens(head.next);
+			return (ret);
 		}
 	}
-	// EOFトークンを追加
 	if (!add_token(cur, TK_EOF, p, 0))
 	{
 		free_tokens(head.next);

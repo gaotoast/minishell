@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 15:09:01 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 15:09:03 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	process_input_line(char *line, int temp_fd, t_redir *redir)
@@ -71,7 +83,6 @@ static int	handle_single_heredoc(t_node *cur, int i, int n)
 	return (0);
 }
 
-// すべてのヒアドキュメントの入力を読み取って一時ファイルを作成して書き込む
 int	handle_all_heredocs(t_node *node)
 {
 	int		i;

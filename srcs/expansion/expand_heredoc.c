@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand_heredoc.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 14:26:19 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 14:26:20 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// 単一文字を結果文字列に追加
 static char	*append_char(char *result, char c)
 {
 	char	*temp;
@@ -20,7 +31,6 @@ static char	*append_char(char *result, char c)
 	return (temp);
 }
 
-// ヒアドキュメント用の変数展開関数
 int	expand_heredoc_line(char **line)
 {
 	char	*result;

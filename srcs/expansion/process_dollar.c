@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   process_dollar.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 14:26:24 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 14:26:33 by stakada          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// 環境変数名に含むことができる文字かどうか判定
 int	is_valid_var_char(char c)
 {
 	if (ft_isalnum(c) || c == '_')
@@ -8,7 +19,6 @@ int	is_valid_var_char(char c)
 	return (0);
 }
 
-// 変数名部分を抜粋して引数のnameに設定（例：$HOME@# -> HOME）
 int	extract_var_name(char *str, char **name)
 {
 	int	len;
@@ -35,7 +45,6 @@ int	extract_var_name(char *str, char **name)
 	return (0);
 }
 
-// 環境変数の値を取得
 char	*get_var_value(char *name)
 {
 	char	*value;
@@ -54,7 +63,6 @@ char	*get_var_value(char *name)
 	return (value);
 }
 
-// $記号の処理
 char	*process_dollar(char **s, char *result)
 {
 	char	*name;

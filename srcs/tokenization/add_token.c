@@ -1,30 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atol.c                                          :+:      :+:    :+:   */
+/*   add_token.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/31 20:58:51 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/15 15:06:04 by stakada          ###   ########.fr       */
+/*   Created: 2025/07/15 14:38:39 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 14:38:51 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-long long int	ft_atol(char *num, long long int minus, int digit)
+t_token	*add_token(t_token *cur, t_token_type type, char *start, int len)
 {
-	long long int	rtn;
-	int				i;
+	t_token	*new;
 
-	rtn = 0;
-	i = 0;
-	while (i < digit)
+	new = (t_token *)ft_malloc(sizeof(t_token));
+	if (!new)
+		return (NULL);
+	new->str = (char *)ft_calloc(sizeof(char), len + 1);
+	if (!new->str)
 	{
-		rtn *= 10;
-		rtn += num[i] - '0';
-		++i;
+		free(new);
+		return (NULL);
 	}
-	rtn *= minus;
-	return (rtn);
+	ft_memcpy(new->str, (void *)start, len);
+	new->type = type;
+	new->next = NULL;
+	cur->next = new;
+	return (new);
 }
