@@ -6,7 +6,7 @@
 /*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/02 20:41:50 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/16 17:54:45 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,22 @@
 
 int	check_access(char *dest, char *path)
 {
+	struct stat	statbuf;
+
 	if (access(path, F_OK))
-	{
 		ft_dprintf(STDERR_FILENO, "minishell: cd: %s: No such "
 			"file or directly\n", dest);
-		return (1);
-	}
-	if (access(path, X_OK) != 0)
-	{
+	else if (stat(path, &statbuf) != 0)
+		ft_dprintf(STDERR_FILENO, "minishell: cd: %s\n", strerror(errno));
+	else if ((((statbuf.st_mode)) & 0170000) != 0040000)
+		ft_dprintf(STDERR_FILENO,
+			"minishell: cd: %s: Not a directory\n", dest);
+	else if (access(path, X_OK) != 0)
 		ft_dprintf(STDERR_FILENO, "minishell: cd:"
 			" %s: Permission denied\n", dest);
-		return (1);
-	}
-	return (0);
+	else
+		return (0);
+	return (1);
 }
 
 char	*move_to_env(char *val_name)
