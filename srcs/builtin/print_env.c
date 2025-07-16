@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_env.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:15:50 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 03:30:57 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/16 18:02:40 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,5 +69,6 @@ int	print_envs(void)
 	i = 0;
 	while (envp[i])
 		print_env(envp[i++]);
+	free(envp);
 	return (EXIT_SUCCESS);
 }
