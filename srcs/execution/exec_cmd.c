@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:23:51 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/16 16:12:11 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/16 16:41:46 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ static void	check_executable_or_exit(char *cmd, char **envp)
 		error_and_exit(cmd, 127, envp);
 	if (stat(cmd, &statbuf) != 0)
 		error_and_exit(cmd, 126, envp);
-	if (!S_ISREG(statbuf.st_mode) || access(cmd, X_OK) != 0)
+	if (!(((statbuf.st_mode)) & 0170000) == (0100000)|| access(cmd, X_OK) != 0)
 	{
-		if (S_ISDIR(statbuf.st_mode))
+		if ((((statbuf.st_mode)) & 0170000) == (0040000))
 			ft_dprintf(STDERR_FILENO, "minishell: %s: Is a directory\n", cmd);
 		else
 			ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmd,
