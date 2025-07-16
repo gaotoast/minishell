@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 03:06:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/16 13:00:54 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/16 14:13:05 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,7 +246,7 @@ int								expand_unsplit(t_exp_tkn **head, char *str,
 char							*get_var_value(char *name);
 int								extract_var_name(char *str, char **name);
 int								state_null(t_expand *info, char *str);
-int								state_backquote(t_expand *info, char *str);
+int								state_singlequote(t_expand *info, char *str);
 int								state_doublequote(t_expand *info, char *str);
 
 // bulitin
