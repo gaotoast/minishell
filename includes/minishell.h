@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 03:06:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/16 14:13:05 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/07/16 15:41:09 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,7 +231,6 @@ int								expand(t_node *node);
 int								expand_cmds(t_node *node);
 int								expand_redirs(t_node *node);
 int								expand_heredoc_line(char **line);
-int								merge_expansion_tokens(t_exp_tkn **head);
 int								split_exp_tokens(t_exp_tkn **head);
 char							*process_dollar(char **s, char *result);
 int								update_args_from_exp(t_exp_tkn *head,
