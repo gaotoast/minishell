@@ -22,7 +22,7 @@ static void	remove_empty_val_token(t_exp_tkn **head)
 	cur = *head;
 	while (cur)
 	{
-		if (cur->is_expanded && !cur->is_quoted && !cur->str[0])
+		if (cur->is_expanded && !cur->is_quoted && cur->str && !cur->str[0])
 		{
 			temp = cur->next;
 			if (prev)
