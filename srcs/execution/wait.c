@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:16:31 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/16 16:50:36 by stakada          ###   ########.fr       */
+/*   Updated: 2025/07/16 18:49:46 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,15 @@ int	wait_children(pid_t last_pid, t_node *first_cmd)
 {
 	pid_t	wait_ret;
 	int		w_status;
-	int		status;
+	int		last_status;
 
-	status = 0;
+	last_status = 0;
 	while (1)
 	{
 		wait_ret = wait(&w_status);
 		if (wait_ret == last_pid)
 		{
-			status = process_exit_status(w_status);
+			last_status = process_exit_status(w_status);
 			break ;
 		}
 		else if (wait_ret < 0)
@@ -59,6 +59,8 @@ int	wait_children(pid_t last_pid, t_node *first_cmd)
 				break ;
 		}
 	}
+	while (wait(&w_status) > 0)
+		;
 	unlink_all_temp(first_cmd);
-	return (status);
+	return (last_status);
 }
