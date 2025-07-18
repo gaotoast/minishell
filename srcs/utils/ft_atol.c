@@ -1,42 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   ft_atol.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/13 17:57:05 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/22 18:20:03 by stakada          ###   ########.fr       */
+/*   Created: 2025/05/31 20:58:51 by yumiyao           #+#    #+#             */
+/*   Updated: 2025/07/15 15:06:04 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "minishell.h"
 
-char	*join_string(char *s1, char *s2)
+long long int	ft_atol(char *num, long long int minus, int digit)
 {
-	char	*joined;
-	size_t	i;
-	size_t	j;
+	long long int	rtn;
+	int				i;
 
-	if (!s1)
-		return (ft_strdup(s2));
-	joined = (char *)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
-	if (!joined)
-		return (NULL);
+	rtn = 0;
 	i = 0;
-	while (s1[i])
+	while (i < digit)
 	{
-		joined[i] = s1[i];
-		i++;
+		rtn *= 10;
+		rtn += num[i] - '0';
+		++i;
 	}
-	j = 0;
-	while (s2[j])
-	{
-		joined[i] = s2[j];
-		i++;
-		j++;
-	}
-	joined[i] = '\0';
-	free(s1);
-	return (joined);
+	rtn *= minus;
+	return (rtn);
 }

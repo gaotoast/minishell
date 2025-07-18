@@ -1,29 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/11 21:22:06 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/20 21:54:41 by stakada          ###   ########.fr       */
+/*   Created: 2025/07/15 14:26:02 by stakada           #+#    #+#             */
+/*   Updated: 2025/07/15 14:26:03 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "minishell.h"
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 256
-# endif
-
-# include <stdlib.h>
-# include <unistd.h>
-
-char	*get_next_line(int fd);
-char	*join_string(char *s1, char *s2);
-char	*ft_strdup(const char *s);
-size_t	ft_strlen(const char *s);
-char	*ft_strchr(const char *s, int c);
-
-#endif
+int	expand(t_node *node)
+{
+	if (!node)
+		return (0);
+	if (node->kind == ND_CMD)
+	{
+		if (node->argv)
+		{
+			if (expand_cmds(node) != 0)
+				return (1);
+		}
+		if (node->redirs)
+		{
+			if (expand_redirs(node) != 0)
+				return (1);
+		}
+		return (0);
+	}
+	if (expand(node->lhs) != 0)
+		return (1);
+	if (expand(node->rhs) != 0)
+		return (1);
+	return (0);
+}

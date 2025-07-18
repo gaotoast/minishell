@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 22:09:22 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/10 00:22:23 by stakada          ###   ########.fr       */
+/*   Updated: 2025/05/29 03:36:31 by yumiyao          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	*ft_itoa(int n)
 	if (num < 0)
 		sign = 1;
 	digits = count_digits(num);
-	str = (char *)malloc(sizeof(char) * (digits + 1));
+	str = (char *)ft_malloc(sizeof(char) * (digits + 1));
 	if (!str)
 		return (NULL);
 	str[digits] = '\0';
