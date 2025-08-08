@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 03:06:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/08/07 00:39:56 by stakada          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:29:17 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ typedef struct s_expand
 	char						*rtn;
 	bool						is_quoted;
 	int							env_flag;
+	int							last_stat;
 }								t_expand;
 
 typedef struct s_env
@@ -228,11 +229,9 @@ int								consume_reserved(t_token **rest, char *op);
 
 // expansion
 int								expand(t_node *node);
-int								expand_cmds(t_node *node);
-int								expand_redirs(t_node *node);
-int								expand_heredoc_line(char **line);
+int								expand_cmds(t_node *node, int last_stat);
+int								expand_redirs(t_node *node, int last_stat);
 int								split_exp_tokens(t_exp_tkn **head);
-char							*process_dollar(char **s, char *result);
 int								update_args_from_exp(t_exp_tkn *head,
 									t_node *node);
 t_exp_tkn						*new_exp_token(char *str, bool is_expanded,
@@ -241,8 +240,8 @@ void							append_exp_token(t_exp_tkn **head,
 									t_exp_tkn *new);
 void							free_exp_tokens(t_exp_tkn *head);
 int								expand_unsplit(t_exp_tkn **head, char *str,
-									int env_flag);
-char							*get_var_value(char *name);
+									int env_flag, int last_stat);
+char							*get_var_value(char *name, int last_stat);
 int								extract_var_name(char *str, char **name);
 int								state_null(t_expand *info, char *str);
 int								state_singlequote(t_expand *info, char *str);

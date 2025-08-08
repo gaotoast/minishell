@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unsplit_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 09:07:50 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/16 14:13:05 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:16:17 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ static char	*connect_char(char **s1, char c)
 	return (rtn);
 }
 
-static char	*process_inner_dollar(char *s, char *result, int *idx)
+static char	*process_inner_dollar(char *s, char *result, int *idx,
+		int last_stat)
 {
 	char	*name;
 	char	*ret;
@@ -47,7 +48,7 @@ static char	*process_inner_dollar(char *s, char *result, int *idx)
 		return (ret);
 	}
 	*idx += ft_strlen(name);
-	value = get_var_value(name);
+	value = get_var_value(name, last_stat);
 	free(name);
 	if (!value)
 		return (NULL);
@@ -76,7 +77,7 @@ int	state_null(t_expand *info, char *str)
 		++(info->i);
 		if (str[info->i] != '"' && str[info->i] != '\'')
 			info->rtn = process_inner_dollar(&str[info->i], info->rtn,
-					&(info->i));
+					&(info->i), info->last_stat);
 	}
 	else if (!connect_char(&(info->rtn), str[(info->i)++]))
 	{
@@ -111,7 +112,8 @@ int	state_doublequote(t_expand *info, char *str)
 	else if (str[info->i] == '$' && info->env_flag)
 	{
 		++(info->i);
-		info->rtn = process_inner_dollar(&str[info->i], info->rtn, &(info->i));
+		info->rtn = process_inner_dollar(&str[info->i], info->rtn, &(info->i),
+				info->last_stat);
 	}
 	else if (!connect_char(&(info->rtn), str[(info->i)++]))
 	{

@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:27:39 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/15 14:27:45 by stakada          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:27:56 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,10 @@ static int	split_expanded_redir_env(t_exp_tkn **head, char *str)
 	return (0);
 }
 
-static int	process_expand_redirs(t_exp_tkn **new, t_redir *redir, int env_flag)
+static int	process_expand_redirs(t_exp_tkn **new, t_redir *redir, int env_flag,
+		int last_stat)
 {
-	if (expand_unsplit(new, redir->str, env_flag) != 0)
+	if (expand_unsplit(new, redir->str, env_flag, last_stat) != 0)
 	{
 		free_exp_tokens(*new);
 		return (1);
@@ -63,7 +64,7 @@ static int	process_expand_redirs(t_exp_tkn **new, t_redir *redir, int env_flag)
 	return (0);
 }
 
-int	expand_redirs(t_node *node)
+int	expand_redirs(t_node *node, int last_stat)
 {
 	int			i;
 	t_exp_tkn	*new;
@@ -76,7 +77,8 @@ int	expand_redirs(t_node *node)
 		env_flag = 0;
 		if (node->redirs[i]->kind != REDIR_HEREDOC)
 			env_flag = 1;
-		if (process_expand_redirs(&new, node->redirs[i], env_flag) != 0)
+		if (process_expand_redirs(&new, node->redirs[i], env_flag,
+				last_stat) != 0)
 			return (1);
 		i++;
 	}
