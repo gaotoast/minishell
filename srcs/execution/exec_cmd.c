@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:23:51 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/16 16:46:24 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:41:23 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ static void	check_executable_or_exit(char *cmd, char **envp)
 		error_and_exit(cmd, 127, envp);
 	if (stat(cmd, &statbuf) != 0)
 		error_and_exit(cmd, 126, envp);
-	if ((((statbuf.st_mode)) & 0170000) != 0100000 || access(cmd, X_OK) != 0)
+	if (!S_ISREG(statbuf.st_mode) || access(cmd, X_OK) != 0)
 	{
-		if ((((statbuf.st_mode)) & 0170000) == 0040000)
+		if (S_ISDIR(statbuf.st_mode))
 			ft_dprintf(STDERR_FILENO, "minishell: %s: Is a directory\n", cmd);
 		else
 			ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n", cmd,
@@ -39,7 +39,7 @@ static void	check_executable_or_exit(char *cmd, char **envp)
 	}
 }
 
-void	exec_if_relative_path(char **cmds, char **envp)
+static void	exec_if_relative_path(char **cmds, char **envp)
 {
 	if (!(ft_strncmp(cmds[0], "./", 2) == 0 || ft_strncmp(cmds[0], "../",
 				3) == 0))
@@ -49,7 +49,7 @@ void	exec_if_relative_path(char **cmds, char **envp)
 	error_and_exit(cmds[0], 1, envp);
 }
 
-void	exec_if_absolute_path(char **cmds, char **envp)
+static void	exec_if_absolute_path(char **cmds, char **envp)
 {
 	check_executable_or_exit(cmds[0], envp);
 	execve(cmds[0], cmds, envp);

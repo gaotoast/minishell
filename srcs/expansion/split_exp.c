@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:26:53 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/15 14:26:58 by stakada          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:45:13 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ static t_exp_tkn	*split_by_blank(char *s, bool is_quoted)
 	return (head);
 }
 
-int	process_split_exp_tokens(t_exp_tkn **head, t_exp_tkn *cur, t_exp_tkn **prev)
+static int	process_split_exp_tokens(t_exp_tkn **head, t_exp_tkn *cur,
+		t_exp_tkn **prev)
 {
 	t_exp_tkn	*split_head;
 	t_exp_tkn	*split_tail;

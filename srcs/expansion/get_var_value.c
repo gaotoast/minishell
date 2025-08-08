@@ -6,13 +6,13 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:26:24 by stakada           #+#    #+#             */
-/*   Updated: 2025/08/08 21:16:31 by stakada          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:43:28 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_valid_var_char(char c)
+static int	is_valid_var_char(char c)
 {
 	if (ft_isalnum(c) || c == '_')
 		return (1);

@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:29:37 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/16 13:07:58 by stakada          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:39:25 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,3 @@ int	pwd(int argc, char **argv)
 	ft_dprintf(STDOUT_FILENO, "%s\n", bufs);
 	return (EXIT_SUCCESS);
 }
-
-// int	main(int argc, char **argv, char **envp)
-// {
-// 	pwd(argc, argv, envp);
-// }

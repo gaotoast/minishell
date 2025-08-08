@@ -6,13 +6,13 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:25:00 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/15 14:25:02 by stakada          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:41:11 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*search_path(char *cmd_name, char **path_list, char *path_tail,
+static char	*search_path(char *cmd_name, char **path_list, char *path_tail,
 		int *status)
 {
 	char	*path;
