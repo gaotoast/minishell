@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 02:47:53 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/05/31 22:01:57 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:39:32 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,35 +99,3 @@ int	export(int argc, char **argv)
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
-
-// char	**copy_env(char **envp)
-// {
-// 	int		i;
-// 	int		len;
-// 	char	**rtn;
-
-// 	len = 0;
-// 	while (envp[len])
-// 		++len;
-// 	rtn = (char **)malloc(sizeof(char *) * (len + 1));
-// 	i = 0;
-// 	while (envp[i])
-// 	{
-// 		rtn[i] = strdup(envp[i]);
-// 		++i;
-// 	}
-// 	rtn[i] = NULL;
-// 	return (rtn);
-// }
-
-// int main(int argc, char **argv, char **envp)
-// {
-// 	// int i = 0;
-// 	// while (argc && argv && envp[i])
-// 	// 	printf("%s\n", envp[i++]);
-// 	char	**cenv = copy_env(envp);
-// 	// while (*cenv)
-// 	// 	printf("%s\n", *cenv++);
-// 	export(argc, argv, &cenv);
-// 	// export(1, argv, &cenv);
-// }

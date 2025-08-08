@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:16:31 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/16 18:49:46 by stakada          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:44:54 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ static int	process_exit_status(int w_status)
 {
 	int	status;
 
-	if (((((w_status) & 0x7f) + 1) >> 1) > 0)
+	if (WIFSIGNALED(w_status))
 	{
-		status = 128 + ((w_status) & 0x7f);
+		status = 128 + WTERMSIG(w_status);
 		if (status == 128 + SIGINT)
 		{
 			g_sig_received = SIGINT;
@@ -32,7 +32,7 @@ static int	process_exit_status(int w_status)
 	}
 	else
 	{
-		status = ((w_status) & 0xff00) >> 8;
+		status = WEXITSTATUS(w_status);
 		g_sig_received = 0;
 	}
 	return (status);

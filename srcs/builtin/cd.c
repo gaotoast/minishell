@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 03:40:56 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/16 18:57:43 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:38:38 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	check_access(char *dest, char *path)
 			"file or directory\n", dest);
 	else if (stat(path, &statbuf) != 0)
 		ft_dprintf(STDERR_FILENO, "minishell: cd: %s\n", strerror(errno));
-	else if ((((statbuf.st_mode)) & 0170000) != 0040000)
+	else if (!S_ISDIR(statbuf.st_mode))
 		ft_dprintf(STDERR_FILENO,
 			"minishell: cd: %s: Not a directory\n", dest);
 	else if (access(path, X_OK) != 0)

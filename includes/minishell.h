@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 03:06:23 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/08/08 21:29:17 by stakada          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:43:32 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,16 +173,12 @@ int								is_valid_shlvl(char *num);
 int								handle_shlvl_range(int lvl);
 
 // execution
-void							exec_if_relative_path(char **cmds, char **envp);
-void							exec_if_absolute_path(char **cmds, char **envp);
 void							exec_cmd(char **cmds, char **envp);
 int								exec_builtin_cmd(t_node *node);
 int								process_builtin_direct(t_node *node);
 void							link_exec_nodes(t_node *node, t_node *rhs,
 									t_node **first, t_node **last);
 int								execute(t_node *root);
-char							*search_path(char *cmd_name, char **path_list,
-									char *path_tail, int *status);
 char							*resolve_cmd_path(char *cmd, char *path_env,
 									int *status);
 int								is_builtin(char *cmd);

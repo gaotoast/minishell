@@ -6,13 +6,13 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 15:09:17 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/15 15:09:51 by stakada          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:46:13 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	apply_heredoc_redir(t_redir *redir)
+static int	apply_heredoc_redir(t_redir *redir)
 {
 	int	heredoc_fd;
 
@@ -32,7 +32,7 @@ int	apply_heredoc_redir(t_redir *redir)
 	return (0);
 }
 
-int	apply_io_redir(t_redir *redir, int flags, int std_fd)
+static int	apply_io_redir(t_redir *redir, int flags, int std_fd)
 {
 	int	fd;
 
@@ -53,7 +53,7 @@ int	apply_io_redir(t_redir *redir, int flags, int std_fd)
 	return (0);
 }
 
-int	process_redir(t_redir *redir)
+static int	process_redir(t_redir *redir)
 {
 	if (redir->kind == REDIR_IN)
 		return (apply_io_redir(redir, O_RDONLY, STDIN_FILENO));

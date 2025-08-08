@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 00:20:46 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/06/01 15:33:40 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:39:37 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,3 @@ int	echo(int argc, t_exp_tkn *argv_lst)
 		ft_dprintf(STDOUT_FILENO, "\n");
 	return (EXIT_SUCCESS);
 }
-
-// int main(int argc, char **argv)
-// {
-// 	echo(argc, argv);
-// }
