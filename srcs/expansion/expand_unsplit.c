@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expand_unsplit.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yumiyao <yumiyao@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 04:26:02 by yumiyao           #+#    #+#             */
-/*   Updated: 2025/07/16 14:13:05 by yumiyao          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:26:57 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	expand_unsplit(t_exp_tkn **head, char *str, int env_flag)
+int	expand_unsplit(t_exp_tkn **head, char *str, int env_flag, int last_stat)
 {
 	t_exp_tkn	*new;
 	t_expand	info;
@@ -22,6 +22,7 @@ int	expand_unsplit(t_exp_tkn **head, char *str, int env_flag)
 	info.env_flag = env_flag;
 	info.state = '\0';
 	info.rtn = ft_strdup("");
+	info.last_stat = last_stat;
 	while (str[info.i])
 	{
 		if (info.state == '\0' && state_null(&info, str))

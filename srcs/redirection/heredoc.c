@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 15:09:01 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/15 15:09:03 by stakada          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:09:27 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,6 @@ static int	process_input_line(char *line, int temp_fd, t_redir *redir)
 	{
 		free(line);
 		return (1);
-	}
-	if (expand_heredoc_line(&line) != 0)
-	{
-		free(line);
-		return (-1);
 	}
 	write(temp_fd, line, ft_strlen(line));
 	write(temp_fd, "\n", 1);

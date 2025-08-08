@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   process_dollar.c                                   :+:      :+:    :+:   */
+/*   get_var_value.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:26:24 by stakada           #+#    #+#             */
-/*   Updated: 2025/07/15 14:26:33 by stakada          ###   ########.fr       */
+/*   Updated: 2025/08/08 21:16:31 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,13 @@ int	extract_var_name(char *str, char **name)
 	return (0);
 }
 
-char	*get_var_value(char *name)
+char	*get_var_value(char *name, int last_stat)
 {
 	char	*value;
 	char	*env_value;
 
 	if (ft_strncmp(name, "?", 2) == 0)
-		value = ft_itoa(sh_stat(ST_GET, 0));
+		value = ft_itoa(last_stat);
 	else
 	{
 		env_value = ft_env(ENV_GET_VAL, name);
@@ -61,33 +61,4 @@ char	*get_var_value(char *name)
 			value = ft_strdup(env_value);
 	}
 	return (value);
-}
-
-char	*process_dollar(char **s, char *result)
-{
-	char	*name;
-	char	*ret;
-	char	*value;
-
-	(*s)++;
-	if (extract_var_name(*s, &name) != 0)
-	{
-		free(result);
-		return (NULL);
-	}
-	if (!name)
-	{
-		ret = ft_strjoin(result, "$");
-		free(result);
-		return (ret);
-	}
-	*s += ft_strlen(name);
-	value = get_var_value(name);
-	free(name);
-	if (!value)
-		return (NULL);
-	ret = ft_strjoin(result, value);
-	free(result);
-	free(value);
-	return (ret);
 }
